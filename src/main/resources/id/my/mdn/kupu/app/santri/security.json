@@ -1,0 +1,190 @@
+{
+    "acls": [
+        {
+            "acl": {
+                "name": "view_module_santri",
+                "description": "Masuk modul Santri"
+            }
+        },
+        {
+            "acl": {
+                "name": "admin_module_santri",
+                "description": "Administrator modul Santri"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_santri",
+                "description": "Lihat Santri"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_santri",
+                "description": "Tambah Santri"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_santri",
+                "description": "Ubah Santri"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_santri",
+                "description": "Hapus Santri"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_ustadz",
+                "description": "Lihat Ustadz"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_ustadz",
+                "description": "Tambah Ustadz"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_ustadz",
+                "description": "Ubah Ustadz"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_ustadz",
+                "description": "Hapus Ustadz"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_musyrif",
+                "description": "Lihat Musyrif"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_musyrif",
+                "description": "Tambah Musyrif"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_musyrif",
+                "description": "Ubah Musyrif"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_musyrif",
+                "description": "Hapus Musyrif"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_kelompok_kepengasuhan",
+                "description": "Lihat Kelompok Kepengasuhan"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_kelompok_kepengasuhan",
+                "description": "Tambah Kelompok Kepengasuhan"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_kelompok_kepengasuhan",
+                "description": "Ubah Kelompok Kepengasuhan"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_kelompok_kepengasuhan",
+                "description": "Hapus Kelompok Kepengasuhan"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_tahun_pembelajaran",
+                "description": "Lihat Tahun Pembelajaran"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_tahun_pembelajaran",
+                "description": "Tambah Tahun Pembelajaran"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_tahun_pembelajaran",
+                "description": "Ubah Tahun Pembelajaran"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_tahun_pembelajaran",
+                "description": "Hapus Tahun Pembelajaran"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_periode_pembelajaran",
+                "description": "Lihat Periode Pembelajaran"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_periode_pembelajaran",
+                "description": "Tambah Periode Pembelajaran"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_periode_pembelajaran",
+                "description": "Ubah Periode Pembelajaran"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_periode_pembelajaran",
+                "description": "Hapus Periode Pembelajaran"
+            }
+        },
+        {
+            "acl": {
+                "name": "view_external",
+                "description": "Lihat aplikasi eksternal"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_aktifitas_kepengasuhan_santri",
+                "description": "Lihat laporan aktifitas santri"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_rapor_kepengasuhan_santri",
+                "description": "Lihat rapor kepengasuhan santri"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "group": {
+                "name": "Santri",
+                "acls": [
+                    "security.can_login",
+                    "view_external"
+                ]
+            }
+        }
+    ],
+    "users": []
+}

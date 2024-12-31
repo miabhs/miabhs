@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core">
+
+
+    <ui:decorate template="/WEB-INF/components/core/base/table.xhtml" >
+        <ui:param name="dataView" value="#{viewPage.aktifitasTambahanList}" />
+        <ui:param name="selectListener" value=":messages" />
+        <ui:param name="height" value="550" />
+
+        <ui:define name="columns">
+            <p:column>
+                <h:outputText id="aktt" value="#{data.bentukAktifitas.id}"
+                              class="#{data.kehadiran} font-semibold border-circle w-2rem h-2rem flex justify-content-center align-items-center" />
+            </p:column>
+            <p:column colspan="6">
+                <h:outputText value="#{data.bentukAktifitas.bentuk}" class="" />
+            </p:column>
+            <p:column colspan="2">
+                <p:selectOneRadio value="#{data.kehadiran}"
+                                  valueChangeListener="#{viewPage.onChangeKehadiran}"
+                                  immediate="true"
+                                  class="font-bold">
+                    <f:selectItem itemLabel="ح" itemValue="HADIR" />
+                    <f:selectItem itemLabel="م" itemValue="TERLAMBAT" />
+                    <f:selectItem itemLabel="غ" itemValue="TIDAK_HADIR" />
+
+                    <f:attribute name="aktifitasTambahan" value="#{data}" />
+                    <p:ajax partialSubmit="true" update="aktt :detail-frm:data-tbl" />
+                </p:selectOneRadio>
+            </p:column>
+        </ui:define>
+    </ui:decorate>
+</ui:composition>

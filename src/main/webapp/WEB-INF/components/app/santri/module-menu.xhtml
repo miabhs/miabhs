@@ -1,0 +1,35 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+
+    <p:menuitem value="Santri" immediate="true"
+                actionListener="#{santriNavigator.open('Santri', '')}"
+                icon="pi pi-user" /> 
+    <p:menuitem value="Musyrif" immediate="true"
+                actionListener="#{santriNavigator.open('Musyrif', '')}"
+                icon="pi pi-user" />
+    <p:menuitem value="Asatidz" immediate="true"
+                actionListener="#{santriNavigator.open('Ustadz', '')}"
+                icon="pi pi-user" />
+    <p:separator />  
+    <p:menuitem value="Tahun Pembelajaran" immediate="true"
+                actionListener="#{santriNavigator.open('TahunPembelajaran', '')}"
+                icon="pi pi-calendar" />
+    <p:menuitem value="Kelompok Pengasuhan" immediate="true"
+                actionListener="#{santriNavigator.open('KelompokPengasuhan', '')}"
+                icon="pi pi-users" /> 
+    <p:menuitem value="Halaqoh Pengajaran" immediate="true"
+                actionListener="#{santriNavigator.open('HalaqohPengajaran', '')}"
+                icon="pi pi-users" />
+    <p:menuitem value="Jenis Kitab" immediate="true"
+                actionListener="#{santriNavigator.open('JenisKitab', '')}"
+                icon="pi pi-users" />
+    <p:menuitem value="Kategori Kitab" immediate="true"
+                actionListener="#{santriNavigator.open('KategoriKitab', '')}"
+                icon="pi pi-users" />
+    <p:menuitem value="Jenis Pengajaran" immediate="true"
+                actionListener="#{santriNavigator.open('JenisPengajaran', '')}"
+                icon="pi pi-users" />
+</ui:composition>
+

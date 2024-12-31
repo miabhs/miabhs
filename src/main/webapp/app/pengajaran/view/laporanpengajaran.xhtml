@@ -1,0 +1,158 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/templates/reporting-explorer.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:pe="http://primefaces.org/ui/extensions" 
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <f:metadata>
+        <ui:param name="title" value="Laporan Pengajaran" />     
+        <ui:param name="viewPage" value="#{laporanPengajaranPage}" /> 
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/> 
+        
+        <ui:param name="master_notitle" value="true" />
+        <ui:param name="masterDataView" value="#{viewPage.periodePembelajaranTree}" />
+        <ui:param name="masterFilter" value="#{masterDataView.filter}" />
+        <ui:param name="masterFilterContent" value="#{masterFilter.content}" />
+        <ui:param name="masterFilterName" value="filterPeriode" />
+        <ui:param name="masterContentId" value=":master-frm:#{masterDataView.name}" />
+        
+        <ui:param name="detail_notitle" value="true" />
+        <ui:param name="detailContentId" value=":detail-frm" />
+        
+        <ui:remove>
+        <ui:param name="detailDataView" value="#{viewPage.detailDataView}" />
+        <ui:param name="detailPager" value="#{detailDataView.pager}" />
+        <ui:param name="detailFilter" value="#{detailDataView.filter}" />
+        <ui:param name="detailFilterName" value="filterSantri" />
+        <ui:param name="detailContentId" value=":detail-frm:#{detailDataView.name}" />
+        <f:viewParam name="dPSz" value="#{detailPager.pageSize}" />
+        <f:viewParam name="dOff" value="#{detailPager.offset}" />
+        </ui:remove>
+
+        <f:viewParam name="thp" value="#{masterFilterContent.tahunPembelajaran}" converter="TahunPembelajaranConverter"   />
+        <f:viewParam name="kp" value="#{viewPage.kelompokPengasuhanList.selection}" converter="KelompokPengasuhanConverter" />
+        <f:viewParam name="sn" value="#{viewPage.santri}" converter="SantriConverter" />
+        
+        <f:viewParam name="ps" value="#{masterDataView.selection}" converter="PeriodePembelajaranConverter" />
+    </f:metadata>
+
+    <ui:define name="styles">
+        <style>
+            .ui-datatable-scrollable-header, .ui-treetable-scrollable-header {
+                display: none;
+            }
+            .ui-datatable-scrollable-body {
+                display: flex!important;
+                flex-direction: column!important;
+            }
+            .ui-datatable-scrollable-header-box table, .ui-datatable-scrollable-body table {
+                width: auto!important
+            }
+            .ui-treetable-scrollable-body {
+                padding-right: 0!important;
+            }
+            tr.ui-treetable-selectable-node td {
+                padding: .55rem 1rem!important;
+            }
+        </style>
+    </ui:define> 
+
+    <ui:define name="module-menu">
+        <ui:include src="/WEB-INF/components/app/pengajaran/module-menu.xhtml" />
+    </ui:define>
+
+    <ui:define name="master-filter"> 
+        <div class="flex gap-2 flex-nowrap align-items-center flex-shrink-0">
+            <p:outputLabel for="tahun" value="Tahun" class="col-fixed" />
+            <p:selectOneMenu id="tahun" style="min-width: auto!important" immediate="true"
+                             value="#{masterFilterContent.tahunPembelajaran}"
+                             converter="TahunPembelajaranConverter" >                        
+                <f:selectItem itemLabel="Pilih Tahun" itemDisabled="true" itemValue="#{null}" />
+                <f:selectItems value="#{tahunPembelajaranSelectList.fetchedItems}" var="item"
+                               itemLabel="#{item.name}" itemValue="#{item}" />
+                <p:ajax process="@this" listener="#{viewPage.doFilter}" oncomplete="refreshContent()" />
+            </p:selectOneMenu>
+        </div>
+    </ui:define>
+
+    <ui:define name="master">
+        <h:form id="master-frm">
+            <ui:decorate template="/WEB-INF/components/app/santri/periodepembelajarantree.xhtml" >
+                <ui:param name="dataView" value="#{masterDataView}" />
+                <ui:param name="selectListener" value=":detail-tools-frm #{detailContentId} :detail-pager-frm :messages" />
+            </ui:decorate>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="master-pager" />
+
+    <ui:define name="report-params">
+        <div class="flex gap-2 flex-wrap">
+            <div class="flex align-items-center gap-2">
+                <p:outputLabel for="kks" value="Kelompok" />
+                <p:selectOneMenu id="kks" value="#{viewPage.kelompokPengasuhanList.selection}"
+                                 converter="KelompokPengasuhanConverter" 
+                                 filter="true" filterMatchMode="contains"
+                                 filterPlaceholder="Cari..."
+                                 autoWidth="false"  >                        
+                    <f:selectItem itemLabel="Semua" noSelectionOption="true" itemValue="#{null}" />
+                    <f:selectItems value="#{viewPage.kelompokPengasuhanList.fetchedItems}" 
+                                   var="item" itemValue="#{item}" 
+                                   itemLabel="#{item.organization.name}" />
+                    <p:ajax process="@this" oncomplete="updateAddress()" />
+                </p:selectOneMenu>
+            </div>
+
+            <div class="flex align-items-center gap-2">
+                <p:outputLabel for="santri" value="Santri" />
+                <div class="ui-selectonemenu ui-widget ui-state-default ui-corner-all" 
+                     onmouseover="this.classList.add('ui-state-hover')"
+                     onmouseout="this.classList.remove('ui-state-hover')" >            
+                    <p:inputText id="santri" value="#{viewPage.santri != null ? viewPage.santri.person.name : 'Semua'}" 
+                                 class="ui-selectonemenu-label ui-corner-all "
+                                 style="cursor: pointer;"
+                                 readonly="true" onclick="updateSantriSelector();PF('santriSelector').show('#{component.clientId}')" />
+                    <div class="ui-selectonemenu-trigger ui-state-default ui-corner-right">
+                        <span class="ui-icon ui-icon-triangle-1-s ui-c" onclick="updateSantriSelector();PF('santriSelector').show('detail-filter-frm:santri')"></span>
+                    </div>
+                </div>
+                <style>
+                    .ui-overlaypanel-content {
+                        padding: 0!important
+                    }
+                </style>
+                <p:overlayPanel widgetVar="santriSelector" my="left top" at="left bottom" styleClass="w-20rem" dynamic=""  >
+                    <p:dataTable id="santri-selector"  var="data" value="#{lazySantriList.model}" lazy="true"
+                                 selectionMode="single" selection="#{viewPage.santri}"
+                                 scrollRows="10" scrollable="true" liveScroll="true" 
+                                 scrollHeight="300">
+
+                        <p:ajax event="rowSelect"
+                                oncomplete="PF('santriSelector').hide();updateAddress()" 
+                                update="@parent:santri" />
+
+                        <p:column>
+                            <f:facet name="header">
+                                <div class="flex flex-grow-1">
+                                    <div class="ui-input-icon-left">
+                                        <i class="pi pi-search" />
+                                        <p:inputText id="name" value="#{lazySantriList.filter.content.name}" placeholder="Cari..." >
+                                            <p:ajax event="keyup" listener="#{lazySantriList.filter.onFiltering}" 
+                                                    update=":detail-filter-frm:santri-selector" />
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <h:outputText value="#{data ne null ? data.person.name : 'Semua'}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:overlayPanel>
+                <p:remoteCommand name="updateSantriSelector" update="santri-selector" /> 
+            </div>
+        </div>
+    </ui:define>
+    
+</ui:composition>

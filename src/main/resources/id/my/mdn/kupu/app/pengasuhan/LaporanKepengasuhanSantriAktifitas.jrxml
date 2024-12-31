@@ -1,0 +1,21 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="LaporanKepengasuhanSantriAktifitas" language="java" pageWidth="174" pageHeight="842" columnWidth="174" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9c7becf2-b767-4c6c-b2d2-4adcea4c777b">
+	<query language="sql"><![CDATA[]]></query>
+	<field name="bentukAktifitas.bentuk" class="java.lang.String"/>
+	<field name="count" class="java.lang.Integer"/>
+	<background splitType="Stretch"/>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="frame" uuid="2a66212b-a2e7-4584-96fc-cad35cf03479" x="0" y="0" width="174" height="20">
+				<element kind="textField" uuid="43a6e142-7047-4cdf-8201-61ed439c2543" x="0" y="2" width="174" height="16" fontName="Roboto" fontSize="9.0" textAdjust="StretchHeight" vTextAlign="Middle">
+					<expression><![CDATA[$F{bentukAktifitas.bentuk}  + ". (" + $F{count} + ")"]]></expression>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<box topPadding="2" leftPadding="4" bottomPadding="2" rightPadding="4"/>
+				</element>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
+				</box>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

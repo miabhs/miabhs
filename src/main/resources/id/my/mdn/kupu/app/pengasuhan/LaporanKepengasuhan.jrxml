@@ -1,0 +1,185 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="LaporanKepengasuhan" language="java" pageWidth="555" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fb5265c6-9ea6-44dd-8bdd-4d4710939899">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<scriptlet name="LaporanPengasuhanScriptlet" class="id.my.mdn.kupu.app.pengasuhan.reporting.LaporanPengasuhanScriptlet"/>
+	<parameter name="tahunPembelajaran" class="id.my.mdn.kupu.app.santri.entity.TahunPembelajaran"/>
+	<parameter name="periodePembelajaran" class="id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran"/>
+	<parameter name="issued" class="java.lang.String"/>
+	<parameter name="issuedHijri" class="java.lang.String"/>
+	<parameter name="LaporanKepengasuhanSantri" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="LaporanKepengasuhanSantriAktifitas" class="net.sf.jasperreports.engine.JasperReport"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="santri" class="id.my.mdn.kupu.app.santri.entity.Santri"/>
+	<field name="periode" class="id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran"/>
+	<field name="listRangkumanPeriode" class="java.util.List"/>
+	<field name="catatanLaporan" class="id.my.mdn.kupu.app.pengasuhan.entity.CatatanKepengasuhan"/>
+	<variable name="listRangkumanPeriode" resetType="None" calculation="System" class="java.util.List">
+		<expression><![CDATA[$V{listRangkumanPeriode}]]></expression>
+	</variable>
+	<variable name="santriId" resetType="None" calculation="System" class="java.lang.Long">
+		<expression><![CDATA[$V{santriId}]]></expression>
+	</variable>
+	<variable name="tahunBelajar" resetType="None" calculation="System" class="java.lang.Integer">
+		<expression><![CDATA[$V{tahunBelajar}]]></expression>
+	</variable>
+	<variable name="masul" resetType="None" calculation="System" class="java.lang.String">
+		<expression><![CDATA[$V{masul}]]></expression>
+	</variable>
+	<group name="Group1" startNewPage="true">
+		<expression><![CDATA[$F{periode}]]></expression>
+		<groupHeader>
+			<band height="50">
+				<element kind="staticText" uuid="0a2ee2f0-e9eb-4620-a5c1-285b7b139061" x="0" y="0" width="555" height="20" fontName="Roboto" fontSize="17.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Laporan Kepengasuhan]]></text>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="132">
+				<element kind="frame" uuid="533919a1-e007-4e8b-a643-d2cd41f56ff4" x="0" y="102" width="555" height="30">
+					<element kind="textField" uuid="f0c189ec-7f32-4ec2-b9bf-0a3d173fb9a4" x="280" y="0" width="274" height="30" fontName="Roboto Medium" underline="true" hTextAlign="Center" vTextAlign="Middle">
+						<expression><![CDATA[$V{masul}]]></expression>
+					</element>
+					<element kind="textField" uuid="b2fdaaa5-3389-42ba-a03c-91b38c0ec642" x="0" y="0" width="274" height="30" fontName="Roboto Medium" underline="false" hTextAlign="Center" vTextAlign="Middle">
+						<expression><![CDATA[" ________________"]]></expression>
+					</element>
+				</element>
+				<element kind="frame" uuid="e70ca0c3-1bc0-455f-b5a2-ab1a8ae43fcd" x="0" y="0" width="554" height="70">
+					<element kind="staticText" uuid="6fb8cc6e-f00e-4058-8c35-b68d1ec99e0a" x="0" y="42" width="274" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+						<text><![CDATA[Wali Santri]]></text>
+					</element>
+					<element kind="frame" uuid="4037c768-35fa-446f-bb91-8494d2fecc1a" x="280" y="0" width="274" height="70">
+						<element kind="staticText" uuid="87bcbad8-e491-4b96-818c-1181ffaed4d5" x="0" y="42" width="274" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Mas'ul Bidang Kepengasuhan]]></text>
+						</element>
+						<element kind="frame" uuid="92d4e42f-6e66-4953-b6d4-a0f0b6582da0" x="83" y="0" width="108" height="42">
+							<element kind="textField" uuid="151fd1ba-f903-4654-bca2-ffba34962a79" x="60" y="0" width="48" height="20" fontName="Roboto" fontSize="10.0" hTextAlign="Left" vTextAlign="Bottom">
+								<expression><![CDATA[$P{issued}]]></expression>
+								<box>
+									<bottomPen lineWidth="0.5"/>
+								</box>
+							</element>
+							<element kind="textField" uuid="b66df27b-76f0-463c-8d51-56f4f6b71f3f" x="60" y="20" width="48" height="22" fontName="Noto Naskh Arabic" fontSize="12.0" hTextAlign="Center" vTextAlign="Top">
+								<expression><![CDATA[$P{issuedHijri}]]></expression>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							</element>
+							<element kind="staticText" uuid="3a16a93c-1ea8-4f62-ac18-bda39041ea72" x="0" y="0" width="60" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Bottom">
+								<text><![CDATA[Semarang,]]></text>
+							</element>
+						</element>
+					</element>
+				</element>
+			</band>
+		</groupFooter>
+	</group>
+	<detail>
+		<band height="95" splitType="Stretch">
+			<element kind="frame" uuid="20b8cf38-d939-4ce1-aa82-6e82d81c1783" x="0" y="0" width="554" height="60">
+				<element kind="frame" uuid="d1375eba-871b-4aff-9736-805a19ce6972" x="0" y="0" width="298" height="60">
+					<element kind="frame" uuid="27e48a16-fcac-409f-abfc-658ddf544951" x="0" y="0" width="298" height="20">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<element kind="textField" uuid="0a8cd723-d997-4b3f-96f1-29bf5cd40b0d" x="60" y="0" width="220" height="20" fontName="Roboto" vTextAlign="Middle">
+							<expression><![CDATA[$F{santri}.getNis()]]></expression>
+						</element>
+						<element kind="staticText" uuid="c25ef4ea-9735-47ff-83a3-b1367bf89ea0" x="0" y="0" width="50" height="20" fontName="Roboto" vTextAlign="Middle">
+							<text><![CDATA[NIS]]></text>
+						</element>
+						<element kind="staticText" uuid="8d0d9799-b017-4ef2-874e-9485a9f53e1e" x="50" y="0" width="10" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[:]]></text>
+						</element>
+					</element>
+					<element kind="frame" uuid="041e5f4f-7812-4115-a553-b71e0e1fb99c" x="0" y="20" width="298" height="20">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<element kind="textField" uuid="54e4d3d9-53ef-467b-8569-714b511f7065" x="60" y="0" width="220" height="20" fontName="Roboto" vTextAlign="Middle">
+							<expression><![CDATA[$F{santri}.getPerson().getName()]]></expression>
+						</element>
+						<element kind="staticText" uuid="89e3fd70-8d12-4db3-8d53-7b3681d30615" x="0" y="0" width="50" height="20" fontName="Roboto" vTextAlign="Middle">
+							<text><![CDATA[Nama]]></text>
+						</element>
+						<element kind="staticText" uuid="b751d9cf-6556-4d0a-a678-a5ddb93f4519" x="50" y="0" width="10" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[:]]></text>
+						</element>
+					</element>
+					<element kind="frame" uuid="42996d92-31e8-4683-9fd9-a34fdad0c5af" x="0" y="40" width="298" height="20">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<element kind="textField" uuid="42309dbf-83d9-4fe4-a817-b23b17e07238" x="60" y="0" width="220" height="20" fontName="Roboto" vTextAlign="Middle">
+							<expression><![CDATA[$F{santri}.getKelompokPengasuhan().getOrganization().getName()]]></expression>
+						</element>
+						<element kind="staticText" uuid="f4ab3f46-4bf9-4ffd-ac47-041480647b36" x="0" y="0" width="50" height="20" fontName="Roboto" vTextAlign="Middle">
+							<text><![CDATA[Kelompok]]></text>
+						</element>
+						<element kind="staticText" uuid="9aef58e7-0f45-4fb6-8415-a4bfd7da853c" x="50" y="0" width="10" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[:]]></text>
+						</element>
+					</element>
+				</element>
+				<element kind="frame" uuid="6ac8b40f-ab41-4825-b517-fb513a8da901" x="299" y="0" width="254" height="60">
+					<element kind="frame" uuid="1110ac87-ac7e-4555-b7b8-825f0df39578" x="0" y="0" width="253" height="20">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<element kind="staticText" uuid="c8401829-f3b3-43d7-8132-a81ef59a18fc" x="0" y="0" width="100" height="20" fontName="Roboto" hTextAlign="Left" vTextAlign="Middle">
+							<text><![CDATA[Tahun Pembelajaran]]></text>
+						</element>
+						<element kind="staticText" uuid="e611c99f-9269-4528-a587-507bc3746629" x="100" y="0" width="10" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[:]]></text>
+						</element>
+						<element kind="textField" uuid="f4ac33b1-72a1-4c32-9170-45478ee3e751" x="110" y="0" width="142" height="20" fontName="Roboto" hTextAlign="Left" vTextAlign="Middle">
+							<expression><![CDATA[$P{tahunPembelajaran}.getName()]]></expression>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</element>
+					</element>
+					<element kind="frame" uuid="1817d2eb-35a5-48ee-b771-93162578882b" x="0" y="20" width="253" height="20">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<element kind="staticText" uuid="7e49768c-4930-45f7-82b2-9bba552eccfa" x="0" y="0" width="100" height="20" fontName="Roboto" hTextAlign="Left" vTextAlign="Middle">
+							<text><![CDATA[Periode]]></text>
+						</element>
+						<element kind="staticText" uuid="2eac9c6b-87b0-4c85-b6ef-c1876eda10fa" x="100" y="0" width="10" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[:]]></text>
+						</element>
+						<element kind="textField" uuid="b3f63e11-e4d2-44f9-9180-6038a8d486fa" x="110" y="0" width="142" height="20" fontName="Roboto" hTextAlign="Left" vTextAlign="Middle">
+							<expression><![CDATA[$P{periodePembelajaran}.getName() + " - " +  $F{periode}.getName()]]></expression>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</element>
+					</element>
+					<element kind="frame" uuid="dab3110d-a79d-454c-b2b7-706f60c5aa8e" x="0" y="40" width="253" height="20">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<element kind="staticText" uuid="55bc9daa-13d4-4b9d-88b7-32219fda7ef0" x="0" y="0" width="100" height="20" fontName="Roboto" vTextAlign="Middle">
+							<text><![CDATA[Tahun ke]]></text>
+						</element>
+						<element kind="staticText" uuid="364fa2f2-e607-45cd-bcd2-21087ff6319d" x="100" y="0" width="10" height="20" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[:]]></text>
+						</element>
+						<element kind="textField" uuid="c4068ce4-dedf-4a97-910c-2dec9be55779" x="110" y="0" width="142" height="20" fontName="Roboto" hTextAlign="Left" vTextAlign="Middle">
+							<expression><![CDATA[$V{tahunBelajar}]]></expression>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</element>
+					</element>
+				</element>
+			</element>
+			<element kind="subreport" uuid="30af1acb-a93e-4db3-bcb4-58483aa3394f" x="0" y="75" width="555" height="20">
+				<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{listRangkumanPeriode})]]></dataSourceExpression>
+				<expression><![CDATA[$P{LaporanKepengasuhanSantri}]]></expression>
+				<parameter name="santriId">
+					<expression><![CDATA[$V{santriId}]]></expression>
+				</parameter>
+				<parameter name="masul">
+					<expression><![CDATA[$V{masul}]]></expression>
+				</parameter>
+				<parameter name="LaporanKepengasuhanSantriAktifitas">
+					<expression><![CDATA[$P{LaporanKepengasuhanSantriAktifitas}]]></expression>
+				</parameter>
+				<parameter name="catatanLaporan">
+					<expression><![CDATA[$F{catatanLaporan}]]></expression>
+				</parameter>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

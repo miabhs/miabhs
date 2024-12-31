@@ -1,0 +1,10 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+                xmlns:f="http://xmlns.jcp.org/jsf/core">        
+    <f:viewParam name="sn" value="#{dataView.filter.content.santri}" converter="SantriConverter" />
+    <f:viewParam name="kp" value="#{dataView.filter.content.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" />
+    <f:viewParam name="fd" value="#{dataView.filter.content.fromDate}" converter="LocalDateConverter" />
+    <f:viewParam name="td" value="#{dataView.filter.content.thruDate}" converter="LocalDateConverter" />
+    <f:viewParam name="kb" value="#{dataView.filter.content.jenisKitab}" converter="JenisKitabConverter" />
+
+</ui:composition>
+

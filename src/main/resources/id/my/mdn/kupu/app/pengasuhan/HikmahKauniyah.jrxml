@@ -1,0 +1,74 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="HikmahKauniyah" language="java" columnCount="1" pageWidth="539" pageHeight="595" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a81e32bf-6017-4342-9a04-2a9e19c7d06b">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="DefaultStyle" default="true" fontName="Roboto" fontSize="9.0"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="date" class="java.time.LocalDate"/>
+	<field name="content" class="java.lang.String"/>
+	<background splitType="Stretch"/>
+	<columnHeader height="30" splitType="Stretch">
+		<element kind="frame" uuid="45096e5b-9d98-45d2-b178-d2d277606e17" x="0" y="0" width="539" height="30">
+			<element kind="frame" uuid="5d428afa-7d8d-4b4b-8faf-2254f3fd5771" x="0" y="0" width="70" height="30">
+				<element kind="staticText" uuid="d216b8de-b0dc-49c9-a465-87c40f77040a" mode="Transparent" x="0" y="0" width="70" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Tanggal]]></text>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box padding="0">
+						<rightPen lineWidth="0.0"/>
+					</box>
+				</element>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<element kind="frame" uuid="eecf44cd-050f-4fcf-af63-68bb0aa4d18b" x="70" y="0" width="469" height="30">
+				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				<element kind="staticText" uuid="3d887e32-b7e7-4b86-b427-e2c7e2682601" x="0" y="0" width="469" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Hikmah Kauniyah]]></text>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<box padding="0">
+						<rightPen lineWidth="0.0"/>
+					</box>
+				</element>
+			</element>
+			<box>
+				<topPen lineWidth="0.75"/>
+				<leftPen lineWidth="0.75"/>
+				<bottomPen lineWidth="0.75"/>
+				<rightPen lineWidth="0.75"/>
+			</box>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="19">
+			<element kind="frame" uuid="c81991c9-e96d-44d1-991e-0edff292f135" x="0" y="0" width="539" height="19">
+				<borderSplitType>DrawBorders</borderSplitType>
+				<element kind="frame" uuid="658c9d57-a462-4fba-9b04-c8da031a66cb" stretchType="ContainerHeight" x="0" y="0" width="70" height="19" printRepeatedValues="false" printWhenDetailOverflows="true">
+					<borderSplitType>DrawBorders</borderSplitType>
+					<element kind="textField" uuid="e2a9935e-6744-4002-a983-c0e83b0958e9" x="0" y="0" width="70" height="19" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
+						<expression><![CDATA[$F{date}]]></expression>
+						<box topPadding="2" leftPadding="4" bottomPadding="2" rightPadding="4"/>
+					</element>
+					<box>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="d275ab93-acb7-4562-b496-722c8f6748a3" x="70" y="0" width="469" height="19">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+					<element kind="textField" uuid="b42b427a-6bd0-44e1-bca5-4893c4754cea" x="0" y="0" width="469" height="19" markup="html" fontName="Roboto" textAdjust="StretchHeight" vTextAlign="Middle">
+						<paragraph lineSpacing="1_1_2"/>
+						<expression><![CDATA[$F{content}]]></expression>
+						<box topPadding="2" leftPadding="4" bottomPadding="2" rightPadding="4"/>
+					</element>
+					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				</element>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

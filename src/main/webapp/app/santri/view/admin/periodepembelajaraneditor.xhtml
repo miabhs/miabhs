@@ -1,0 +1,75 @@
+<ui:composition template="/WEB-INF/templates/editor-page.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"                
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>       
+        <ui:param name="primaryTitle" value="Editor Periode Pembelajaran" />
+        <ui:param name="viewPage" value="#{periodePembelajaranEditorPage}" /> 
+
+        <ui:param name="notool" value="true" />
+        <ui:param name="nofilter" value="true"/>
+
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
+          
+
+        <f:viewParam name="entity" value="#{viewPage.entity}" converter="PeriodePembelajaranConverter" transient="true" />
+        <f:viewParam name="parent" value="#{viewPage.parent}" converter="PeriodePembelajaranConverter" transient="true" />
+        <f:viewParam name="tahunPembelajaran" value="#{viewPage.tahunPembelajaran}" converter="TahunPembelajaranConverter" transient="true" />
+
+        <f:viewAction action="#{viewPage.load}" />
+    </f:metadata>
+
+    <ui:define name="content-header" />
+
+    <ui:define name="form">
+
+        <div class="grid w-full p-3">
+
+            <div class="col-12 md:col-6">
+                <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
+                    <ui:define name="fields">
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="tahun" value="Tahun" />
+                            <p:inputText id="tahun" value="#{viewPage.entity.tahunPembelajaran.name}"
+                                         readonly="true" class="block w-full" />
+                        </div>
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="induk" value="Induk" />
+                            <p:inputText id="induk" value="#{viewPage.entity.parent ne null ? viewPage.entity.parent.name : null}"
+                                         readonly="true" class="block w-full" />
+                        </div>
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="nama" value="Nama" />
+                            <p:inputText id="nama" value="#{viewPage.entity.name}"
+                                         required="true" class="block w-full" />
+                            <p:message for="nama" />
+                        </div>
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="awal" value="Awal" />
+                            <p:datePicker id="awal" value="#{viewPage.entity.fromDate}" locale="#{theApp.locale}"
+                                          pattern="dd/MM/yyyy" showTime="false" monthNavigator="true" yearNavigator="true"
+                                          mindate="#{viewPage.entity.parent ne null ? viewPage.entity.parent.fromDate : viewPage.entity.tahunPembelajaran.fromDate}" 
+                                          maxdate="#{viewPage.entity.parent ne null ? viewPage.entity.parent.thruDate : viewPage.entity.tahunPembelajaran.thruDate}"
+                                          required="true" class="block w-full" />
+                            <p:message for="awal" />
+                        </div>
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="akhir" value="Akhir" />
+                            <p:datePicker id="akhir" value="#{viewPage.entity.thruDate}" locale="#{theApp.locale}"
+                                          pattern="dd/MM/yyyy" showTime="false" monthNavigator="true" yearNavigator="true"
+                                          mindate="#{viewPage.entity.parent ne null ? viewPage.entity.parent.fromDate : viewPage.entity.tahunPembelajaran.fromDate}" 
+                                          maxdate="#{viewPage.entity.parent ne null ? viewPage.entity.parent.thruDate : viewPage.entity.tahunPembelajaran.thruDate}"
+                                          required="true" class="block w-full" />
+                            <p:message for="akhir" />
+                        </div>
+
+                    </ui:define>
+                </ui:decorate>
+            </div>
+
+        </div>
+    </ui:define>
+
+</ui:composition>

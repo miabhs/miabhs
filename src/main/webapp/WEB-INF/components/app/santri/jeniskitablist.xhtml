@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core">
+
+    <ui:decorate template="/WEB-INF/components/core/base/table.xhtml" >
+        <ui:param name="dataView" value="#{dataView}" />
+        <ui:param name="selectListener" value="#{selectListener}" />
+        <ui:param name="height" value="#{height}" />
+
+        <ui:define name="columns">
+
+            <p:column headerText="Jenis">
+                <h:outputText value="#{data.jenisPengajaran.nama}" />
+            </p:column>
+
+            <p:column headerText="Kategori">
+                <h:outputText value="#{data.kategoriKitab.name}" />
+            </p:column>
+
+            <p:column headerText="Judul">
+                <h:outputText class="block text-xl font-bold white-space-normal" style="font-family: ScheherazadeNew; direction: rtl" value="#{data.judul}" />
+            </p:column>
+
+            <p:column headerText="Penulis">
+                <h:outputText value="#{data.penulis}" />
+            </p:column>
+
+            <p:column headerText="Jumlah halaman">
+                <h:outputText value="#{data.jumlahHalaman}" />
+            </p:column>
+
+            <p:column headerText="Deskripsi">
+                <h:outputText value="#{data.description}" />
+            </p:column>
+
+        </ui:define>
+
+    </ui:decorate>
+</ui:composition>

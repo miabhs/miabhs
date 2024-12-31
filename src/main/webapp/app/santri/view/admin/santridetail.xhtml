@@ -1,0 +1,103 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:f="jakarta.faces.core"
+                template="/WEB-INF/templates/child-page.xhtml" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html">
+
+    <f:metadata>
+        <ui:param name="viewPage" value="#{santriDetailPage}" />
+        <ui:param name="context" value="#{viewPage.santri}" />
+
+        <ui:param name="primaryTitle" value="Data Santri" />
+
+        <ui:param name="notool" value="true" />
+        <ui:param name="nofilter" value="true" />
+
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
+        
+
+        <ui:include src="/WEB-INF/components/core/party/meta/persondetail.xhtml" >
+            <ui:param name="viewPage" value="#{viewPage.partyDetailPage}" />
+        </ui:include>
+
+        <f:viewParam name="sts" value="#{viewPage.statusSantriList.selections}" converter="StatusSantriListConverter" />
+        <f:viewParam name="stp" value="#{viewPage.statusSantriList.pager.pageSize}" converter="LongConverter" />
+        <f:viewParam name="sto" value="#{viewPage.statusSantriList.pager.offset}" converter="LongConverter" />
+
+        <f:viewParam name="santri" value="#{viewPage.santri}" converter="SantriConverter"  />
+
+        <f:viewAction action="#{viewPage.load}" />
+    </f:metadata>
+
+    <ui:define name="crud-create" />
+    <ui:define name="crud-update" />
+    <ui:define name="crud-delete" />
+
+    <ui:define name="content">
+        <ui:decorate template="/WEB-INF/components/core/party/persondetail.xhtml">        
+            <ui:param name="editor" value="#{viewPage.partyDetailPage}" />
+
+            <ui:define name="personform-prefix">
+                <div class="field ui-fluid">
+                    <p:outputLabel for="nis" value="NIS" />
+                    <p:inputText id="nis" value="#{viewPage.santri.nis}" />                  
+                </div>
+                <div class="field ui-fluid">
+                    <p:outputLabel for="tahun-masuk" value="Tahun Masuk" />
+                    <p:selectOneMenu id="tahun-masuk" value="#{viewPage.santri.tahunMasuk}"
+                                     converter="TahunPembelajaranConverter" > 
+                        <f:selectItems value="#{tahunPembelajaranList2.fetchedItems}" var="item"
+                                       itemLabel="#{item.name}" itemValue="#{item}" />
+                    </p:selectOneMenu>                  
+                </div>
+            </ui:define>
+
+            <ui:define name="personform-suffix">                
+                <div class="field ui-fluid">
+                    <p:outputLabel for="bapak" value="Nama Bapak" />
+                    <p:inputText id="bapak" value="#{viewPage.santri.namaBapak}"
+                                 requiredMessage="Nama bapak harus diisi"/>
+                </div>
+
+                <div class="field ui-fluid">
+                    <p:outputLabel for="ibu" value="Nama Ibu" />
+                    <p:inputText id="ibu" value="#{viewPage.santri.namaIbu}"
+                                 requiredMessage="Nama ibu harus diisi"/>
+                </div>
+            </ui:define>
+
+            <ui:define name="role-form">
+                <div class="col-12 md:col-6">
+                    <h:form>
+                        <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
+                            <ui:param name="title" value="Status" />
+                            <ui:param name="dataView" value="#{viewPage.statusSantriList}" />
+
+                            <ui:define name="actions">
+                                <ui:include src="/WEB-INF/components/core/base/crud-create.xhtml" />
+                                <ui:include src="/WEB-INF/components/core/base/crud-update.xhtml" />
+                                <ui:include src="/WEB-INF/components/core/base/crud-delete.xhtml"/>
+                            </ui:define>
+
+                            <ui:define name="fields">
+                                <ui:include src="/WEB-INF/components/app/santri/statussantrilist.xhtml">
+                                    <ui:param name="selectListener" value="@form" />
+                                </ui:include>
+                            </ui:define>
+
+                            <ui:define name="footer">
+                                <ui:include src="/WEB-INF/components/core/base/pager.xhtml" >
+                                    <ui:param name="pager" value="#{viewPage.statusSantriList.pager}" />
+                                </ui:include>
+                            </ui:define>
+                        </ui:decorate>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:decorate>
+    </ui:define>
+
+    <ui:define name="pager" />
+
+</ui:composition>

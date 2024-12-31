@@ -1,0 +1,21 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+
+    <p:panelGrid columns="2">
+        <p:outputLabel for="kelompok" value="Kelompok" />
+        <p:selectOneMenu id="kelompok" value="#{dataView.filter.kelompokPengasuhan}" 
+                         converter="#{KelompokPengasuhanConverter}" var="i"
+                          converter="KelompokPengasuhanConverter" >                        
+            <f:selectItem itemLabel="Pilih Kelompok" itemDisabled="true" itemValue="#{null}" />
+            <f:selectItems value="#{kelompokPengasuhanAltList.fetchedItems}" var="item"
+                           itemLabel="#{item.party.name}" itemValue="#{item}" />
+            <p:column>
+                <h:outputText value="#{i.party.name}" />
+            </p:column>
+        </p:selectOneMenu>
+    </p:panelGrid>
+
+</ui:composition>
+

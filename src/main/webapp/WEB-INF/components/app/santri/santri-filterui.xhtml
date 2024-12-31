@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+
+    <div class="field ui-fluid">
+        <p:outputLabel for="name" value="Nama" />
+        <p:inputText id="name" value="#{filter.content.name}" />
+    </div>
+    <div class="field ui-fluid">
+        <p:outputLabel for="status" value="Status" />
+        <p:selectOneMenu id="status" var="i" value="#{filter.content.statusKesantrian}" converter="StatusKesantrianConverter" >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{statusKesantrianList.fetchedItems}" var="item"
+                           itemLabel="#{string[item.label]}" itemValue="#{item}" />
+            <p:column>
+                <h:outputText value="#{string[i.label]}" />
+            </p:column>
+        </p:selectOneMenu>
+    </div>
+
+</ui:composition>
+

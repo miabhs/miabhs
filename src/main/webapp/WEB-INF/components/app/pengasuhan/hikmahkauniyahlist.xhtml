@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+    <style>
+        td.longtext {
+            padding: .5rem!important;
+        }
+    </style>
+
+    <ui:decorate template="/WEB-INF/components/core/base/table.xhtml" >
+
+        <ui:define name="columns">
+
+            <p:column headerText="Tanggal" exportValue="date"
+                       class="text-center" resizable="true" width="10%"  >
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{data.date}">
+                            <f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:datePicker value="#{data.date}" showTime="false"
+                                      locale="#{IslamicDateConverter.locale}"
+                                      showOnFocus="false" showIcon="true" tabindex="0"
+                                      focusOnSelect="true" flex="true" maxlength="10" inputStyleClass="w-9"  >
+                            <p:ajax event="dateSelect" process="@this" />
+                        </p:datePicker>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column> 
+
+            <p:column width="15%" exportValue="santri">                            
+                <f:facet name="header">
+                    <div class="flex justify-content-center align-items-center gap-1">
+                        <h:outputText value="Santri" class="block" />
+                    </div>
+                </f:facet>
+                <p:cellEditor id="santri">
+                    <f:facet name="output">
+                        <h:outputText value="#{data.santri.person.name}" 
+                                      class="white-space-normal" />
+                    </f:facet>
+                    <f:facet name="input">
+                        <div class="ui-selectonemenu ui-widget ui-state-default ui-corner-all" 
+                             onmouseover="this.classList.add('ui-state-hover')"
+                             onmouseout="this.classList.remove('ui-state-hover')" >            
+                            <p:inputText value="#{data.santri != null ? data.santri.person.name : null}" 
+                                         class="ui-selectonemenu-label ui-corner-all "
+                                         style="cursor: pointer;"
+                                         readonly="true"
+                                         onclick="showChooser('#{idx}', 'santriChooser', '#{component.clientId}', '#{component.parent.parent.clientId},#{component.parent.parent.clientId.replace('santri', 'kelompok')}')" />
+                            <div class="ui-selectonemenu-trigger ui-state-default ui-corner-right">
+                                <span class="ui-icon ui-icon-triangle-1-s ui-c" 
+                                      onclick="showChooser('#{idx}', 'santriChooser', '#{component.parent.clientId}', '#{component.parent.parent.parent.clientId},#{component.parent.parent.parent.clientId.replace('santri', 'kelompok')}')" />
+                            </div>
+                        </div>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column width="10%" headerText="Kelompok" class="text-center" >  
+                <f:facet name="header">
+                    <div class="flex justify-content-center align-items-center gap-1">
+                        <h:outputText value="Kelompok" class="block" />                    
+                    </div>
+                </f:facet>
+                <h:outputText id="kelompok" class="white-space-normal text-sm" value="#{data.santri.kelompokPengasuhan ne null ? data.santri.kelompokPengasuhan.organization.name : ''}" />
+            </p:column>
+
+            <p:column exportValue="content" headerText="Hikmah Kauniyah" class="text-center longtext"  >
+                <div class="flex justify-content-between align-items-center">
+                    <div style="max-height: 100px;overflow-y: auto">
+                        <span>
+                            <h:outputText value="#{data.content}" escape="false"
+                                            class="white-space-normal text-left" />
+                        </span>
+                    </div>
+                    <div class="flex-grow-0">
+                        <p:commandButton icon="pi pi-pencil" class="ui-button-flat"
+                                         rendered="#{rolesChecker.isUserHasRoles(dataView.updatePermission)}"
+                                         actionListener="#{viewPage.onEditContent(data)}" />
+                    </div>
+                </div>
+            </p:column>
+
+        </ui:define>
+
+    </ui:decorate>
+
+    <style>
+        .ui-overlaypanel-content {
+            padding: 0!important
+        }
+    </style>
+
+    <p:overlayPanel widgetVar="santriChooser" my="left top" at="left bottom" styleClass="w-20rem" dynamic="true"  >
+        <p:dataTable id="santri-chooser"  var="data" value="#{viewPage.santriList.model}"
+                     selectionMode="single" selection="#{viewPage.choosenSantri}"
+                     scrollRows="10" scrollable="true" liveScroll="true" 
+                     scrollHeight="300">
+
+            <p:ajax event="rowSelect" process="@this" listener="#{viewPage.saveEditSantri}"
+                    oncomplete="PF('santriChooser').hide()" />
+
+            <p:column>
+                <f:facet name="header">
+                    <div class="flex flex-grow-1">
+                        <div class="ui-input-icon-left">
+                            <i class="pi pi-search" />
+                            <p:inputText id="name" value="#{viewPage.santriList.filter.content.name}" placeholder="Cari..." >
+                                <p:ajax event="keyup" listener="#{viewPage.santriList.filter.onFiltering}" update=":data-frm:santri-chooser" />
+                            </p:inputText>
+                        </div>
+                    </div>
+                </f:facet>
+                <h:outputText value="#{data ne null ? data.person.name : ' '}" />
+            </p:column>
+        </p:dataTable>
+    </p:overlayPanel>
+    
+    <p:remoteCommand name="setChooserContext" async="true"  actionListener="#{viewPage.initChooserContext}" />
+
+    <script type="text/javascript">
+        function showChooser(idx, widget, trigger, updates) {
+            setChooserContext([{name: 'idx', value: idx}, {name: 'widget', value: widget}, {name: 'trigger', value: trigger}, {name: 'updates', value: updates}]);
+        }
+    </script>
+
+</ui:composition>

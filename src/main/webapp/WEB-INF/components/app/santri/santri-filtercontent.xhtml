@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:h="jakarta.faces.html">    
+    
+    <div class="filter-container" >
+        <h:outputText value="Nama: #{filter.content.name}"
+            class="filter-content"
+            rendered="#{filter.content.name ne null and not empty filter.content.name}" />
+    </div>
+    <div class="filter-container" >
+        <h:outputText value="Status: #{string[filter.content.statusKesantrian.label]}"
+            class="filter-content"
+            rendered="#{filter.content.statusKesantrian ne null and not empty filter.content.statusKesantrian}" />
+    </div>
+
+</ui:composition>
+

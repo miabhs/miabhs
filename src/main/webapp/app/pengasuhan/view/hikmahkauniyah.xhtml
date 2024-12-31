@@ -1,0 +1,106 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/page.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="jakarta.tags.core"
+                xmlns:pe="http://primefaces.org/ui/extensions" >
+
+    <f:metadata>
+        <ui:param name="title" 
+                  value="#{string['pengasuhan.module.title']} - Hikmah Kauniyah" /> 
+        <ui:param name="viewPage" value="#{hikmahKauniyahPage}" /> 
+        <ui:param name="navigator" value="#{pengasuhanNavigator}" /> 
+        <ui:param name="dataView" value="#{viewPage.dataView}" />
+        <ui:param name="filter" value="#{viewPage.dataView.filter}" />
+        <ui:param name="pager" value="#{detailDataView.pager}" />
+        <ui:param name="contentId" value=":data-frm:#{dataView.name}" /> 
+
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
+
+        <f:viewParam name="nm" value="#{filter.content.name}" converter="QueryStringConverter" />        
+        <f:viewParam name="kp" value="#{filter.content.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" />
+        <f:viewParam name="fd" value="#{filter.content.fromDate}" converter="LocalDateConverter" />
+        <f:viewParam name="td" value="#{filter.content.thruDate}" converter="LocalDateConverter" />
+        <f:viewParam name="s" value="#{dataView.selections}" 
+                     converter="HikmahKauniyahListConverter" />
+
+    </f:metadata>
+
+    <ui:define name="styles">
+        <style>
+            .field {
+                margin-bottom: 0;
+            }
+        </style>
+    </ui:define> 
+
+    <ui:define name="module-menu">
+        <ui:include src="/WEB-INF/components/app/pengasuhan/module-menu.xhtml" />
+    </ui:define>
+
+    <ui:define name="filter">
+        <div class="flex gap-2 flex-nowrap align-items-center flex-shrink-0">
+            <p:outputLabel for="periode" value="Periode" />
+            <h:panelGroup layout="block" id="periode" class="flex ui-inputgroup">
+                <p:datePicker id="from-date" value="#{filter.content.fromDate}"
+                              showTime="false"  size="7"
+                              locale="#{IslamicDateConverter.locale}"
+                              placeholder="Awal" >
+                    <p:ajax listener="#{filter.onFiltering}" 
+                            oncomplete="refreshContent()" />
+                </p:datePicker>                
+                <h:panelGroup layout="block" styleClass="ui-inputgroup-addon" >
+                    <p:outputLabel value="s.d" />
+                </h:panelGroup>
+                <p:datePicker id="thru-date" value="#{filter.content.thruDate}"
+                              showTime="false" size="7"
+                              locale="#{IslamicDateConverter.locale}"
+                              placeholder="Akhir" >
+                    <p:ajax listener="#{filter.onFiltering}" 
+                            oncomplete="refreshContent()" />
+                </p:datePicker>
+            </h:panelGroup>
+        </div>
+        <p:divider layout="vertical" />
+        <div class="flex align-items-center gap-2">
+            <p:outputLabel for="santri" value="Santri" />
+            <p:selectOneMenu id="santri" value="#{filter.content.santri}"
+                             converter="SantriConverter" 
+                             filter="true" filterMatchMode="contains" 
+                             filterPlaceholder="Cari..."
+                             autoWidth="false"  >                        
+                <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+                <f:selectItems value="#{santriList2.santriGroup}" />
+                <p:ajax listener="#{filter.onFiltering}" oncomplete="refreshContent()" />
+            </p:selectOneMenu>
+        </div>
+        <p:divider layout="vertical" />
+        <div class="flex align-items-center gap-2">
+            <p:outputLabel value="Kelompok" />
+            <p:selectOneMenu value="#{filter.content.kelompokPengasuhan}" 
+                             converter="KelompokPengasuhanAltConverter" 
+                             filter="true" filterMatchMode="contains"
+                             filterPlaceholder="Cari..."
+                             autoWidth="false"  >                        
+                <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+                <f:selectItems value="#{kelompokPengasuhanAltList.fetchedItems}" 
+                               var="item" itemValue="#{item}" 
+                               itemLabel="#{item.organization.name}" />
+                <p:ajax listener="#{filter.onFiltering}" 
+                        oncomplete="refreshContent()" />
+            </p:selectOneMenu>
+        </div>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="data-frm">
+            <ui:decorate template="/WEB-INF/components/app/pengasuhan/hikmahkauniyahlist.xhtml">
+                <ui:param name="editable" value="true" />
+                <ui:param name="selectListener" value=":tools-frm" />
+            </ui:decorate>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

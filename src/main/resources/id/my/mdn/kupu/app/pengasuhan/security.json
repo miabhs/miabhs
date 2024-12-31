@@ -1,0 +1,96 @@
+{
+    "acls": [
+        {
+            "acl": {
+                "name": "view_module_kepengasuhan",
+                "description": "Masuk modul Kepengasuhan"
+            }
+        },
+        {
+            "acl": {
+                "name": "admin_module_kepengasuhan",
+                "description": "Administrator modul Kepengasuhan"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_aktifitas",
+                "description": "Lihat Aktifitas"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_aktifitas",
+                "description": "Tambah Aktifitas"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_aktifitas",
+                "description": "Ubah Aktifitas"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_aktifitas",
+                "description": "Hapus Aktifitas"
+            }
+        },
+        {
+            "acl": {
+                "name": "konfirmasi_aktifitas",
+                "description": "Konfirmasi Aktifitas"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_hikmah_kauniyah",
+                "description": "Lihat Hikmah Kauniyah"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_hikmah_kauniyah",
+                "description": "Tambah Hikmah Kauniyah"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_hikmah_kauniyah",
+                "description": "Ubah Hikmah Kauniyah"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_hikmah_kauniyah",
+                "description": "Hapus Hikmah Kauniyah"
+            }
+        },
+        {
+            "acl": {
+                "name": "read_bentuk_aktifitas",
+                "description": "Lihat Bentuk Aktifitas"
+            }
+        },
+        {
+            "acl": {
+                "name": "create_bentuk_aktifitas",
+                "description": "Tambah Bentuk Aktifitas"
+            }
+        },
+        {
+            "acl": {
+                "name": "update_bentuk_aktifitas",
+                "description": "Ubah Bentuk Aktifitas"
+            }
+        },
+        {
+            "acl": {
+                "name": "delete_bentuk_aktifitas",
+                "description": "Hapus Bentuk Aktifitas"
+            }
+        }
+    ],
+    "groups": [],
+    "users": []
+}

@@ -1,0 +1,33 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+
+    <p:menuitem value="Data Aktifitas" immediate="true"
+                actionListener="#{pengasuhanNavigator.open('DataAktifitas', '')}"
+                icon="pi pi-clock" />
+    <p:menuitem value="Hikmah Kauniyah" immediate="true"
+                actionListener="#{pengasuhanNavigator.open('HikmahKauniyah', '')}"
+                icon="pi pi-heart" />
+    <p:menuitem value="Laporan Kelompok" immediate="true"
+                actionListener="#{pengasuhanNavigator.open('LaporanKelompok', '')}"
+                icon="pi pi-users" />
+    <p:menuitem value="Laporan Kelompok Pekanan" immediate="true"
+                actionListener="#{pengasuhanNavigator.open('LaporanKelompokPekanan', '')}"
+                icon="pi pi-users" />
+    <p:menuitem value="Laporan Santri" immediate="true"
+                actionListener="#{pengasuhanNavigator.open('LaporanSantri', '')}"
+                icon="pi pi-user" />
+    <p:menuitem value="Laporan Kepengasuhan" immediate="true"
+                actionListener="#{pengasuhanNavigator.open('LaporanKepengasuhan', '')}"
+                icon="pi pi-user" />
+    <p:menuitem value="Editor Laporan Kepengasuhan" immediate="true"
+                actionListener="#{pengasuhanNavigator.open('LaporanKepengasuhanEditor', '')}"
+                icon="pi pi-user" />
+    <p:separator />
+    <p:menuitem value="Bentuk Aktifitas" immediate="true"
+                actionListener="#{pengasuhanNavigator.open('BentukAktifitas', '')}"
+                icon="pi pi-list" />
+
+</ui:composition>
+

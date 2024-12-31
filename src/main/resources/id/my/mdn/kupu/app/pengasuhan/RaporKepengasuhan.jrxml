@@ -1,0 +1,61 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="RaporKepengasuhan" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f52dbf07-42fa-4cc0-be2b-d103e7d4ff7e">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<scriptlet name="RaporKepengasuhanScriptlet" class="id.my.mdn.kupu.app.pengasuhan.reporting.RaporKepengasuhanScriptlet"/>
+	<parameter name="tahunPembelajaran" class="id.my.mdn.kupu.app.santri.entity.TahunPembelajaran"/>
+	<parameter name="periodePembelajaran" class="id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran"/>
+	<parameter name="LaporanKepengasuhan" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="LaporanKepengasuhanSantri" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="LaporanKepengasuhanSantriAktifitas" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="issued" class="java.lang.String"/>
+	<parameter name="issuedHijri" class="java.lang.String"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="person.name" class="java.lang.String"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="fromDate" class="java.time.LocalDateTime"/>
+	<field name="nis" class="java.lang.String"/>
+	<field name="kelompokPengasuhan.organization.name" class="java.lang.String"/>
+	<variable name="listLaporanKepengasuhan" resetType="None" calculation="System" class="java.util.List">
+		<expression><![CDATA[$V{listLaporanKepengasuhan}]]></expression>
+	</variable>
+	<group name="Santri" startNewPage="true">
+		<expression><![CDATA[$F{id}]]></expression>
+	</group>
+	<background splitType="Stretch"/>
+	<detail>
+		<band height="20">
+			<element kind="subreport" uuid="af4f2d43-031d-443a-8f26-3feac602ba51" x="0" y="0" width="555" height="20" printWhenGroupChanges="Santri">
+				<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($V{listLaporanKepengasuhan})]]></dataSourceExpression>
+				<expression><![CDATA[$P{LaporanKepengasuhan}]]></expression>
+				<parameter name="tahunPembelajaran">
+					<expression><![CDATA[$P{tahunPembelajaran}]]></expression>
+				</parameter>
+				<parameter name="periodePembelajaran">
+					<expression><![CDATA[$P{periodePembelajaran}]]></expression>
+				</parameter>
+				<parameter name="issued">
+					<expression><![CDATA[$P{issued}]]></expression>
+				</parameter>
+				<parameter name="issuedHijri">
+					<expression><![CDATA[$P{issuedHijri}]]></expression>
+				</parameter>
+				<parameter name="LaporanKepengasuhanSantri">
+					<expression><![CDATA[$P{LaporanKepengasuhanSantri}]]></expression>
+				</parameter>
+				<parameter name="LaporanKepengasuhanSantriAktifitas">
+					<expression><![CDATA[$P{LaporanKepengasuhanSantriAktifitas}]]></expression>
+				</parameter>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

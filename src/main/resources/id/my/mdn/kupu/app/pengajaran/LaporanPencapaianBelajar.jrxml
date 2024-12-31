@@ -1,0 +1,96 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="LaporanPencapaianBelajar" language="java" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b5115f84-e74d-4fe0-b82b-8c7b4de0a569">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="jenisPengajaran.nama" class="java.lang.String"/>
+	<field name="jenisKitab.judul" class="java.lang.String"/>
+	<field name="notes" class="java.lang.String"/>
+	<columnHeader height="24">
+		<element kind="frame" uuid="7571cbc0-46cf-45a0-af95-e1f856d9369f" mode="Opaque" x="0" y="0" width="555" height="24" backcolor="#E8E8E8">
+			<element kind="frame" uuid="03d8b456-0acf-4d9a-9123-0be6a2b9ce29" x="0" y="0" width="147" height="24">
+				<element kind="staticText" uuid="b8ee0bfb-ba57-46d4-a4ca-ab06e08e41db" x="0" y="0" width="147" height="24" fontName="Roboto Medium" fontSize="10.0" bold="false" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Jenis Pengajaran]]></text>
+					<box padding="4">
+						<rightPen lineWidth="0.0"/>
+					</box>
+				</element>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<element kind="frame" uuid="9285817c-11f9-4431-a800-dde84123154f" x="148" y="0" width="233" height="24">
+				<element kind="staticText" uuid="826551f1-06a8-4b34-af70-7f74a8a7f860" x="0" y="0" width="233" height="24" fontName="Roboto Medium" fontSize="10.0" bold="false" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Jenis Kitab]]></text>
+					<box padding="4">
+						<rightPen lineWidth="0.0"/>
+					</box>
+				</element>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<element kind="frame" uuid="6e98ef28-8235-48a9-8eb7-446d0aa7a1ca" x="381" y="0" width="174" height="24">
+				<element kind="staticText" uuid="ab5d7911-15d8-4b42-bc75-8888ed42abce" x="0" y="0" width="174" height="24" fontName="Roboto Medium" fontSize="10.0" bold="false" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Pencapaian]]></text>
+					<box padding="4"/>
+				</element>
+			</element>
+			<box>
+				<topPen lineWidth="0.75"/>
+				<leftPen lineWidth="0.75"/>
+				<bottomPen lineWidth="0.75"/>
+				<rightPen lineWidth="0.75"/>
+			</box>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<element kind="frame" uuid="710ee87c-d2b1-422e-965f-30059bca39b0" x="0" y="0" width="555" height="20">
+				<element kind="frame" uuid="0f6054cd-659c-430b-9bf1-299e15b81169" stretchType="ContainerHeight" x="0" y="0" width="147" height="20">
+					<element kind="textField" uuid="1baed24e-f063-483d-8934-3a45c99fcc7d" x="0" y="0" width="147" height="20" fontName="Roboto" fontSize="9.0" printRepeatedValues="false" hTextAlign="Left" vTextAlign="Middle">
+						<expression><![CDATA[$F{jenisPengajaran.nama}]]></expression>
+						<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="4">
+							<topPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<box>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="4bfc4372-8f92-4f94-b5fa-d43305925418" stretchType="ContainerHeight" x="148" y="0" width="233" height="20">
+					<element kind="staticText" uuid="a382fd0f-be3e-44c8-8a6f-76fe8f98c631" x="0" y="0" width="233" height="20" fontName="Scheherazade" fontSize="9.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+						<text><![CDATA[سيبسيبيب سيبسيب سيبسبس]]></text>
+						<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="4"/>
+					</element>
+					<box>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="7c74111f-6000-4eec-8dcb-7402a5920dfc" stretchType="ContainerHeight" x="381" y="0" width="174" height="20">
+					<element kind="textField" uuid="d2c7a7ba-b62c-4692-8cab-7482d23c4eb8" x="0" y="0" width="174" height="20" fontName="Roboto" fontSize="9.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
+						<expression><![CDATA[$F{notes}]]></expression>
+						<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="4"/>
+					</element>
+					<box>
+						<bottomPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

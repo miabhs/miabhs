@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/explorer.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <ui:param name="title" value="Tahun Pembelajaran" />
+        <ui:param name="viewPage" value="#{tahunPembelajaranPage}" />
+
+        <ui:param name="masterTitle" value="Tahun" />
+        <ui:param name="masterDataView" value="#{viewPage.tahunPembelajaranList}" />
+        <ui:param name="masterSelector" value="#{masterDataView.selector}" />
+        <ui:param name="masterPager" value="#{masterDataView.pager}" />
+        <ui:param name="masterFilter" value="#{masterDataView.filter}" />
+        <ui:param name="masterContentId" value=":master-frm:#{masterDataView.name}" />
+        <ui:param name="masterFilterName" value="filterTahunPembelajaran" />
+        <ui:param name="masterFilterUi" value="/WEB-INF/components/core/base/filterui.xhtml" />
+        <ui:param name="masterFilterListener" value="#{masterContentId} #{detailContentId} :master-pager-frm" />
+        <f:viewParam name="tp" value="#{masterPager.pageSize}" converter="LongConverter" />
+        <f:viewParam name="to" value="#{masterPager.offset}" converter="LongConverter" />
+
+        <ui:param name="detailTitle" value="Periode" />
+        <ui:param name="detailDataView" value="#{viewPage.periodePembelajaranTree}" />
+        <ui:param name="detailSelector" value="#{detailDataView.selector}" />
+        <ui:param name="detailFilter" value="#{detailDataView.filter}" />
+        <ui:param name="detailContentId" value=":detail-frm:#{detailDataView.name}" />
+        <ui:param name="detailFilterName" value="filterPeriodePembelajaran" />
+        <ui:param name="detailFilterUi" value="/WEB-INF/components/core/base/filterui.xhtml" />
+        <ui:param name="detailFilterListener" value="#{detailContentId} :detail-pager-frm" />
+        
+        <f:viewParam name="thp" value="#{masterDataView.selection}" converter="TahunPembelajaranConverter" />
+       
+        <f:viewParam name="ps" value="#{detailDataView.selections}" converter="PeriodePembelajaranListConverter" />
+        
+    </f:metadata>
+
+    <ui:define name="styles">
+        <style>
+            .ui-datatable-scrollable-header, .ui-treetable-scrollable-header {
+                display: none;
+            }
+            .ui-datatable-scrollable-body {
+                display: flex!important;
+                flex-direction: column!important;
+            }
+            .ui-datatable-scrollable-header-box table, .ui-datatable-scrollable-body table {
+                width: auto!important
+            }
+            .ui-treetable-scrollable-body {
+                padding-right: 0!important;
+            }
+            tr.ui-treetable-selectable-node td {
+                padding: .55rem 1rem!important;
+            }
+        </style>
+    </ui:define> 
+
+    <ui:define name="module-menu">
+        <ui:include src="/WEB-INF/components/app/santri/module-menu.xhtml" />
+    </ui:define>
+
+    <ui:define name="master">
+        <h:form id="master-frm" class="block flex-grow-1 align-self-stretch">
+            <ui:include src="/WEB-INF/components/app/santri/tahunpembelajaranlist.xhtml" >
+                <ui:param name="dataView" value="#{masterDataView}" />
+                <ui:param name="selectListener" value="#{detailContentId} :master-tools-frm :detail-tools-frm :detail-pager-frm :messages" />
+                <ui:param name="height" value="450" />
+            </ui:include>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="detail">
+        <h:form id="detail-frm" class="block flex-grow-1 align-self-stretch">
+            <ui:include src="/WEB-INF/components/app/santri/periodepembelajarantree.xhtml" >
+                <ui:param name="dataView" value="#{detailDataView}" />
+                <ui:param name="selectListener" value=":detail-tools-frm :messages" />
+            </ui:include>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="detail-pager" />
+</ui:composition>

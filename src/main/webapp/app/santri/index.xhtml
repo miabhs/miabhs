@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/templates/page.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <ui:param name="title" value="#{string['santri.module.title']}" />
+
+        <ui:param name="viewPage" value="#{santriPage}" />
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
+        <ui:param name="nofilter" value="true" />
+        
+        <ui:param name="dataView" value="#{viewPage.dataView}" />        
+        <ui:param name="pager" value="#{dataView.pager}" />
+        <ui:param name="filter" value="#{dataView.filter}" />
+        <ui:param name="contentId" value=":data-frm:#{dataView.name}" />
+        <f:viewParam name="s" value="#{dataView.selections}" converter="SantriListConverter" />
+        <ui:include src="/WEB-INF/components/app/santri/meta/santri-filterui.xhtml" />        
+        <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
+        
+    </f:metadata>
+
+    <ui:define name="module-menu">
+        <ui:include src="/WEB-INF/components/app/santri/module-menu.xhtml" />
+    </ui:define>
+
+    <ui:define name="overlay-filter">
+        <ui:include src="/WEB-INF/components/core/base/filter.xhtml" >
+            <ui:param name="name" value="filterSantri" />
+            <ui:param name="filterUi" value="/WEB-INF/components/app/santri/santri-filterui.xhtml" />
+        </ui:include>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="data-frm" class="flex-grow-1 flex align-items-stretch">
+            <ui:decorate template="/WEB-INF/components/app/santri/santrilist.xhtml">
+                <ui:param name="selectListener" value=":tools-frm" />
+
+                <ui:define name="context-menu">
+                    <p:menuitem icon="pi pi-user-plus" value="Ijinkan Login"                                
+                                rendered="#{rolesChecker.isUserHasRoles(dataView.createPermission)}"
+                                actionListener="#{viewPage.createLogin}" />
+                    <p:menuitem icon="pi pi-user-minus" value="Hapus Login"                               
+                                rendered="#{rolesChecker.isUserHasRoles(dataView.createPermission)}"
+                                actionListener="#{viewPage.removeLogin}" />
+                </ui:define>
+            </ui:decorate>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

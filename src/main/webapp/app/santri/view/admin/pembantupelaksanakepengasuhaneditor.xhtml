@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/editor-page.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <f:metadata>
+        <ui:param name="viewPage" value="#{pembantuPelaksanaKepengasuhanEditorPage}" />
+        
+        <ui:param name="primaryTitle" value="Editor Pembantu Pelaksana Kepengasuhan" /> 
+        <ui:param name="secondaryTitle" value="Baru" />
+
+        <ui:param name="notool" value="true" />
+        <ui:param name="nofilter" value="true"/>
+
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>       
+
+        <f:viewParam name="entity" value="#{viewPage.entity}" converter="PembantuPelaksanaKepengasuhanConverter" transient="true" />
+
+        <f:viewParam name="toRole" value="#{viewPage.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" />
+
+        <f:viewAction action="#{viewPage.load}" />
+    </f:metadata>
+
+    <ui:define name="content-header" />
+
+    <ui:define name="form">
+
+        <div class="grid w-full p-3">
+
+            <div class="col-12 md:col-6">
+                <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
+                    <ui:define name="fields">
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="fungsional" value="Fungsional" />
+                            <p:selectOneMenu id="fungsional" value="#{viewPage.entity.fungsiPelaksanaKepengasuhan}"
+                                             converter="FungsiPelaksanaKepengasuhanConverter"  
+                                             immediate="true" label="Fungsional" >                        
+                                <f:selectItem itemLabel="#{string['common.select.hint.label']}" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{fungsiPelaksanaKepengasuhanList.fetchedItems}" var="item"
+                                               itemLabel="#{item.name}" itemValue="#{item}" />
+                                <p:ajax update="@this" />
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="atribut" value="Atribut" />
+                            <p:selectOneMenu id="atribut" value="#{viewPage.entity.personalAttribute}"
+                                             converter="PersonalAttributeConverter" 
+                                             immediate="true" label="Atribut" >                        
+                                <f:selectItem itemLabel="#{string['common.select.hint.label']}" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{personalAttributeList.fetchedItems}" var="item"
+                                               itemLabel="#{item.name}" itemValue="#{item}" />
+                                <p:ajax update="@this" />
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="ustadz" value="Ustadz" />
+                            <p:outputPanel class="ui-inputgroup">
+                                <p:inputText id="ustadz" value="#{viewPage.entity.fromRole ne null ? viewPage.entity.fromRole.party.name : ''}" readonly="true" />
+                                <p:commandButton icon="pi pi-search" immediate="true" 
+                                                 action="#{viewPage.openUstadzChooser}" >
+                                </p:commandButton>
+                            </p:outputPanel>
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="from" value="Mulai" />
+                            <p:datePicker id="from" value="#{viewPage.entity.fromDate}"
+                                          pattern="dd/MM/yyyy" showTime="false" monthNavigator="true" yearNavigator="true"
+                                          required="true" >                                
+                                <p:ajax process="@this" />
+                            </p:datePicker>
+                        </div>
+
+                    </ui:define>
+                </ui:decorate>
+            </div>
+
+        </div>
+
+    </ui:define>
+
+</ui:composition>

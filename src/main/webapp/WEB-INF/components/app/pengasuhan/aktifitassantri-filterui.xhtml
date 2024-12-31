@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+
+    <div class="field ui-fluid">
+        <p:outputLabel for="name" value="Nama" />
+        <p:inputText id="name" value="#{filter.name}" />
+    </div>
+
+    <ui:remove>
+    <div class="field ui-fluid">
+        <p:outputLabel for="santri" value="Santri" />                    
+        <p:selectOneMenu id="santri" value="#{filter.santri}" var="i"
+                         filter="true" filterMatchMode="contains" 
+                         filterPlaceholder="Cari santri"
+                         class="w-full" converter="SantriConverter"  >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}"  />
+            <f:selectItems value="#{santriListAlt.fetchedItems}" var="item" 
+                           itemValue="#{item}" itemLabel="#{item.person.name}"  />
+
+            <p:column>
+                <h:outputText value="#{i.party.name}" />
+            </p:column>/>
+        </p:selectOneMenu>
+    </div>
+    </ui:remove>
+
+    <div class="field ui-fluid">
+        <p:outputLabel for="kelompok" value="Kelompok" />
+        <p:selectOneMenu id="kelompok" var="i" value="#{filter.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" >                        
+            <f:selectItem itemLabel="Pilih Kelompok" itemDisabled="true" itemValue="#{null}" />
+            <f:selectItems value="#{kelompokPengasuhanAltList.fetchedItems}" var="item"
+                           itemLabel="#{item.party.name}" itemValue="#{item}" />
+            <p:column>
+                <h:outputText value="#{i.party.name}" />
+            </p:column>/>
+        </p:selectOneMenu>
+    </div>
+
+    <div class="field ui-fluid">
+        <p:outputLabel for="from-date" value="Awal" />
+        <p:datePicker id="from-date" value="#{filter.fromDate}"
+                      maxdate="#{filter.thruDate}" 
+                      showTime="false" locale="#{IslamicDateConverter.locale}" >
+            <p:ajax update="thru-date" />
+        </p:datePicker>
+    </div>
+
+    <div class="field ui-fluid">
+        <p:outputLabel for="thru-date" value="Akhir" />
+        <p:datePicker id="thru-date" value="#{filter.thruDate}"
+                      mindate="#{filter.fromDate}"
+                      showTime="false" locale="#{IslamicDateConverter.locale}" >
+            <p:ajax update="from-date" />
+        </p:datePicker>
+    </div>
+
+    <div class="field ui-fluid">
+        <p:outputLabel for="status" value="Status" />
+        <p:selectOneMenu id="status" var="i" value="#{filter.status}" converter="StatusConverter" >                        
+            <f:selectItem itemLabel="Semua" itemDisabled="true" itemValue="#{null}" />
+            <f:selectItems value="#{statusList.fetchedItems}" var="item"
+                           itemLabel="#{item.name}" itemValue="#{item}" />
+            <p:column>
+                <h:outputText value="#{i.name}" />
+            </p:column>/>
+        </p:selectOneMenu>
+    </div>
+
+</ui:composition>
+

@@ -1,0 +1,28 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="CatatanKepengasuhan" language="java" columnCount="1" pageWidth="200" pageHeight="30" orientation="Landscape" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7f3f86de-d15b-4243-a99f-3ca74fdefe1c">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="JenisAktifitas" class="java.lang.String"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="catatan" class="java.lang.String"/>
+	<field name="jenis" class="java.lang.String"/>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<element kind="frame" uuid="d43bad9e-eec2-4f81-9104-d0fe0d81f7de" x="0" y="0" width="200" height="24" removeLineWhenBlank="true">
+				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<element kind="textField" uuid="1f93c396-aae4-4330-acb6-ae7ec8035bc8" x="0" y="0" width="192" height="16" removeLineWhenBlank="true" vTextAlign="Top">
+					<expression><![CDATA[$F{catatan}]]></expression>
+				</element>
+				<box padding="4"/>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

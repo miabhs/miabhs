@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/page.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <ui:param name="title" value="#{string['santri.asatidz.label']}" />
+
+        <ui:param name="viewPage" value="#{ustadzPage}" />
+        <ui:param name="dataView" value="#{ustadzPage.dataView}" />
+        
+        <ui:param name="pager" value="#{dataView.pager}" />
+        <ui:param name="filter" value="#{dataView.filter}" />
+        <ui:param name="contentId" value=":data-frm:#{dataView.name}" />
+        
+        <ui:param name="nofilter" value="true" />
+
+        <ui:include src="/WEB-INF/components/core/base/meta/filterui.xhtml" />
+
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
+        
+        <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
+        <f:viewParam name="s" value="#{dataView.selections}" converter="UstadzListConverter" />
+    </f:metadata>
+
+    <ui:define name="module-menu">
+        <ui:include src="/WEB-INF/components/app/santri/module-menu.xhtml" />
+    </ui:define>
+
+    <ui:define name="overlay-filter">
+        <ui:include src="/WEB-INF/components/core/base/filter.xhtml" >
+            <ui:param name="name" value="filterUstadz" />
+            <ui:param name="filterUi" value="/WEB-INF/components/core/base/filterui.xhtml" />
+            <ui:param name="filterContent" value="/WEB-INF/components/core/base/filtercontent.xhtml" />
+        </ui:include>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="data-frm">
+            <ui:include src="/WEB-INF/components/app/santri/ustadzlist.xhtml">
+                <ui:param name="selectListener" value=":tools-frm" />
+            </ui:include>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

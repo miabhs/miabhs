@@ -1,0 +1,160 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:c="jakarta.tags.core">
+
+    <style>
+        .MERAH, .TIDAK_HADIR {
+            color: var(--primary-50)!important;
+            background-color: var(--red-600)!important;
+            border-color: var(--red-600)!important;
+        }
+        .KUNING, .TERLAMBAT {
+            color: var(--primary-50)!important;
+            background-color: var(--yellow-600)!important;
+            border-color: var(--yellow-600)!important;
+        }
+        .HIJAU, .HADIR {
+            color: var(--primary-50)!important;
+            background-color: var(--green-600)!important;
+            border-color: var(--green-600)!important;
+        }
+        .MERAH_LABEL, .TIDAK_HADIR_LABEL {
+            color: var(--red-600)!important;
+        }
+        .KUNING_LABEL, .TERLAMBAT_LABEL {
+            color: var(--yellow-600)!important;
+        }
+        .HIJAU_LABEL, .HADIR_LABEL {
+            color: var(--green-600)!important;
+        }
+        .wajib {
+            color: #2196f3!important;
+        }
+        .tbl-akt > td, .tbl-akt > td > div.akt-panel, .tbl-tbh > td, .tbl-tbh > td > div.tbl-tbh-panel {
+            padding: 0!important;
+        }
+        .tbl-akt .ui-row-toggler {
+            margin-left: 1.3rem!important;
+        }
+        .tbh-act {
+
+        }
+    </style>
+
+    <ui:decorate template="/WEB-INF/components/core/base/table.xhtml" >
+        <ui:param name="dataView" value="#{dataView}" />
+        <ui:param name="selectListener" value="#{selectListener}" />
+        <ui:param name="height" value="460" />
+
+        <ui:define name="columns">
+            <p:column headerText="Nama">
+                <p:rowToggler />
+                <h:outputText value="#{data.nama}"  class="ml-2 font-bold font-italic text-lg" />
+            </p:column>
+
+            <p:column headerText="Hari" style="width: 5.7rem" class="text-center">
+                <h:outputText value="#{data.jumlahData}" class="font-bold text-lg" />
+            </p:column>
+
+            <p:column id="kuning" headerText="Kuning" style="width: 5.7rem" class="text-center">
+                <h:outputText value="#{data.jumlahKuning * 1}" class="font-bold text-lg KUNING_LABEL" />
+            </p:column>
+
+            <p:column id="merah" headerText="Merah" style="width: 5.7rem" class="text-center">
+                <h:outputText value="#{data.jumlahMerah * 1}" class="font-bold text-lg MERAH_LABEL" />
+            </p:column>
+
+            <p:column id="status" headerText="Stat" style="width: 8.1rem" class="text-center">
+                <p:commandButton icon="pi pi-blank" class="rounded-button #{viewPage.calculateRangeStatus(data)}" />
+            </p:column>
+
+            <p:rowExpansion class="tbl-akt">
+                <p:scrollPanel mode="native" class="akt-panel">
+                    <p:dataTable id="detail" value="#{viewPage.getAktifitasHarianList(data.santriId)}"
+                                 var="akt" stripedRows="true" showGridlines="true"
+                                 rowKey="#{akt.id}"
+                                 scrollable="true" scrollHeight="250"
+                                 emptyMessage="#{string['common.hint.emptyData']}" >
+
+                        <p:column>
+                            <f:facet name="header">
+                                <div class="ml-5" >
+                                    <h:outputText value="Hari, Tanggal" class="inline-block" />
+                                </div>
+                            </f:facet>
+                            <h:outputText value="#{akt.date}" class="ml-5" converter="IslamicDateConverter" />
+                        </p:column>
+
+                        <p:column headerText="Stat"  style="width: 1.8rem" class="text-center">
+                            <p:commandButton id="status" icon="pi pi-blank" class="rounded-button #{akt.status}"
+                                             style="height: 1.8rem; width: 1.8rem" immediate="true" />
+                        </p:column>
+
+                        <p:columns value="#{aktifitasBean.listBentukAktifitas}" var="bentukAktifitas"
+                                   headerText="#{bentukAktifitas.id}" columnIndexVar="idx"
+                                   styleClass="text-center #{bentukAktifitas.wajib ? 'text-primary' : 'text-secondary'}"
+                                   style="width: 1.8rem" >
+                            <p:commandButton action="#{viewPage.setupAktifitasPokok(akt.listAktifitas.get(idx))}"
+                                             update="@this @form:data-tbl:detail  @form:data-tbl" icon="pi pi-blank" immediate="true"
+                                             title="#{akt.listAktifitas.get(idx).label}"
+                                             class="rounded-button #{akt.listAktifitas.get(idx).kehadiran}" 
+                                             style="height: 1.8rem; width: 1.8rem" />
+                        </p:columns>
+
+                        <p:column headerText="NON BDAS" style="width: 1.8rem" styleClass="text-sm text-center text-secondary">
+                            <p:commandButton icon="pi pi-eye"
+                                             action="#{viewPage.onPrepareAddAktifitasTambahan(akt)}"
+                                             oncomplete="PF('tbhChooser').show('#{component.clientId}')"
+                                             immediate="true" update=":data-frm:tbh-tbl"
+                                             class="rounded-button text-sm #{akt.statusTambahan}"
+                                             style="height: 1.8rem; width: 1.8rem" />
+                        </p:column>
+
+                        <p:rowExpansion class="tbl-tbh">
+                        </p:rowExpansion>
+
+                    </p:dataTable>
+                </p:scrollPanel>
+            </p:rowExpansion>
+        </ui:define>
+    </ui:decorate>
+
+    <p:overlayPanel id="tbh-chooser" widgetVar="tbhChooser" dynamic="true" style="width: 33%" showCloseIcon="true" >
+        <p:scrollPanel mode="native">
+            <p:dataTable id="tbh-tbl" value="#{viewPage.aktifitasTambahanList}" var="tbh"
+                         showGridlines="true" 
+                         scrollable="true" scrollHeight="200"  class="noheader"  >
+                <f:facet name="header">
+                    <p:selectOneMenu id="akt-tbh-list" style="min-width: auto!important"
+                                     immediate="true" var="i" converter="BentukAktifitasTambahanConverter"  >                        
+                        <f:selectItem itemLabel="Pilih Aktifitas" itemDisabled="true" itemValue="#{null}" />
+                        <f:selectItems value="#{bentukAktifitasTambahanList.fetchedItems}" var="item"
+                                       itemLabel="#{item.bentuk}" itemValue="#{item}" />
+                        <p:column>
+                            <p:commandButton action="#{viewPage.addAktifitasTambahan}" immediate="true"
+                                             icon="pi pi-plus" class="ui-button-flat rounded-button"
+                                             update="akt-tbh-list :data-frm:tbh-tbl @this @form:data-tbl:detail  @form:data-tbl" >
+                                <f:param name="bentukAktifitasTambahanId" value="#{i}" />
+                            </p:commandButton>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{i.bentuk}" class="#{i.status}_LABEL" />
+                        </p:column>
+                    </p:selectOneMenu>
+
+                </f:facet>
+                <p:column>
+                    <div class="flex justify-content-between align-items-center">
+                        <h:outputText value="#{tbh.bentukAktifitas.bentuk}" class="#{tbh.bentukAktifitas.status}_LABEL" />
+                        <p:commandButton action="#{viewPage.deleteAktifitasTambahan(tbh)}" immediate="true"                                         
+                                         update="akt-tbh-list :data-frm:tbh-tbl @this @form:data-tbl:detail  @form:data-tbl"
+                                         icon="pi pi-trash" class="ui-button-flat rounded-button" />
+                    </div>
+                </p:column>
+            </p:dataTable>
+        </p:scrollPanel>
+    </p:overlayPanel>
+</ui:composition>

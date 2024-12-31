@@ -1,0 +1,147 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="RangkumanAktifitas" language="java" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="525" leftMargin="40" rightMargin="30" topMargin="30" bottomMargin="30" uuid="fb5265c6-9ea6-44dd-8bdd-4d4710939899">
+	<scriptlet name="LaporanAktifitasScriptlet" class="id.my.mdn.kupu.app.pengasuhan.reporting.LaporanAktifitasScriptlet"/>
+	<parameter name="fromDate" class="java.time.LocalDate"/>
+	<parameter name="thruDate" class="java.time.LocalDate"/>
+	<parameter name="status" class="java.lang.String"/>
+	<parameter name="Aktifitas" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="PembantuPelaksanaKepengasuhan" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="PembinaKepengasuhan" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="KakakKepengasuhan" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="AktifitasSantri" class="net.sf.jasperreports.engine.JasperReport"/>
+	<field name="id" class="java.lang.Long">
+		<description><![CDATA[id]]></description>
+	</field>
+	<field name="organization.name" class="java.lang.String"/>
+	<variable name="listPembantu" resetType="None" incrementType="Group" calculation="System" incrementGroup="KelompokPengasuhan" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
+		<expression><![CDATA[$V{listPembantu}]]></expression>
+	</variable>
+	<variable name="listPembina" resetType="None" incrementType="Group" calculation="System" incrementGroup="KelompokPengasuhan" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
+		<expression><![CDATA[$V{listPembina}]]></expression>
+	</variable>
+	<variable name="listKakak" resetType="None" incrementType="Group" calculation="System" incrementGroup="KelompokPengasuhan" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
+		<expression><![CDATA[$V{listKakak}]]></expression>
+	</variable>
+	<variable name="listAktifitas" resetType="None" incrementType="Group" calculation="System" incrementGroup="KelompokPengasuhan" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
+		<expression><![CDATA[$V{listAktifitas}]]></expression>
+	</variable>
+	<variable name="listSantri" resetType="None" incrementType="Group" calculation="System" incrementGroup="KelompokPengasuhan" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
+		<expression><![CDATA[$V{listSantri}]]></expression>
+	</variable>
+	<variable name="fromDate" resetType="None" calculation="System" class="java.lang.String">
+		<expression><![CDATA[$V{fromDate}]]></expression>
+	</variable>
+	<variable name="thruDate" resetType="None" calculation="System" class="java.lang.String">
+		<expression><![CDATA[$V{thruDate}]]></expression>
+	</variable>
+	<group name="KelompokPengasuhan" keepTogether="true" startNewPage="true" resetPageNumber="true" reprintHeaderOnEachPage="true">
+		<expression><![CDATA[$F{id}]]></expression>
+		<groupHeader>
+			<band height="62" splitType="Prevent">
+				<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+				<element kind="frame" uuid="d474d2c3-39d8-49d7-9608-04d4b18ce867" x="0" y="0" width="525" height="62" printInFirstWholeBand="true">
+					<element kind="staticText" uuid="0a2ee2f0-e9eb-4620-a5c1-285b7b139061" x="0" y="0" width="525" height="30" fontSize="18.0" bold="true" hTextAlign="Center" vTextAlign="Top">
+						<text><![CDATA[Laporan Aktifitas Santri]]></text>
+					</element>
+					<element kind="frame" uuid="e188249c-f71c-443c-973f-8a9c33c555b1" x="0" y="30" width="524" height="20">
+						<element kind="textField" uuid="bf16de99-359a-42e1-bdf1-9f65e7cb5a12" x="0" y="0" width="252" height="20" markup="html" fontName="Roboto" fontSize="12.0" bold="false" hTextAlign="Right" vTextAlign="Middle">
+							<expression><![CDATA[$V{fromDate}]]></expression>
+						</element>
+						<element kind="staticText" uuid="ef008b55-ad0e-417f-9f82-a62a0a0fb57a" x="253" y="0" width="18" height="20" fontName="Roboto" fontSize="12.0" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[-]]></text>
+						</element>
+						<element kind="textField" uuid="c0507056-0718-4424-9382-231fc52ebcd3" x="271" y="0" width="252" height="20" markup="html" fontName="Roboto" fontSize="12.0" bold="false" hTextAlign="Left" vTextAlign="Middle">
+							<expression><![CDATA[$V{thruDate}]]></expression>
+						</element>
+					</element>
+				</element>
+			</band>
+			<band height="30">
+				<element kind="frame" uuid="3778b469-4976-4dc0-9cae-deeb94dfc9f8" mode="Opaque" x="0" y="0" width="525" height="30" backcolor="#E6E6E6" printWhenGroupChanges="KelompokPengasuhan">
+					<element kind="textField" uuid="48e15a67-59e0-44b8-ab4c-3543d1b7dee4" mode="Transparent" x="0" y="1" width="525" height="28" printWhenGroupChanges="KelompokPengasuhan" fontSize="16.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<expression><![CDATA[$F{organization.name}]]></expression>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</element>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+			</band>
+			<band height="70">
+				<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
+				<element kind="frame" uuid="cb50bd2f-1aba-463c-a1c4-4ee39c1d09e6" stretchType="ElementGroupHeight" x="0" y="0" width="525" height="70">
+					<element kind="frame" uuid="76ac5ea5-598f-4dbd-ace4-dcf4f2a59a51" x="0" y="5" width="525" height="60">
+						<element kind="frame" uuid="fbb8a426-741c-43bd-8332-59cec2e6493b" x="0" y="0" width="525" height="20">
+							<element kind="staticText" uuid="e00ccf19-eb14-4c77-ad76-1b0ef82362dd" x="10" y="0" width="180" height="20" fontSize="11.0" bold="true" vTextAlign="Middle">
+								<text><![CDATA[Pembina Kepengasuhan]]></text>
+							</element>
+							<element kind="staticText" uuid="50a43ac2-7011-4a39-985f-0bd52b96ee3b" x="190" y="0" width="10" height="20" bold="true" vTextAlign="Middle">
+								<text><![CDATA[:]]></text>
+							</element>
+							<element kind="subreport" uuid="33800545-4b84-4acd-ab1a-4ea8ed0f7e22" positionType="Float" x="200" y="0" width="325" height="20">
+								<dataSourceExpression><![CDATA[$V{listPembina}]]></dataSourceExpression>
+								<expression><![CDATA[$P{PembinaKepengasuhan}]]></expression>
+							</element>
+						</element>
+						<element kind="frame" uuid="00ad0cac-c749-4bca-bd58-398012046b47" positionType="Float" x="0" y="20" width="525" height="20">
+							<element kind="staticText" uuid="a29ab464-5564-4403-a9b2-5f89fcfcdc4e" x="10" y="0" width="180" height="20" fontSize="11.0" bold="true" vTextAlign="Middle">
+								<text><![CDATA[Pembantu Pelaksana Kepengasuhan]]></text>
+							</element>
+							<element kind="staticText" uuid="50743a5c-fe87-4eda-ac17-7481766e1ea2" x="190" y="0" width="10" height="20" bold="true" vTextAlign="Middle">
+								<text><![CDATA[:]]></text>
+							</element>
+							<element kind="subreport" uuid="5ed00d6e-5e9f-4d79-8ebf-669a2cbf477c" positionType="Float" x="200" y="0" width="325" height="20">
+								<dataSourceExpression><![CDATA[$V{listPembantu}]]></dataSourceExpression>
+								<expression><![CDATA[$P{PembantuPelaksanaKepengasuhan}]]></expression>
+							</element>
+						</element>
+						<element kind="frame" uuid="f0fe3bcb-f944-4f69-a1c9-776e50fd424a" positionType="Float" x="0" y="40" width="525" height="20">
+							<element kind="staticText" uuid="8dd8252a-d7b7-43fb-8b84-429230edbcc4" positionType="Float" x="10" y="0" width="180" height="20" fontSize="11.0" bold="true" vTextAlign="Middle">
+								<text><![CDATA[Kakak Kepengasuhan]]></text>
+							</element>
+							<element kind="staticText" uuid="0ad42d9c-1398-4fc3-bb34-946da5b0c599" positionType="Float" x="190" y="0" width="10" height="20" bold="true" vTextAlign="Middle">
+								<text><![CDATA[:]]></text>
+							</element>
+							<element kind="subreport" uuid="b3a9b292-43fa-4b38-97b2-fb0c7ad32208" positionType="Float" x="199" y="0" width="326" height="20">
+								<dataSourceExpression><![CDATA[$V{listKakak}]]></dataSourceExpression>
+								<expression><![CDATA[$P{KakakKepengasuhan}]]></expression>
+							</element>
+						</element>
+					</element>
+					<box>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="80">
+				<element kind="subreport" uuid="b332bf37-4a85-4164-8d9c-e00c5167710f" x="0" y="30" width="525" height="24" removeLineWhenBlank="true">
+					<dataSourceExpression><![CDATA[$V{listAktifitas}]]></dataSourceExpression>
+					<expression><![CDATA[$P{Aktifitas}]]></expression>
+				</element>
+			</band>
+		</groupFooter>
+	</group>
+	<detail>
+		<band height="24">
+			<element kind="subreport" uuid="12ac662e-9238-4a69-92f3-dc0f3de15115" x="0" y="0" width="525" height="24">
+				<dataSourceExpression><![CDATA[$V{listSantri}]]></dataSourceExpression>
+				<expression><![CDATA[$P{AktifitasSantri}]]></expression>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				<parameter name="fromDate">
+					<expression><![CDATA[$P{fromDate}]]></expression>
+				</parameter>
+				<parameter name="thruDate">
+					<expression><![CDATA[$P{thruDate}]]></expression>
+				</parameter>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+    <ui:decorate template="/WEB-INF/components/core/base/table.xhtml" >
+        <ui:param name="dataView" value="#{dataView}" />
+        <ui:param name="selectListener" value="#{selectListener}" />
+        <ui:param name="height" value="200" />
+
+        <ui:define name="columns">
+
+            <p:column headerText="NIS">
+                <h:outputText value="#{data.nis}" />
+            </p:column>
+
+            <p:column headerText="#{string['common.name.label']}">
+                <h:outputText value="#{data.person.name}" class="white-space-normal" />
+            </p:column>
+
+            <p:column headerText="Bin">
+                <h:outputText value="#{data.namaBapak}" class="white-space-normal" />
+            </p:column>
+
+            <p:column headerText="#{string['santri.dob.label']}">
+                <h:outputText value="#{data.person.dateOfBirth}" >
+                    <f:convertDateTime type="localDate" pattern="dd/MM/yyyy" />
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="#{string['santri.gender.label']}">
+                <h:outputText value="#{data.person.gender.label}" />
+            </p:column>
+
+            <ui:insert name="detail">
+
+                <p:column headerText="#{string['santri.tahunMasuk.label']}">
+                    <h:outputText value="#{data.tahunMasuk.name}" />
+                </p:column>
+
+                <p:column headerText="#{string['santri.status.label']}">
+                    <h:outputText value="#{string[data.status.label]}" />
+                </p:column>
+
+                <p:column headerText="Kelompok">
+                    <h:outputText value="#{data.kelompokPengasuhan.organization.name}" />
+                </p:column>
+
+            </ui:insert>
+
+        </ui:define>
+
+    </ui:decorate>
+</ui:composition>

@@ -1,0 +1,117 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/reporting-explorer.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="jakarta.tags.core"
+                xmlns:pe="http://primefaces.org/ui/extensions" >
+
+    <f:metadata>
+        <ui:param name="title" value="#{string['pengasuhan.module.title']} - Laporan Santri" />
+        <ui:param name="viewPage" value="#{laporanSantriPage}" /> 
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>       
+
+        <ui:param name="masterDataView" value="#{viewPage.periodePembelajaranTree}"  />
+        <ui:param name="masterFilter" value="#{masterDataView.filter}" />
+        <ui:param name="masterFilterContent" value="#{masterFilter.content}" />
+        <ui:param name="masterFilterName" value="filterPeriode" />
+        <ui:param name="masterContentId" value=":master-frm:#{masterDataView.name}" />
+        <ui:param name="master_notitle" value="true" />
+
+        <ui:param name="detail_notitle" value="true" />
+        <ui:param name="detailContentId" value=":detail-frm" />
+
+        <f:viewParam name="thp" value="#{masterFilterContent.tahunPembelajaran}" converter="TahunPembelajaranConverter" />
+
+        <f:viewParam name="ps" value="#{masterDataView.selections}" converter="PeriodePembelajaranListConverter"  />
+
+        <f:viewParam name="kp" value="#{viewPage.kelompokPengasuhanList.selection}" converter="KelompokPengasuhanConverter" />
+
+        <f:viewParam name="sn" value="#{viewPage.santriList.selection}" converter="SantriConverter" />
+
+    </f:metadata>
+
+    <ui:define name="styles">
+        <style>
+            .ui-datatable-scrollable-header, .ui-treetable-scrollable-header {
+                display: none;
+            }
+            .ui-datatable-scrollable-body {
+                display: flex!important;
+                flex-direction: column!important;
+            }
+            .ui-datatable-scrollable-header-box table, .ui-datatable-scrollable-body table {
+                width: auto!important
+            }
+            .ui-treetable-scrollable-body {
+                padding-right: 0!important;
+            }
+            tr.ui-treetable-selectable-node td {
+                padding: .55rem 1rem!important;
+            }
+        </style>
+    </ui:define> 
+
+    <ui:define name="module-menu">
+        <ui:include src="/WEB-INF/components/app/pengasuhan/module-menu.xhtml" />
+    </ui:define>
+
+    <ui:define name="master-filter"> 
+        <div class="flex gap-2 flex-nowrap align-items-center flex-shrink-0">
+            <p:outputLabel for="tahun" value="Tahun" class="col-fixed" />
+            <p:selectOneMenu id="tahun" style="min-width: auto!important" immediate="true"
+                             value="#{masterFilterContent.tahunPembelajaran}"
+                             converter="TahunPembelajaranConverter" >                        
+                <f:selectItem itemLabel="Pilih Tahun" itemDisabled="true" itemValue="#{null}" />
+                <f:selectItems value="#{tahunPembelajaranSelectList.fetchedItems}" var="item"
+                               itemLabel="#{item.name}" itemValue="#{item}" />
+                <p:ajax process="@this" listener="#{viewPage.doFilter}" oncomplete="refreshContent()" />
+            </p:selectOneMenu>
+        </div>
+    </ui:define>
+
+    <ui:define name="master">
+        <h:form id="master-frm">
+            <ui:include src="/WEB-INF/components/app/santri/periodepembelajarantree.xhtml" >
+                <ui:param name="dataView" value="#{masterDataView}" />
+                <ui:param name="selectListener" value=":messages" />
+            </ui:include>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="master-pager"/>
+
+    <ui:define name="report-params">
+
+        <div class="flex align-items-center gap-2">
+            <p:outputLabel value="Kelompok" />
+            <p:selectOneMenu value="#{viewPage.kelompokPengasuhanList.selection}" 
+                             converter="KelompokPengasuhanConverter" 
+                             filter="true" filterMatchMode="contains"
+                             autoWidth="false" >                        
+                <f:selectItem itemLabel="Semua" itemValue="#{null}"  />
+                <f:selectItems value="#{viewPage.kelompokPengasuhanList.fetchedItems}" 
+                               var="item" itemValue="#{item}" 
+                               itemLabel="#{item.organization.name}" />
+                <p:ajax process="@this" oncomplete="updateAddress()" />
+            </p:selectOneMenu>
+        </div>
+
+        <div class="flex align-items-center gap-2">
+            <p:outputLabel for="santri" value="Santri" />
+            <p:selectOneMenu id="santri" value="#{viewPage.santriList.selection}"
+                             converter="SantriConverter" 
+                             filter="true" filterMatchMode="contains" 
+                             autoWidth="false"  >                        
+                <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+                <f:selectItems value="#{viewPage.santriList.fetchedItems}" 
+                               var="item" itemValue="#{item}" 
+                               itemLabel="#{item.person.name}" />
+                <p:ajax process="@this" oncomplete="updateAddress()" />
+            </p:selectOneMenu>
+        </div>
+        
+    </ui:define>
+
+</ui:composition>

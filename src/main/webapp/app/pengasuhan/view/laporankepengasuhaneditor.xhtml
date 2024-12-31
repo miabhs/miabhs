@@ -1,0 +1,381 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/templates/explorer.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:pe="http://primefaces.org/ui/extensions" 
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <f:metadata>
+        <ui:param name="title" value="Editor Laporan Kepengasuhan" />     
+        <ui:param name="viewPage" value="#{laporanKepengasuhanEditorPage}" /> 
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>    
+
+        <ui:param name="masterTitle" value="Periode" />
+        <ui:param name="masterDataView" value="#{viewPage.periodePembelajaranTree}" />
+        <ui:param name="master_notitle" value="true" />
+        <ui:param name="masterFilter" value="#{masterDataView.filter}" />
+        <ui:param name="masterFilterContent" value="#{masterFilter.content}" />
+        <ui:param name="masterFilterName" value="filterMaster" />
+        <ui:param name="masterContentId" value=":master-frm:#{masterDataView.name}" />
+
+        <ui:param name="detailDataView" value="#{viewPage.santriList}" />
+        <ui:param name="detailPager" value="#{detailDataView.pager}" />
+        <ui:param name="detailFilterName" value="filterDetail" />
+        <ui:param name="detailContentId" value=":detail-frm" />
+        <f:viewParam name="dPSz" value="#{detailPager.pageSize}" converter="LongConverter" />
+        <f:viewParam name="dOff" value="#{detailPager.offset}" converter="LongConverter" />
+        <ui:param name="detail_notitle" value="true" />
+
+        <f:viewParam name="thp" value="#{masterFilterContent.tahunPembelajaran}" converter="TahunPembelajaranConverter"   />
+        <f:viewParam name="kp" value="#{viewPage.kelompokPengasuhanList.selection}" converter="KelompokPengasuhanConverter" />
+        <f:viewParam name="sn" value="#{viewPage.santri}" converter="SantriConverter" />
+
+        <f:viewParam name="ps" value="#{masterDataView.selection}" converter="PeriodePembelajaranConverter" />
+
+    </f:metadata>
+
+    <ui:define name="styles">
+        <style>
+            .ui-datatable-scrollable-header, .ui-treetable-scrollable-header {
+                display: none;
+            }
+            .ui-datatable-scrollable-body {
+                display: flex!important;
+                flex-direction: column!important;
+            }
+            .ui-datatable-scrollable-header-box table, .ui-datatable-scrollable-body table {
+                width: auto!important
+            }
+            .ui-treetable-scrollable-body {
+                padding-right: 0!important;
+            }
+            tr.ui-treetable-selectable-node td {
+                padding: .55rem 1rem!important;
+            }
+        </style>
+    </ui:define> 
+
+    <ui:define name="module-menu">
+        <ui:include src="/WEB-INF/components/app/pengasuhan/module-menu.xhtml" />
+    </ui:define>
+
+    <ui:define name="master-tools" />
+
+    <ui:define name="master-pager" />
+
+    <ui:define name="master-filter"> 
+        <div class="flex gap-2 flex-nowrap align-items-center flex-shrink-0">
+            <p:outputLabel for="tahun" value="Tahun" class="col-fixed" />
+            <p:selectOneMenu id="tahun" style="min-width: auto!important" immediate="true"
+                             value="#{masterFilterContent.tahunPembelajaran}"
+                             converter="TahunPembelajaranConverter" >                        
+                <f:selectItem itemLabel="Pilih Tahun" itemDisabled="true" itemValue="#{null}" />
+                <f:selectItems value="#{tahunPembelajaranSelectList.fetchedItems}" var="item"
+                               itemLabel="#{item.name}" itemValue="#{item}" />
+                <p:ajax process="@this" listener="#{viewPage.doFilter}" oncomplete="refreshContent()" />
+            </p:selectOneMenu>
+        </div>
+    </ui:define>
+
+    <ui:define name="master">
+        <style>
+            #master-frm .ui-widget-header {
+                display: none!important;
+            }
+            .ui-treetable-scrollable-body {
+                padding-right: 0!important;
+                overflow: unset!important;
+            }
+            .ui-treetable-scrollable-body table {
+                width: 100%!important;
+            }
+            #detail-frm .ui-datatable-scrollable-header {
+                display: none!important;
+            }
+        </style>
+        <h:form id="master-frm">
+            <ui:decorate template="/WEB-INF/components/app/santri/periodepembelajarantree.xhtml" >
+                <ui:param name="dataView" value="#{masterDataView}" />
+                <ui:param name="selectListener" value=":detail-tools-frm #{detailContentId} :detail-pager-frm :messages" />
+            </ui:decorate>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="master-pager"/>
+
+    <ui:define name="detail-tools" />
+
+    <ui:define name="detail-filter">
+        <div class="flex gap-2 flex-wrap">
+            <div class="flex align-items-center gap-2">
+                <p:outputLabel for="kks" value="Kelompok" />
+                <p:selectOneMenu id="kks" value="#{viewPage.kelompokPengasuhanList.selection}" 
+                                 converter="KelompokPengasuhanConverter"
+                                 filter="true" filterMatchMode="contains"
+                                 filterPlaceholder="Cari..."
+                                 autoWidth="false"  >                        
+                    <f:selectItem itemLabel="Semua" noSelectionOption="true" itemValue="#{null}" />
+                    <f:selectItems value="#{viewPage.kelompokPengasuhanList.fetchedItems}" 
+                                   var="item" itemValue="#{item}" 
+                                   itemLabel="#{item.organization.name}" />
+                    <p:ajax process="@this" oncomplete="updateAddress()" />
+                </p:selectOneMenu>
+            </div>
+
+            <div class="flex align-items-center gap-2">
+                <p:outputLabel for="santri" value="Santri" />
+                <div class="ui-selectonemenu ui-widget ui-state-default ui-corner-all" 
+                     onmouseover="this.classList.add('ui-state-hover')"
+                     onmouseout="this.classList.remove('ui-state-hover')" >            
+                    <p:inputText id="santri" value="#{viewPage.santri != null ? viewPage.santri.person.name : 'Semua'}" 
+                                 class="ui-selectonemenu-label ui-corner-all "
+                                 style="cursor: pointer;"
+                                 readonly="true" onclick="updateSantriSelector();PF('santriSelector').show('#{component.clientId}')" />
+                    <div class="ui-selectonemenu-trigger ui-state-default ui-corner-right">
+                        <span class="ui-icon ui-icon-triangle-1-s ui-c" onclick="updateSantriSelector();PF('santriSelector').show('detail-filter-frm:santri')"></span>
+                    </div>
+                </div>
+                <style>
+                    .ui-overlaypanel-content {
+                        padding: 0!important
+                    }
+                </style>
+                <p:overlayPanel widgetVar="santriSelector" my="left top" at="left bottom" styleClass="w-20rem" dynamic=""  >
+                    <p:dataTable id="santri-selector"  var="data" value="#{lazySantriList.model}" lazy="true"
+                                 selectionMode="single" selection="#{viewPage.santri}"
+                                 scrollRows="10" scrollable="true" liveScroll="true" 
+                                 scrollHeight="300">
+
+                        <p:ajax event="rowSelect" immediate="true"
+                                oncomplete="PF('santriSelector').hide();updateAddress()" 
+                                update="@parent:santri" />
+
+                        <p:column>
+                            <f:facet name="header">
+                                <div class="flex flex-grow-1">
+                                    <div class="ui-input-icon-left">
+                                        <i class="pi pi-search" />
+                                        <p:inputText id="name" value="#{lazySantriList.filter.content.name}" placeholder="Cari..." >
+                                            <p:ajax event="keyup" listener="#{lazySantriList.filter.onFiltering}" 
+                                                    update=":detail-filter-frm:santri-selector" />
+                                        </p:inputText>
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <h:outputText value="#{data ne null ? data.person.name : 'Semua'}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:overlayPanel>
+                <p:remoteCommand name="updateSantriSelector" immediate="true" update="santri-selector" /> 
+            </div>
+            <div class="formgroup-inline">
+                <p:commandButton id="btn-refresh" icon="pi pi-refresh" immediate="true"
+                                 class="ui-button-flat"
+                                 oncomplete="refreshDetail()"  />
+            </div>
+        </div>
+    </ui:define>
+
+    <ui:define name="detail">
+        <style>
+            .ui-datatable-tablewrapper table {
+                width: 100%!important;
+            }
+            .HIJAU {
+                background-color: green
+            }
+            .KUNING {
+                background-color: yellow
+            }
+            .MERAH {
+                background-color: red
+            }
+            .ui-datatable-scrollable-theadclone {
+                display: none!important
+            }
+            #detail-frm .ui-panel-content {
+                padding:0!important;
+                border: none!important
+            }
+            .noheader {
+                padding: 0!important;
+                border: none!important;
+            }
+            .noheader > .ui-datatable-tablewrapper > table > thead {
+                display: none!important;
+            }
+            .noheader > .ui-datatable-tablewrapper > table > tbody > tr > td {
+                border: none!important;
+            }
+        </style>
+        <h:form id="detail-frm">
+            
+            <ui:decorate template="/WEB-INF/components/core/base/table-direct.xhtml" >
+                <ui:param name="dataView" value="#{detailDataView}" />
+                <ui:param name="selectListener" value=":detail-tools-frm" />
+                <ui:param name="styleClass" value="w-full border-0" />
+
+                <ui:define name="columns">        
+                    <p:dataTable value="#{viewPage.getRangkumanPeriode(data)}" var="laporan" size="small" class="noheader col-12 border-0 surface-border"  >
+                        <p:column>
+                            <div class="grid grid-nogutter border-round border-2 border-300 surface-200 p-4 gap-2 ">
+                                <div class="col-12 grid grid-nogutter border-0" >
+                                    <div class="col-6 grid grid-nogutter flex-column gap-4 p-2" >
+                                        <div class="col-12 grid">
+                                            <p:outputLabel value="NIS" class="col-3" />
+                                            <p:inputText value="#{laporan.santri.nis}" readonly="true" class="col-9" />
+                                        </div>
+                                        <div class="col-12 grid grid">
+                                            <p:outputLabel value="Nama" class="col-3" />
+                                            <p:inputText value="#{laporan.santri.person.name}" readonly="true" class="col-9" />
+                                        </div>
+                                        <div class="col-12 grid grid">
+                                            <p:outputLabel value="Kelompok" class="col-3" />
+                                            <p:inputText value="#{laporan.santri.kelompokPengasuhan.organization.name}" readonly="true" class="col-9" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6 grid grid-nogutter flex-column gap-4 p-2" >
+                                        <div class="col-12 grid">
+                                            <p:outputLabel value="Tahun Pembelajaran" class="col-5" />
+                                            <p:inputText value="#{masterFilter.content.tahunPembelajaran.name}" readonly="true" class="col-7" />
+                                        </div>
+                                        <div class="col-12 grid">
+                                            <p:outputLabel value="Periode" class="col-5" />
+                                            <p:inputText value="#{masterDataView.selection.name} - #{laporan.periode.name}" readonly="true" class="col-7" />
+                                        </div>
+                                        <div class="col-12 grid grid">
+                                            <p:outputLabel value="Tahun Ke" class="col-5" />
+                                            <p:inputText value="#{data.calculateTahunBelajar(masterFilter.content.tahunPembelajaran)}" readonly="true" class="col-7" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p:dataTable value="#{laporan.listRangkumanPeriode}" var="rangkuman" size="small" class="col-12 border-1 border-300"  >
+
+                                    <p:column headerText="Periode" styleClass="text-center">
+                                        <h:outputText value="#{rangkuman.periode.name}" />
+                                    </p:column>
+                                    <p:column headerText="BDAS" styleClass="text-center">
+                                        <div class="#{rangkuman.nilaiBDAS} w-full h-2rem" />
+                                    </p:column>
+                                    <p:column headerText="Catatan" styleClass="text-center">
+                                        <ui:repeat value="#{rangkuman.listCatatanBDAS}" var="catatan" >
+                                            <div class="text-left">
+                                                <h:outputText value="#{catatan.bentukAktifitas.bentuk} (#{catatan.count})" 
+                                                              escape="false" class="block text-sm white-space-normal line-height-2 mb-2" />
+                                            </div>
+                                        </ui:repeat>
+                                    </p:column>
+                                    <p:column headerText="Non BDAS" styleClass="text-center">
+                                        <div class="#{rangkuman.nilaiNonBDAS} w-full h-2rem" />
+                                    </p:column>
+                                    <p:column headerText="Catatan" styleClass="text-center">
+                                        <ui:repeat value="#{rangkuman.listCatatanNonBDAS}" var="catatan" >
+                                            <div class="text-left">
+                                                <h:outputText value="#{catatan.bentukAktifitas.bentuk} (#{catatan.count})" 
+                                                              escape="false" class="block text-sm white-space-normal line-height-2 mb-2" />
+                                            </div>
+                                        </ui:repeat>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <p:panel header="Catatan Pengasuh"  id="pengasuh"  styleClass="col-12 border-1 border-300" >
+                                    <f:facet name="actions">
+                                        <h:panelGroup layout="block" styleClass="flex gap-4">
+                                            <p:commandLink action="#{viewPage.editorCatatanPengasuh.load(laporan)}"
+                                                           immediate="true" rendered="#{not viewPage.editorCatatanPengasuh.isEditing(laporan)}"
+                                                           update="@parent:@parent:pengasuh :messages"
+                                                           class="ui-button-flat flex-grow-0" >
+                                                <h:outputText styleClass="ui-icon pi pi-pencil" />
+                                            </p:commandLink>
+                                            <p:commandLink actionListener="#{viewPage.editorCatatanPengasuh.save}"
+                                                           rendered="#{viewPage.editorCatatanPengasuh.isEditing(laporan)}"
+                                                           update="@parent:@parent:pengasuh :messages"
+                                                           class="ui-button-flat flex-grow-0" >
+                                                <h:outputText styleClass="ui-icon pi pi-check" />
+                                            </p:commandLink>
+                                            <p:commandLink action="#{viewPage.editorCatatanPengasuh.cancel()}"
+                                                           immediate="true" rendered="#{viewPage.editorCatatanPengasuh.isEditing(laporan)}"
+                                                           update="@parent:@parent:pengasuh :messages"
+                                                           class="ui-button-flat flex-grow-0" >
+                                                <h:outputText styleClass="ui-icon pi pi-undo" />
+                                            </p:commandLink>
+                                        </h:panelGroup>
+                                    </f:facet>
+                                    <p:textEditor value="#{viewPage.getCatatanPengasuh(laporan)}" readonly="true" toolbarVisible="false" 
+                                                  rendered="#{not viewPage.editorCatatanPengasuh.isEditing(laporan)}" class="border-0" />
+                                    <p:textEditor id="editor-pengasuh" value="#{viewPage.editorCatatanPengasuh.buffer}"                                    
+                                                  rendered="#{viewPage.editorCatatanPengasuh.isEditing(laporan)}" 
+                                                  height="100px">
+                                        <f:facet name="toolbar">
+                                            <span class="ql-formats flex-grow-1">
+                                                <button class="ql-bold"/>
+                                                <button class="ql-italic"/>
+                                                <button class="ql-underline"/>
+                                                <select class="ql-color" />
+                                            </span>
+                                        </f:facet>
+                                    </p:textEditor>
+                                </p:panel>
+
+                                <p:panel header="Catatan Mas'ul Kepengasuhan"  id="masul" class="col-12 border-1 border-300">
+                                    <f:facet name="actions">
+                                        <h:panelGroup layout="block" styleClass="flex gap-4">
+                                            <p:commandLink action="#{viewPage.editorCatatanMasul.load(laporan)}"
+                                                           immediate="true" rendered="#{not viewPage.editorCatatanMasul.isEditing(laporan)}"
+                                                           update="@parent:@parent:masul :messages"
+                                                           class="ui-button-flat flex-grow-0" >
+                                                <h:outputText styleClass="ui-icon pi pi-pencil" />
+                                            </p:commandLink>
+                                            <p:commandLink actionListener="#{viewPage.editorCatatanMasul.save}"
+                                                           rendered="#{viewPage.editorCatatanMasul.isEditing(laporan)}"
+                                                           update="@parent:@parent:masul :messages"
+                                                           class="ui-button-flat flex-grow-0" >
+                                                <h:outputText styleClass="ui-icon pi pi-check" />
+                                            </p:commandLink>
+                                            <p:commandLink action="#{viewPage.editorCatatanMasul.cancel()}"
+                                                           immediate="true" rendered="#{viewPage.editorCatatanMasul.isEditing(laporan)}"
+                                                           update="@parent:@parent:masul :messages"
+                                                           class="ui-button-flat flex-grow-0" >
+                                                <h:outputText styleClass="ui-icon pi pi-undo" />
+                                            </p:commandLink>
+                                        </h:panelGroup>
+                                    </f:facet>
+                                    <p:textEditor value="#{viewPage.getCatatanMasul(laporan)}" readonly="true" toolbarVisible="false" 
+                                                  rendered="#{not viewPage.editorCatatanMasul.isEditing(laporan)}" class="border-0" />
+                                    <p:textEditor id="editor-masul" value="#{viewPage.editorCatatanMasul.buffer}"
+                                                  valueChangeListener="#{viewPage.editorCatatanMasul.onChange}"                                          
+                                                  rendered="#{viewPage.editorCatatanMasul.isEditing(laporan)}"
+                                                  height="100px">
+                                        <f:facet name="toolbar">
+                                            <div class="flex justify-content-start align-items-center gap-4">
+                                                <span class="ql-formats flex-grow-1">
+                                                    <button class="ql-bold"/>
+                                                    <button class="ql-italic"/>
+                                                    <button class="ql-underline"/>
+                                                    <select class="ql-color" />
+                                                </span>
+                                            </div>
+                                        </f:facet>
+                                    </p:textEditor>
+                                </p:panel>
+                            </div>         
+                        </p:column>
+                    </p:dataTable>
+                </ui:define>
+
+            </ui:decorate>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="detail-pager">
+        <ui:include src="/WEB-INF/components/core/base/pager.xhtml" >
+            <ui:param name="pager" value="#{detailPager}" />
+            <ui:param name="pagerListener" value="#{detailContentId}" />
+        </ui:include>
+    </ui:define>
+
+</ui:composition>

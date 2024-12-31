@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">    
+
+    <div class="filter-container" >
+        <h:outputText value="Nama: #{filter.name}"
+                      class="filter-content"
+                      rendered="#{filter.name ne null and not empty filter.name}" />
+    </div>
+    <div class="filter-container" >
+        <h:outputText value="Kelompok: #{filter.kelompokPengasuhan.party.name}"
+                      class="filter-content"
+                      rendered="#{filter.kelompokPengasuhan ne null}" />
+    </div>
+    <div class="filter-container" >
+        <h:panelGroup class="filter-content" rendered="#{filter.fromDate ne null}">
+            <h:outputText value="Awal: " /> 
+            <h:outputText value="#{filter.fromDate}" converter="IslamicDateConverter" />
+        </h:panelGroup>
+    </div>
+    <div class="filter-container" >
+        <h:panelGroup class="filter-content" rendered="#{filter.thruDate ne null}">
+            <h:outputText value="Akhir: " />
+            <h:outputText value="#{filter.thruDate}" converter="IslamicDateConverter" />
+        </h:panelGroup>
+    </div>
+    <div class="filter-container" >
+        <h:outputText value="Status: #{filter.status}"
+                      class="filter-content"
+                      rendered="#{filter.status ne null and not empty filter.status}" />
+    </div>
+
+</ui:composition>
+

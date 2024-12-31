@@ -1,0 +1,8 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" 
+                xmlns:f="jakarta.faces.core">             
+    
+    <f:viewParam name="nm" value="#{filter.content.name}" converter="QueryStringConverter" />
+    <f:viewParam name="sk" value="#{filter.content.statusKesantrian}" converter="StatusKesantrianConverter" />
+
+</ui:composition>
+

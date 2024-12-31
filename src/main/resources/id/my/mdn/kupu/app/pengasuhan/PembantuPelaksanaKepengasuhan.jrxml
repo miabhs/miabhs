@@ -1,0 +1,28 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="PembantuPelaksanaKepengasuhan" language="java" pageWidth="325" pageHeight="842" columnWidth="325" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ed07f957-5d63-4e38-9abe-8d9dbd15dd0e">
+	<field name="ustadz.person.name" class="java.lang.String"/>
+	<field name="personalAttribute.name" class="java.lang.String"/>
+	<field name="personalAttribute" class="id.my.mdn.kupu.app.santri.entity.PersonalAttribute"/>
+	<field name="fungsiPelaksanaKepengasuhan.name" class="java.lang.String"/>
+	<detail>
+		<band height="21">
+			<element kind="frame" uuid="044af932-3bd5-4043-a55f-0576d15efba2" x="0" y="0" width="325" height="21">
+				<element kind="textField" uuid="ca248391-e9b5-4003-8f5b-1851bab8d726" stretchType="ElementGroupHeight" x="0" y="0" width="325" height="21" markup="html" fontSize="11.0" textAdjust="StretchHeight" removeLineWhenBlank="true" bold="false" hTextAlign="Left" vTextAlign="Middle">
+					<expression><![CDATA[($F{personalAttribute} != null ? $F{personalAttribute.name} + " " + $F{ustadz.person.name} : $F{ustadz.person.name}) + " (<i>" + $F{fungsiPelaksanaKepengasuhan.name} + "</i>)"]]></expression>
+					<box padding="0">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+				</element>
+				<box topPadding="0" bottomPadding="0">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

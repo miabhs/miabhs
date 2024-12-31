@@ -1,0 +1,11 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" 
+                xmlns:f="jakarta.faces.core">        
+    
+    <f:viewParam name="nm" value="#{dataView.filter.name}" converter="QueryStringConverter" />
+    <f:viewParam name="kp" value="#{dataView.filter.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" />
+    <f:viewParam name="fd" value="#{dataView.filter.fromDate}" converter="LocalDateConverter" />
+    <f:viewParam name="td" value="#{dataView.filter.thruDate}" converter="LocalDateConverter" />
+    <f:viewParam name="st" value="#{dataView.filter.status}" converter="StatusConverter" />
+
+</ui:composition>
+

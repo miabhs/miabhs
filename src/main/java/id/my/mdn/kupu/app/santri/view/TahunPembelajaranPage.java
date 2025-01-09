@@ -15,7 +15,6 @@ import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
-import static id.my.mdn.kupu.core.base.view.widget.Selector.CHECKBOX;
 import static id.my.mdn.kupu.core.base.view.widget.Selector.SINGLE;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
@@ -60,7 +59,7 @@ public class TahunPembelajaranPage extends Page implements Serializable {
     }
 
     private void periodePembelajaranTreeInit() {
-        periodePembelajaranTree.setSelectionMode(() -> CHECKBOX);
+        periodePembelajaranTree.setSelectionMode(() -> SINGLE);
         periodePembelajaranTree.setName("periodePembelajaranTbl");
         periodePembelajaranTree.setSelectionsLabel("ps");
     }
@@ -81,7 +80,7 @@ public class TahunPembelajaranPage extends Page implements Serializable {
     public void openTahunPembelajaranEditor() {
         gotoChild(TahunPembelajaranEditorPage.class)
                 .addParam("entity")
-                .withValues(tahunPembelajaranList.getSelector().getSelection())
+                .withValues(tahunPembelajaranList.getSelected())
                 .open();
     }
 
@@ -94,9 +93,9 @@ public class TahunPembelajaranPage extends Page implements Serializable {
     public void openPeriodePembelajaranCreator() {
         gotoChild(PeriodePembelajaranEditorPage.class)
                 .addParam("tahunPembelajaran")
-                .withValues(tahunPembelajaranList.getSelector().getSelection())
+                .withValues(tahunPembelajaranList.getSelected())
                 .addParam("parent")
-                .withValues(periodePembelajaranTree.getSelector().getSelection())
+                .withValues(periodePembelajaranTree.getSelected())
                 .open();
     }
 
@@ -104,14 +103,13 @@ public class TahunPembelajaranPage extends Page implements Serializable {
     public void openPeriodePembelajaranEditor() {
         gotoChild(PeriodePembelajaranEditorPage.class)
                 .addParam("entity")
-                .withValues(periodePembelajaranTree.getSelector().getSelection())
+                .withValues(periodePembelajaranTree.getSelected())
                 .open();
     }
 
     @Deleter(of = "periodePembelajaranTree")
     public void openPeriodePembelajaranDeleter() {
-        periodePembelajaranTree.delete(
-                periodePembelajaranTree.getSelector().getSelection());
+        periodePembelajaranTree.delete(periodePembelajaranTree.getSelected());
     }
 
     public TahunPembelajaranList getTahunPembelajaranList() {

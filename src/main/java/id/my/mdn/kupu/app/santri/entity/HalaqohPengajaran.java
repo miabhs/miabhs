@@ -4,6 +4,8 @@
  */
 package id.my.mdn.kupu.app.santri.entity;
 
+import jakarta.persistence.ColumnResult;
+import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,9 +14,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SqlResultSetMapping;
+import jakarta.persistence.SqlResultSetMappings;
 import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -24,34 +29,59 @@ import java.util.List;
  */
 @Entity
 @Table(name = "MIABH_HALAQOHPENGAJARAN")
+@SqlResultSetMappings({
+    @SqlResultSetMapping(
+            name = "AbsensiHalaqoh",
+            classes = {
+                @ConstructorResult(
+                        targetClass = AbsensiHalaqoh.class,
+                        columns = {
+
+                            @ColumnResult(name = "SANTRIID", type = Long.class),
+                            
+                            @ColumnResult(name = "FIRSTNAME", type = String.class),
+                            @ColumnResult(name = "LASTNAME", type = String.class),
+                            
+                            @ColumnResult(name = "NIS", type = String.class),
+                            @ColumnResult(name = "TAHUNMASUK_NAME", type = String.class),
+                            @ColumnResult(name = "TAHUNMASUK_FROMDATE", type = LocalDate.class),
+
+                            @ColumnResult(name = "BDAS_MERAH", type = Integer.class),
+                            @ColumnResult(name = "BDAS_KUNING", type = Integer.class),
+                            @ColumnResult(name = "NON_BDAS_MERAH", type = Integer.class),
+                            @ColumnResult(name = "NON_BDAS_KUNING", type = Integer.class)}
+                )
+            }
+    )
+})
 public class HalaqohPengajaran implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @TableGenerator(name = "Miabh_HalaqohPengajaran", table = "KEYGEN", allocationSize = 1)
     @GeneratedValue(generator = "Miabh_HalaqohPengajaran", strategy = GenerationType.TABLE)
     private Long id;
-    
+
     private String nama;
-    
+
     @ManyToOne
     private Ustadz pengampu;
-    
+
     @ManyToOne
     private JenisKitab jenisKitab;
-    
+
     private LocalTime beginAt;
-    
+
     private LocalTime endedAt;
-    
+
     @ManyToMany
     @JoinTable(name = "MIABH_HALAQOHSANTRI",
             joinColumns = @JoinColumn(name = "HALAQOHPENGAJARAN_ID"),
-            inverseJoinColumns = @JoinColumn(name = "MIABH_ID")
+            inverseJoinColumns = @JoinColumn(name = "SANTRI_ID")
     )
     private List<Santri> listSantri;
-    
+
     public Long getId() {
         return id;
     }
@@ -132,5 +162,5 @@ public class HalaqohPengajaran implements Serializable {
     public String toString() {
         return String.valueOf(id);
     }
-    
+
 }

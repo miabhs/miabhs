@@ -4,6 +4,9 @@
  */
 package id.my.mdn.kupu.app.santri.view;
 
+import id.my.mdn.kupu.app.santri.dao.HalaqohSantriFacade;
+import id.my.mdn.kupu.app.santri.entity.HalaqohPengajaran;
+import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.app.santri.view.admin.HalaqohPengajaranEditorPage;
 import id.my.mdn.kupu.app.santri.view.widget.HalaqohPengajaranList;
 import id.my.mdn.kupu.core.base.view.Page;
@@ -26,6 +29,8 @@ import java.io.Serializable;
 @ViewScoped
 public class HalaqohPengajaranPage extends Page implements Serializable {
 
+    private static final int CHOOSE_SANTRI = 1;
+
     @Inject @Bookmarked
     private HalaqohPengajaranList dataView;
 
@@ -33,7 +38,7 @@ public class HalaqohPengajaranPage extends Page implements Serializable {
     @Override
     protected void init() {
         super.init();
-        dataView.setSelectionMode(() -> Selector.MULTIPLE);
+        dataView.setSelectionMode(() -> Selector.SINGLE);
     }
     
     @Creator(of = "dataView")
@@ -53,6 +58,33 @@ public class HalaqohPengajaranPage extends Page implements Serializable {
     @Deleter(of = "dataView")
     public void deleter() {
         dataView.delete(dataView.getSelections());
+    }
+    
+    public void addSantri(HalaqohPengajaran halaqoh) {
+        dataView.setSelection(halaqoh);
+        gotoChild(SantriSingleChooserPage.class)
+                .addParam("what")
+                .withValues(CHOOSE_SANTRI)
+                .open();
+    }
+    
+    @Inject
+    private HalaqohSantriFacade halaqohSantriFacade;
+
+    @Override
+    public Page onReturns(int what, Object returns) {
+        if (returns != null) {
+            switch (what) {
+                case CHOOSE_SANTRI: 
+                    Santri santri = (Santri) returns;
+                    dataView.getSelected().getListSantri().add(santri);
+                    dataView.edit(dataView.getSelected());
+                    break;
+                default:
+                    break;
+            }
+        }
+        return super.onReturns(what, returns);
     }
 
     public HalaqohPengajaranList getDataView() {

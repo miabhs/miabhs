@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * @author Arief Prihasanto <aphasan57 at gmail.com>
  */
-   @Named(value = "halaqohPengajaranList")
+@Named(value = "halaqohPengajaranList")
 @Dependent
 public class HalaqohPengajaranList extends AbstractMutablePagedValueList<HalaqohPengajaran> {
     

@@ -9,6 +9,8 @@
         <ui:param name="title" value="Halaqoh Pembelajaran" />
 
         <ui:param name="viewPage" value="#{halaqohPengajaranPage}" />
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
+        
         <ui:param name="dataView" value="#{halaqohPengajaranPage.dataView}" />
 
         <ui:param name="pager" value="#{dataView.pager}" />
@@ -23,29 +25,42 @@
 
         <ui:include src="/WEB-INF/components/core/base/meta/filterui.xhtml" />
 
-        <f:viewParam name="s" value="#{dataView.selections}" converter="HalaqohPengajaranListConverter" />
+        <f:viewParam name="s" value="#{dataView.selection}" converter="HalaqohPengajaranConverter" />
 
     </f:metadata> 
+
+    <ui:define name="styles">
+        <style>
+            .ui-datatable-scrollable-header, .ui-treetable-scrollable-header {
+                display: none;
+            }
+            .ui-datatable-scrollable-body {
+                display: flex!important;
+                flex-direction: column!important;
+            }
+            .ui-datatable-scrollable-header-box table, .ui-datatable-scrollable-body table {
+                width: auto!important
+            }
+            .ui-treetable-scrollable-body {
+                padding-right: 0!important;
+            }
+            tr.ui-treetable-selectable-node td {
+                padding: .55rem 1rem!important;
+            }
+        </style>
+    </ui:define> 
 
     <ui:define name="module-menu">
         <ui:include src="/WEB-INF/components/app/santri/module-menu.xhtml" />
     </ui:define>
 
-    <ui:remove>
-        <ui:define name="overlay-filter">
-            <ui:include src="/WEB-INF/components/core/base/filter.xhtml" >
-                <ui:param name="filterUi" value="/WEB-INF/components/core/base/filterui.xhtml" />
-            </ui:include>
-        </ui:define>
-    </ui:remove>
-
     <ui:define name="content">
         <h:form id="data-frm" class="flex-grow-1 flex align-items-stretch">            
             <p:dataView id="dataTbl" var="halaqoh" value="#{dataView.fetchedItems}"
-                        gridIcon="pi pi-th-large" listIcon="pi pi-bars"  
+                        gridIcon="pi pi-th-large" listIcon="pi pi-bars" 
                         layout="grid" gridRowStyleClass="lg:col-6 xl:col-4" flex="true">
                 <p:dataViewGridItem>
-                    <p:card>
+                    <p:card class="border-1">
                         <f:facet name="title">
                             <div class="flex flex-column">
                                 <h:outputText class="block" value="#{halaqoh.nama}" />
@@ -54,16 +69,23 @@
                                 <h:outputText class="block text-sm" value="#{halaqoh.beginAt} - #{halaqoh.endedAt}" />
                             </div>
                         </f:facet>
-                        <p:dataTable value="#{halaqoh.listSantri}" var="data"
-                                     scrollable="true"
-                                     resizableColumns="true"  showGridlines="true"
-                                     emptyMessage="#{string['common.hint.emptyData']}">
+                        <p:panel header="Santri" class="p-0">
+                            <f:facet name="actions">
+                                <p:commandButton icon="pi pi-plus" immediate="true" 
+                                                 action="#{halaqohPengajaranPage.addSantri(halaqoh)}"                                                 
+                                                 oncomplete="updateAddress()"  />
+                            </f:facet>
+                            <p:dataTable value="#{halaqoh.listSantri}" var="data"
+                                         scrollable="true"
+                                         resizableColumns="true"  showGridlines="true"
+                                         emptyMessage="#{string['common.hint.emptyData']}">
 
-                            <p:column headerText="Santri">
-                                <h:outputText value="#{data.person.name}" />
-                            </p:column>
+                                <p:column>
+                                    <h:outputText value="#{data.person.name}" />
+                                </p:column>
 
-                        </p:dataTable>
+                            </p:dataTable>
+                        </p:panel>
                     </p:card>
                 </p:dataViewGridItem>
             </p:dataView>

@@ -11,11 +11,11 @@ import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
-import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
 
 /**
  *
@@ -44,7 +44,7 @@ public class JenisKitabPage extends Page implements Serializable {
     public void editor() {
         gotoChild(JenisKitabEditorPage.class)
                 .addParam("entity")
-                .withValues(dataView.getSelection())
+                .withValues(dataView.getSelected())
                 .open();
     }
     

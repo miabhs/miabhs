@@ -4,16 +4,13 @@
  */
 package id.my.mdn.kupu.app.santri;
 
-import id.my.mdn.kupu.app.santri.dao.FungsiPelaksanaKepengasuhanFacade;
-import id.my.mdn.kupu.app.santri.dao.PersonalAttributeFacade;
-import id.my.mdn.kupu.app.santri.entity.FungsiPelaksanaKepengasuhan;
-import id.my.mdn.kupu.app.santri.entity.KakakKepengasuhan;
+import id.my.mdn.kupu.app.santri.entity.HalaqohPengajaran;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Musyrif;
-import id.my.mdn.kupu.app.santri.entity.PembantuPelaksanaKepengasuhan;
-import id.my.mdn.kupu.app.santri.entity.PembinaKepengasuhan;
+import id.my.mdn.kupu.app.santri.entity.PelaksanaKepengasuhan;
+import id.my.mdn.kupu.app.santri.entity.Pengajaran;
+import id.my.mdn.kupu.app.santri.entity.PengampuHalaqoh;
 import id.my.mdn.kupu.app.santri.entity.Pengasuhan;
-import id.my.mdn.kupu.app.santri.entity.PersonalAttribute;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.app.santri.entity.Ustadz;
 import id.my.mdn.kupu.core.base.AbstractModule;
@@ -56,12 +53,6 @@ public class SantriModule extends AbstractModule {
     
     @Inject
     private ElectronicAddressPurposeTypeFacade electronicAddressPurposeTypeFacade;
-    
-    @Inject
-    private FungsiPelaksanaKepengasuhanFacade fungsiPelaksanaKepengasuhanFacade;
-    
-    @Inject
-    private PersonalAttributeFacade personalAttributeFacade;
 
     @Override
     protected String getLabel() {
@@ -78,8 +69,6 @@ public class SantriModule extends AbstractModule {
         loadRoleTypes();
         loadIdentityTypes();
         loadContactMechanismPurposeType();
-        loadFungsiPengasuhan();
-        loadPersonalAttribute();
     }
 
     private void loadRoleTypes() {
@@ -87,10 +76,11 @@ public class SantriModule extends AbstractModule {
         partyRoleTypeFacade.createTypeIfNotExist(Musyrif.class, "Musyrif");
         partyRoleTypeFacade.createTypeIfNotExist(Ustadz.class, "Ustadz");
         partyRoleTypeFacade.createTypeIfNotExist(KelompokPengasuhan.class, "Kelompok Pengasuhan");
+        partyRoleTypeFacade.createTypeIfNotExist(HalaqohPengajaran.class, "Halaqoh Pengajaran");
         partyRelationshipTypeFacade.createTypeIfNotExist(Pengasuhan.class, "Pengasuhan");
-        partyRelationshipTypeFacade.createTypeIfNotExist(KakakKepengasuhan.class, "Kakak Kepengasuhan");
-        partyRelationshipTypeFacade.createTypeIfNotExist(PembinaKepengasuhan.class, "Pembina Kepengasuhan");
-        partyRelationshipTypeFacade.createTypeIfNotExist(PembantuPelaksanaKepengasuhan.class, "Pembantu Pelaksana Kepengasuhan");
+        partyRelationshipTypeFacade.createTypeIfNotExist(Pengajaran.class, "Pengajaran");
+        partyRelationshipTypeFacade.createTypeIfNotExist(PelaksanaKepengasuhan.class, "Pelaksana Kepengasuhan");
+        partyRelationshipTypeFacade.createTypeIfNotExist(PengampuHalaqoh.class, "Pengampu Halaqoh");
     }
     
     private void loadIdentityTypes() {
@@ -136,31 +126,5 @@ public class SantriModule extends AbstractModule {
         electronicAddressPurposeType.setRemarks("Alamat Email");
         electronicAddressPurposeTypeFacade.createIfNotExist(electronicAddressPurposeType, "remarks");
     }
-    
-    private void loadFungsiPengasuhan() {
-        FungsiPelaksanaKepengasuhan masul = new FungsiPelaksanaKepengasuhan();
-        
-        masul.setName("Mas'ul Kepengasuhan");
-        fungsiPelaksanaKepengasuhanFacade.createIfNotExist(masul, "name");
-        
-        FungsiPelaksanaKepengasuhan pembantu = new FungsiPelaksanaKepengasuhan();
-        
-        pembantu.setName("Ustadz Pembantu Pelaksana Kepengasuhan");
-        fungsiPelaksanaKepengasuhanFacade.createIfNotExist(pembantu, "name");
-        
-    }  
-    
-    private void loadPersonalAttribute() {
-        PersonalAttribute ustadz = new PersonalAttribute();
-        
-        ustadz.setName("Ustadz");
-        personalAttributeFacade.createIfNotExist(ustadz, "name");
-        
-        PersonalAttribute kak = new PersonalAttribute();
-        
-        kak.setName("Kak");
-        personalAttributeFacade.createIfNotExist(kak, "name");
-        
-    }    
     
 }

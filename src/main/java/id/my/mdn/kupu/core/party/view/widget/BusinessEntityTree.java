@@ -4,12 +4,13 @@
  */
 package id.my.mdn.kupu.core.party.view.widget;
 
+import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutableTree;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList.DefaultCount;
 import id.my.mdn.kupu.core.party.dao.BusinessEntityFacade;
 import id.my.mdn.kupu.core.party.entity.BusinessEntity;
-import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutableTree;
-import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList.DefaultCount;
-import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import java.io.Serializable;
@@ -25,6 +26,10 @@ public class BusinessEntityTree extends AbstractMutableTree<BusinessEntity> impl
     
     @Inject
     private BusinessEntityFacade dao;
+
+    public BusinessEntityTree() {
+        super(BusinessEntity.class);
+    }
 
     @Override
     protected List<BusinessEntity> getFetchedItemsInternal(

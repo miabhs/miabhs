@@ -36,8 +36,6 @@ public class LaporanPengasuhanScriptlet extends JRDefaultScriptlet {
     public void beforeGroupInit(String groupName) throws JRScriptletException {
         
         Object parameterValue = getParameterValue("LaporanKepengasuhanSantri");
-        System.out.println("SELEK BIPOR GRUP: LaporanKepengasuhan.jrxml => "
-                + ((net.sf.jasperreports.engine.JasperReport)parameterValue).getName());
         
         Santri santri = (Santri) getFieldValue("santri");
 

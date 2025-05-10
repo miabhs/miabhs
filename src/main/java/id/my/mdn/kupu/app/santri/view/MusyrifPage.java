@@ -4,20 +4,20 @@
  */
 package id.my.mdn.kupu.app.santri.view;
 
-import id.my.mdn.kupu.app.santri.view.admin.MusyrifEditorAltPage;
 import id.my.mdn.kupu.app.santri.view.admin.MusyrifDetailPage;
+import id.my.mdn.kupu.app.santri.view.admin.MusyrifEditorAltPage;
 import id.my.mdn.kupu.app.santri.view.admin.MusyrifEditorPage;
 import id.my.mdn.kupu.app.santri.view.widget.MusyrifList;
-import id.my.mdn.kupu.core.base.view.ChildPage;
+import id.my.mdn.kupu.core.base.view.Page;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
-import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -25,7 +25,7 @@ import jakarta.inject.Named;
  */
 @Named(value = "musyrifPage")
 @ViewScoped
-public class MusyrifPage extends ChildPage implements Serializable {
+public class MusyrifPage extends Page implements Serializable {
 
     @Inject
     @Bookmarked
@@ -39,26 +39,24 @@ public class MusyrifPage extends ChildPage implements Serializable {
 
     @Creator(of = "dataView")
     public void openDataCreator() {
-        gotoChild(MusyrifEditorPage.class)
-                .open();
+        gotoChild(MusyrifEditorPage.class).open();
     }
 
     public void openDataCreatorAlt() {
-        gotoChild(MusyrifEditorAltPage.class)
-                .open();
+        gotoChild(MusyrifEditorAltPage.class).open();
     }
 
     @Editor(of = "dataView")
     public void openDataEditor() {
         gotoChild(MusyrifDetailPage.class)
                 .addParam("musyrif")
-                .withValues(dataView.getSelector().getSelection())
+                .withValues(dataView.getSelected())
                 .open();
     }
 
     @Deleter(of = "dataView")
     public void openDataDeleter() {
-        dataView.deleteSelections();
+        dataView.deleteSelected();
     }
 
     public MusyrifList getDataView() {

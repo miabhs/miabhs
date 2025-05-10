@@ -61,8 +61,11 @@ public abstract class FormPage<T> extends ChildPage implements Serializable {
             loadEntity();
         }
     }
+    
+    protected void beforeSave() {}
 
     public void save(ActionEvent evt) {
+        beforeSave();
         Result<String> saveResult = save();
         if (saveResult.success) {
             if (conversation != null && !conversation.isTransient()) {

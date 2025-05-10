@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+
+    <div class="filter-field">
+        <p:outputLabel for="periode" value="Periode" />
+        <h:panelGroup id="periode" class="flex ui-inputgroup">
+            <p:datePicker id="from-date" value="#{filter.content.fromDate}"
+                          showTime="false"  size="7" locale="#{theApp.locale}"
+                          pattern="dd/MM/yyyy" placeholder="Awal" >
+            </p:datePicker>                
+            <h:panelGroup layout="block" styleClass="ui-inputgroup-addon" >
+                <p:outputLabel value="s.d" />
+            </h:panelGroup>
+            <p:datePicker id="thru-date" value="#{filter.content.thruDate}"
+                          showTime="false" size="7" locale="#{theApp.locale}"
+                          pattern="dd/MM/yyyy" placeholder="Akhir" >
+            </p:datePicker>
+        </h:panelGroup>
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel for="kelamin" value="Jenis Kelamin" />
+        <p:selectOneMenu id="kelamin" value="#{filter.content.gender}"
+                         converter="GenderTypeConverter" >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{genderTypeList.fetchedItems}" var="item"
+                           itemLabel="#{item.label}" itemValue="#{item}" />
+            <p:ajax listener="#{filter.content.updateGenderFilter}" update="@form:santri-filter-selector @form:santri @form:kelompok" />
+        </p:selectOneMenu>                  
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel value="Kelompok" />
+        <p:selectOneMenu id="kelompok" value="#{filter.content.kelompokPengasuhan}" 
+                         converter="KelompokPengasuhanConverter"
+                         filter="true" filterMatchMode="contains"
+                         filterPlaceholder="Cari..."
+                         autoWidth="false"  >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{filter.content.kelompokPengasuhanChooser.fetchedItems}" 
+                           var="item" itemValue="#{item}" 
+                           itemLabel="#{item.organization.name}" />
+            <p:ajax listener="#{filter.content.updateKelompokFilter}" update="@form:santri-filter-selector @form:santri" />
+        </p:selectOneMenu>
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel for="santri" value="Santri" />
+        <span class="ui-input-icon-right">
+            <i class="pi pi-chevron-down" />
+            <p:inputText id="santri" value="#{filter.content.santri ne null ? filter.content.santri.name : 'Semua'}" 
+                         style="cursor: pointer;" 
+                         readonly="true" styleClass="w-full"
+                         onclick="showSantriFilterSelector('#{component.clientId}', '#{component.clientId}')" />
+        </span>
+        <ui:decorate template="/WEB-INF/components/core/base/lazychooser.xhtml" >
+            <ui:param name="name" value="SantriFilterSelector" />
+            <ui:param name="widgetVar" value="santriFilterSelector" />
+            <ui:param name="id" value="santri-filter-selector" />
+            <ui:param name="chooser" value="#{filter.content.santriChooser}" />
+            <ui:define name="columns">
+                <p:column>
+                    <h:outputText value="#{data ne null ? data.name : ''}" />
+                </p:column>
+
+                <p:column>
+                    <h:outputText value="#{((data ne null) and (data.kelompokPengasuhan ne null)) ? data.kelompokPengasuhan.organization.name : ' '}" />
+                </p:column>
+            </ui:define>
+        </ui:decorate>
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel value="Jenis" />                            
+        <p:selectOneMenu value="#{filter.content.jenisAktifitas}"
+                         converter="JenisAktifitasConverter" 
+                         autoWidth="false" >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{jenisAktifitasList.fetchedItems}" 
+                           var="item" itemValue="#{item}"
+                           itemLabel="#{item.label}" />
+            <p:ajax listener="#{filter.content.updateBentukAktifitasFilter}" update="@form:bentukaktifitas-filter-selector @form:catatan" />
+        </p:selectOneMenu>
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel for="catatan" value="Catatan" />
+        <span class="ui-input-icon-right w-12">
+            <i class="pi pi-chevron-down" />
+            <p:inputText id="catatan" value="#{filter.content.bentukAktifitas ne null ? filter.content.bentukAktifitas.bentuk : 'Semua'}"  class="w-full"
+                         style="cursor: pointer;" size="8"
+                         readonly="true"
+                         onclick="showBentukAktifitasFilterSelector('#{component.clientId}', '#{component.parent.parent.clientId}, #{component.parent.parent.clientId.replace('bentuk-aktifitas', 'confirmation')}')" />
+        </span>
+        <ui:decorate template="/WEB-INF/components/core/base/lazychooser.xhtml" >
+            <ui:param name="name" value="BentukAktifitasFilterSelector" />
+            <ui:param name="widgetVar" value="bentukAktifitasFilterSelector" />
+            <ui:param name="id" value="bentukaktifitas-filter-selector" />
+            <ui:param name="chooser" value="#{filter.content.bentukAktifitasChooser}" />
+            <ui:define name="columns">
+                <p:column>
+                    <h:outputText value="#{data ne null ? data.bentuk : ''}" />
+                </p:column>
+                <p:column width="30%">
+                    <h:outputText value="#{data ne null ? data.jenis.label : ''}" />
+                </p:column>
+            </ui:define>
+        </ui:decorate>
+    </div>
+
+    <ui:remove>
+    <div class="flex align-items-center gap-2">
+        <p:outputLabel value="Bobot"/> 
+        <h:panelGroup styleClass="ui-inputgroup">
+            <h:panelGroup id="icon" layout="block" styleClass="ui-inputgroup-addon #{filter.content.nilaiAktifitas.color}" />
+            <p:selectOneMenu value="#{filter.content.nilaiAktifitas}"
+                             converter="NilaiAktifitasConverter" 
+                             var ="nilai" autoWidth="false"  >                       
+                <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+                <f:selectItems value="#{nilaiAktifitasList.fetchedItems}" var="item"
+                               itemLabel="#{item.label}" itemValue="#{item}" />
+                <p:column>
+                    <div class="p-0 flex flex-column justify-content-center align-items-center w-full h-2rem #{nilai.color}">
+                        <h:outputText value = "#{nilai.label}" class="font-bold text-white" />
+                    </div>
+                </p:column>
+            </p:selectOneMenu>
+        </h:panelGroup>
+    </div>
+    </ui:remove>
+
+</ui:composition>
+

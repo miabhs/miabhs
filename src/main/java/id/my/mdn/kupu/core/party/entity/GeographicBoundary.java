@@ -29,28 +29,6 @@ public abstract class GeographicBoundary implements Serializable {
     private String code;
 
     private String name;
-
-//    @ManyToOne
-//    private GeographicBoundary parent;
-//
-//    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-//    private List<GeographicBoundary> children;
-
-//    public GeographicBoundary getParent() {
-//        return parent;
-//    }
-
-//    public void setParent(GeographicBoundary parent) {
-//        this.parent = parent;
-//    }
-
-//    public List<GeographicBoundary> getChildren() {
-//        return children;
-//    }
-
-//    public void setChildren(List<GeographicBoundary> children) {
-//        this.children = children;
-//    }
     
     public Long getId() {
         return id;

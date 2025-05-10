@@ -5,16 +5,17 @@
 package id.my.mdn.kupu.core.security.view.widget;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
-import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.security.dao.ApplicationSecurityMapFacade;
 import id.my.mdn.kupu.core.security.model.ApplicationSecurityGroup;
 import id.my.mdn.kupu.core.security.model.ApplicationUser;
-import java.util.List;
-import java.util.Map;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -26,6 +27,10 @@ public class ApplicationSecurityMapList extends AbstractPagedValueList<Applicati
 
     @Inject
     private ApplicationSecurityMapFacade dao;
+
+    public ApplicationSecurityMapList() {
+        super(ApplicationSecurityGroup.class);
+    }
 
     @Override
     protected List<ApplicationSecurityGroup> getPagedFetchedItemsInternal(

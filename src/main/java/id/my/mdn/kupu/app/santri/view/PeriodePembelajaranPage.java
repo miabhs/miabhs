@@ -13,7 +13,7 @@ import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.OnInit;
 import id.my.mdn.kupu.core.base.view.annotation.OnReload;
 import java.io.Serializable;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 

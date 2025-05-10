@@ -4,24 +4,22 @@
  */
 package id.my.mdn.kupu.app.santri.entity;
 
+import id.my.mdn.kupu.core.base.model.EntityBuilder;
+import id.my.mdn.kupu.core.party.entity.GenderType;
+import id.my.mdn.kupu.core.party.entity.Organization;
+import id.my.mdn.kupu.core.party.entity.OrganizationRole;
 import jakarta.persistence.ColumnResult;
 import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SqlResultSetMapping;
 import jakarta.persistence.SqlResultSetMappings;
 import jakarta.persistence.Table;
-import jakarta.persistence.TableGenerator;
-import java.io.Serializable;
+import jakarta.persistence.Transient;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -31,17 +29,36 @@ import java.util.List;
 @Table(name = "MIABH_HALAQOHPENGAJARAN")
 @SqlResultSetMappings({
     @SqlResultSetMapping(
+            name = "HalaqohPengajaran",
+            classes = {
+                @ConstructorResult(
+                        targetClass = HalaqohPengajaran.class,
+                        columns = {
+                            @ColumnResult(name = "ID", type = Long.class),
+                            @ColumnResult(name = "HALAQOH_NAME", type = String.class),
+                            @ColumnResult(name = "JENISKITAB_ID", type = Long.class), 
+                            @ColumnResult(name = "JENISKITAB_JUDUL", type = String.class),
+                            @ColumnResult(name = "GENDER", type = String.class),
+                            @ColumnResult(name = "KELOMPOK_WAKTU", type = String.class),
+
+                            @ColumnResult(name = "PENGAMPU_ID", type = Long.class),
+                            @ColumnResult(name = "PENGAMPU_FIRSTNAME", type = String.class),
+                            @ColumnResult(name = "PENGAMPU_LASTNAME", type = String.class)
+                        }
+                )
+            }
+    ),
+    @SqlResultSetMapping(
             name = "AbsensiHalaqoh",
             classes = {
                 @ConstructorResult(
                         targetClass = AbsensiHalaqoh.class,
                         columns = {
-
                             @ColumnResult(name = "SANTRIID", type = Long.class),
-                            
+
                             @ColumnResult(name = "FIRSTNAME", type = String.class),
                             @ColumnResult(name = "LASTNAME", type = String.class),
-                            
+
                             @ColumnResult(name = "NIS", type = String.class),
                             @ColumnResult(name = "TAHUNMASUK_NAME", type = String.class),
                             @ColumnResult(name = "TAHUNMASUK_FROMDATE", type = LocalDate.class),
@@ -52,58 +69,110 @@ import java.util.List;
                             @ColumnResult(name = "NON_BDAS_KUNING", type = Integer.class)}
                 )
             }
+    ),
+    @SqlResultSetMapping(
+            name = "KppHalaqoh",
+            classes = {
+                @ConstructorResult(
+                        targetClass = KppHalaqoh.class,
+                        columns = {
+                            @ColumnResult(name = "KPP_NUM", type = Integer.class),
+                            @ColumnResult(name = "FIRSTNAME", type = String.class),
+                            @ColumnResult(name = "LASTNAME", type = String.class)}
+                )
+            }
     )
 })
-public class HalaqohPengajaran implements Serializable {
+public class HalaqohPengajaran extends OrganizationRole {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @TableGenerator(name = "Miabh_HalaqohPengajaran", table = "KEYGEN", allocationSize = 1)
-    @GeneratedValue(generator = "Miabh_HalaqohPengajaran", strategy = GenerationType.TABLE)
-    private Long id;
-
-    private String nama;
-
-    @ManyToOne
-    private Ustadz pengampu;
-
-    @ManyToOne
-    private JenisKitab jenisKitab;
-
-    private LocalTime beginAt;
-
-    private LocalTime endedAt;
-
-    @ManyToMany
-    @JoinTable(name = "MIABH_HALAQOHSANTRI",
-            joinColumns = @JoinColumn(name = "HALAQOHPENGAJARAN_ID"),
-            inverseJoinColumns = @JoinColumn(name = "SANTRI_ID")
-    )
-    private List<Santri> listSantri;
-
-    public Long getId() {
-        return id;
+    public static final Builder builder() {
+        return new Builder();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public static final class Builder extends EntityBuilder<HalaqohPengajaran> {
+
+        public Builder() {
+            super(new HalaqohPengajaran());
+        }
+
+        public Builder withOrganization(Organization organization) {
+            if (organization.getRoles() == null) {
+                organization.setRoles(new ArrayList<>());
+            }
+            entity.setParty(organization);
+            organization.getRoles().add(entity);
+
+            return this;
+        }
+
+    }
+
+    @ManyToOne
+    private KategoriKitab kategoriKitab;
+    
+    @ManyToOne
+    private JenisKitab jenisKitab;
+    
+    @Enumerated(EnumType.STRING)
+    private GenderType gender;
+
+    @ManyToOne
+    private KelompokHalaqohPengajaran kelompok;
+
+    @Transient
+    private String name;
+
+    @Transient
+    private Long jenisKitabId;
+
+    @Transient
+    private String jenisKitabJudul;
+
+    @Transient
+    private String kelompokWaktu;
+
+    @Transient
+    private Long pengampuId;
+
+    @Transient
+    private String pengampuName;
+
+    public HalaqohPengajaran() {
+    }
+
+    public HalaqohPengajaran(Long id) {
+        setId(id);
+    }
+
+    public HalaqohPengajaran(Long id, String name, Long jenisKitabId, String jenisKitabJudul, String gender, String kelompokWaktu, Long pengampuId, String pengampuFirstName, String pengampuLastName) {
+        setId(id);
+        this.name = name;
+        this.jenisKitabId = jenisKitabId;
+        this.jenisKitabJudul = jenisKitabJudul;
+        this.gender = GenderType.valueOf(gender);
+        this.kelompokWaktu = kelompokWaktu;
+        this.pengampuId = pengampuId;
+        this.pengampuName
+                = ((pengampuFirstName != null && !pengampuFirstName.isBlank()) ? " " + pengampuFirstName : "")
+                + ((pengampuLastName != null && !pengampuLastName.isBlank()) ? " " + pengampuLastName : "");
     }
 
     public String getNama() {
-        return nama;
+        return getOrganization().getName();
     }
 
     public void setNama(String nama) {
-        this.nama = nama;
+        getOrganization().setName(nama);
     }
 
-    public Ustadz getPengampu() {
-        return pengampu;
+    public KategoriKitab getKategoriKitab() {
+        return kategoriKitab;
     }
 
-    public void setPengampu(Ustadz pengampu) {
-        this.pengampu = pengampu;
+    public void setKategoriKitab(KategoriKitab kategoriKitab) {
+        this.kategoriKitab = kategoriKitab;
     }
 
     public JenisKitab getJenisKitab() {
@@ -114,53 +183,64 @@ public class HalaqohPengajaran implements Serializable {
         this.jenisKitab = jenisKitab;
     }
 
-    public List<Santri> getListSantri() {
-        return listSantri;
+    public KelompokHalaqohPengajaran getKelompok() {
+        return kelompok;
     }
 
-    public void setListSantri(List<Santri> listSantri) {
-        this.listSantri = listSantri;
+    public void setKelompok(KelompokHalaqohPengajaran kelompok) {
+        this.kelompok = kelompok;
     }
 
-    public LocalTime getBeginAt() {
-        return beginAt;
+    public GenderType getGender() {
+        return gender;
     }
 
-    public void setBeginAt(LocalTime beginAt) {
-        this.beginAt = beginAt;
+    public void setGender(GenderType gender) {
+        this.gender = gender;
     }
 
-    public LocalTime getEndedAt() {
-        return endedAt;
+    public String getName() {
+        return name;
     }
 
-    public void setEndedAt(LocalTime endedAt) {
-        this.endedAt = endedAt;
+    public Long getJenisKitabId() {
+        return jenisKitabId;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public void setJenisKitabId(Long jenisKitabId) {
+        this.jenisKitabId = jenisKitabId;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof HalaqohPengajaran)) {
-            return false;
-        }
-        HalaqohPengajaran other = (HalaqohPengajaran) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public String getJenisKitabJudul() {
+        return jenisKitabJudul;
     }
 
-    @Override
-    public String toString() {
-        return String.valueOf(id);
+    public void setJenisKitabJudul(String jenisKitabJudul) {
+        this.jenisKitabJudul = jenisKitabJudul;
+    }
+
+    public String getKelompokWaktu() {
+        return kelompokWaktu;
+    }
+
+    public Long getPengampuId() {
+        return pengampuId;
+    }
+
+    public void setPengampuId(Long pengampuId) {
+        this.pengampuId = pengampuId;
+    }
+
+    public String getPengampuName() {
+        return (pengampuName != null && !pengampuName.isBlank()) ? "Ust. " + pengampuName : "Belum ada";
+    }
+
+    public void setPengampuName(String pengampuName) {
+        this.pengampuName = pengampuName;
+    }
+    
+    public String getLabel() {
+        return new StringBuilder(name).append(" - ").append(jenisKitabJudul).toString();
     }
 
 }

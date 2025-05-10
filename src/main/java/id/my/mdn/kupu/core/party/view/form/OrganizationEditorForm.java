@@ -42,30 +42,31 @@ public class OrganizationEditorForm extends FormComponent<Organization> {
     @Inject
     @Form
     private ElectronicAddressForm electronicAddressForm;
-
+    
     @Override
     public void init(Organization organization) {
         super.init(organization);
-        
+
         organizationForm.setEntity(organization);
-        
+
         postalAddressForm.setEntity(
                 organization.getPostalAddress() != null ? organization.getPostalAddress()
                 : PartyContactMechanism.builder()
                         .contactMechanism(new PostalAddress())
                         .defaulted(true).get());
-        
+
         telecommunicationNumberForm.setEntity(organization.getTelecommunicationNumber() != null
                 ? organization.getTelecommunicationNumber()
                 : PartyContactMechanism.builder()
                         .contactMechanism(new TelecommunicationNumber())
                         .defaulted(true).get());
-        
+
         electronicAddressForm.setEntity(organization.getElectronicAddress() != null
                 ? organization.getElectronicAddress()
                 : PartyContactMechanism.builder()
                         .contactMechanism(new ElectronicAddress())
                         .defaulted(true).get());
+
     }
 
     @Override

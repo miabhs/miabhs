@@ -2,6 +2,6 @@
                 xmlns:f="jakarta.faces.core">
     <ui:include src="/WEB-INF/components/core/base/meta/page-events.xhtml"/>
     <ui:include src="/WEB-INF/components/core/base/meta/returns.xhtml" />
-    <f:viewParam name="what" value="#{viewPage.what}" converter="IntegerConverter" />
+    <f:viewParam name="what" value="#{viewPage.what}" converter="IntegerConverter" transient="true" />
 </ui:composition>
 

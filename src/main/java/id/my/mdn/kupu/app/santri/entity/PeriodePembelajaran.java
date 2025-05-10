@@ -28,14 +28,17 @@
 package id.my.mdn.kupu.app.santri.entity;
 
 import id.my.mdn.kupu.core.base.model.HierarchicalEntity;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
+import id.my.mdn.kupu.core.party.entity.GenderType;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
@@ -50,43 +53,37 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "MIABH_PERIODEPEMBELAJARAN")
-@NamedQueries ({
-    @NamedQuery(name="PeriodePembelajaran.getPeriod", 
-            query="SELECT ap "
-                    + "FROM PeriodePembelajaran ap "
-                    + "WHERE ap.fromDate <= :fromDate AND ap.thruDate >= :thruDate"),
-    @NamedQuery(name="PeriodePembelajaran.getPrevPeriod", 
-            query="SELECT ap "
-                    + "FROM PeriodePembelajaran ap "
-                    + "WHERE ap.fromDate = ("
-                    + "SELECT MAX(ap2.fromDate) "
-                    + "FROM PeriodePembelajaran ap2 "
-                    + "WHERE ap2.fromDate < :fromDate"
-                    + ")")
-})
-public class PeriodePembelajaran implements Serializable, Comparable<PeriodePembelajaran> , HierarchicalEntity<PeriodePembelajaran> {
+public class PeriodePembelajaran implements Serializable, Comparable<PeriodePembelajaran>, HierarchicalEntity<PeriodePembelajaran> {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @TableGenerator(name = "Miabh_PeriodePembelajaran", table = "KEYGEN", allocationSize = 1)
     @GeneratedValue(generator = "Miabh_PeriodePembelajaran", strategy = GenerationType.TABLE)
     private Long id;
-    
+
     @ManyToOne
     private TahunPembelajaran tahunPembelajaran;
-    
+
     private String name;
 
+    @SorterField(value = "id.fromDate", sort = SorterField.Sort.AUTO, label = "From Date")
     private LocalDate fromDate;
 
     private LocalDate thruDate;
+    
+    @Enumerated(EnumType.STRING)
+    private GenderType gender;
 
     @ManyToOne
     private PeriodePembelajaran parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PeriodePembelajaran> children;
+
+    @Column(name = "FLAG")
+    @Enumerated(EnumType.STRING)
+    private JenisPeriodePembelajaran jenisPeriode;
 
     @Override
     public String toString() {
@@ -121,7 +118,6 @@ public class PeriodePembelajaran implements Serializable, Comparable<PeriodePemb
     }
 
     //<editor-fold defaultstate="collapsed" desc="Getters & Setters">
-
     public Long getId() {
         return id;
     }
@@ -161,7 +157,15 @@ public class PeriodePembelajaran implements Serializable, Comparable<PeriodePemb
     public void setThruDate(LocalDate thruDate) {
         this.thruDate = thruDate;
     }
-    
+
+    public GenderType getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
+    }
+
     @Override
     public List<PeriodePembelajaran> getChildren() {
         return children;
@@ -181,7 +185,14 @@ public class PeriodePembelajaran implements Serializable, Comparable<PeriodePemb
     public void setParent(PeriodePembelajaran parent) {
         this.parent = parent;
     }
-    
-//</editor-fold>
 
+    public JenisPeriodePembelajaran getJenisPeriode() {
+        return jenisPeriode;
+    }
+
+    public void setJenisPeriode(JenisPeriodePembelajaran jenisPeriode) {
+        this.jenisPeriode = jenisPeriode;
+    }
+
+//</editor-fold>
 }

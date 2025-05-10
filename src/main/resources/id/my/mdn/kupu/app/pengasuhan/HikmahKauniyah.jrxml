@@ -41,9 +41,9 @@
 	</columnHeader>
 	<detail>
 		<band height="19">
-			<element kind="frame" uuid="c81991c9-e96d-44d1-991e-0edff292f135" x="0" y="0" width="539" height="19">
+			<element kind="frame" uuid="c81991c9-e96d-44d1-991e-0edff292f135" x="0" y="0" width="539" height="19" removeLineWhenBlank="true">
 				<borderSplitType>DrawBorders</borderSplitType>
-				<element kind="frame" uuid="658c9d57-a462-4fba-9b04-c8da031a66cb" stretchType="ContainerHeight" x="0" y="0" width="70" height="19" printRepeatedValues="false" printWhenDetailOverflows="true">
+				<element kind="frame" uuid="658c9d57-a462-4fba-9b04-c8da031a66cb" stretchType="ContainerHeight" x="0" y="0" width="70" height="19" printRepeatedValues="false" removeLineWhenBlank="true" printWhenDetailOverflows="true">
 					<borderSplitType>DrawBorders</borderSplitType>
 					<element kind="textField" uuid="e2a9935e-6744-4002-a983-c0e83b0958e9" x="0" y="0" width="70" height="19" fontName="Roboto" hTextAlign="Center" vTextAlign="Middle">
 						<expression><![CDATA[$F{date}]]></expression>
@@ -53,7 +53,7 @@
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="d275ab93-acb7-4562-b496-722c8f6748a3" x="70" y="0" width="469" height="19">
+				<element kind="frame" uuid="d275ab93-acb7-4562-b496-722c8f6748a3" x="70" y="0" width="469" height="19" removeLineWhenBlank="true">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 					<element kind="textField" uuid="b42b427a-6bd0-44e1-bca5-4893c4754cea" x="0" y="0" width="469" height="19" markup="html" fontName="Roboto" textAdjust="StretchHeight" vTextAlign="Middle">
 						<paragraph lineSpacing="1_1_2"/>

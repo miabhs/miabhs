@@ -4,12 +4,14 @@
  */
 package id.my.mdn.kupu.app.santri.view.widget;
 
+import id.my.mdn.kupu.app.pengajaran.entity.AtributPembelajaran;
 import id.my.mdn.kupu.app.santri.dao.JenisKitabFacade;
 import id.my.mdn.kupu.app.santri.entity.JenisKitab;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.Filter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.Filter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -33,6 +35,10 @@ public class JenisKitabList extends AbstractMutablePagedValueList<JenisKitab> {
     
     @Inject
     private JenisKitabFilter filterContent;
+
+    public JenisKitabList() {
+        super(JenisKitab.class);
+    }
 
     @PostConstruct
     public void init() {
@@ -103,6 +109,12 @@ public class JenisKitabList extends AbstractMutablePagedValueList<JenisKitab> {
         return model;
     }
 
-    
+    public void addAtributToSelected() {
+        AtributPembelajaran atr = new AtributPembelajaran();
+        atr.setName("");
+        atr.setAllowableValues("");
+        getSelected().getListAtribut().add(atr);
+        edit(getSelected());
+    }
     
 }

@@ -4,11 +4,57 @@
                 xmlns:f="jakarta.faces.core"
                 xmlns:h="jakarta.faces.html">
 
-    <div class="field ui-fluid">
+
+    <div class="filter-field">
         <p:outputLabel for="name" value="Nama" />
         <p:inputText id="name" value="#{filter.content.name}" />
     </div>
-    <div class="field ui-fluid">
+
+    <div class="filter-field">
+        <p:outputLabel for="tahun-masuk" value="Tahun Masuk" />
+        <p:selectOneMenu id="tahun-masuk" value="#{filter.content.tahunMasuk}"
+                         converter="TahunPembelajaranConverter" >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{tahunPembelajaranSelectList.fetchedItems}" var="item"
+                           itemLabel="#{item.name}" itemValue="#{item}" />
+        </p:selectOneMenu>                  
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel for="jenis" value="Jenis Santri" />
+        <p:selectOneMenu id="jenis" value="#{filter.content.jenisSantri}"
+                         converter="JenisSantriConverter" >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{jenisSantriList.fetchedItems}" var="item"
+                           itemLabel="#{item.label}" itemValue="#{item}" />
+        </p:selectOneMenu>                  
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel for="kelamin" value="Jenis Kelamin" />
+        <p:selectOneMenu id="kelamin" value="#{filter.content.gender}"
+                         converter="GenderTypeConverter" >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{genderTypeList.fetchedItems}" var="item"
+                           itemLabel="#{item.label}" itemValue="#{item}" />
+        </p:selectOneMenu>                  
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel value="Kelompok" />
+        <p:selectOneMenu value="#{filter.content.kelompokPengasuhan}" 
+                         converter="KelompokPengasuhanConverter"
+                         filter="true" filterMatchMode="contains"
+                         filterPlaceholder="Cari..."
+                         autoWidth="false"  >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{KelompokPengasuhanSelectList.fetchedItems}" 
+                           var="item" itemValue="#{item}" 
+                           itemLabel="#{item.organization.name}" />
+        </p:selectOneMenu>
+    </div>
+
+    <div class="filter-field">
         <p:outputLabel for="status" value="Status" />
         <p:selectOneMenu id="status" var="i" value="#{filter.content.statusKesantrian}" converter="StatusKesantrianConverter" >                        
             <f:selectItem itemLabel="Semua" itemValue="#{null}" />

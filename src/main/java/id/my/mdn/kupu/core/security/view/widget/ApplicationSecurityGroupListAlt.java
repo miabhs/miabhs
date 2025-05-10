@@ -28,8 +28,11 @@
 package id.my.mdn.kupu.core.security.view.widget;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.security.dao.ApplicationSecurityGroupFacade;
 import id.my.mdn.kupu.core.security.model.ApplicationSecurityGroup;
 import jakarta.annotation.PostConstruct;
@@ -37,7 +40,6 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +59,10 @@ public class ApplicationSecurityGroupListAlt
     @Inject
     private ApplicationSecurityGroupFilter filterContent;
 
+    public ApplicationSecurityGroupListAlt() {
+        super(ApplicationSecurityGroup.class);
+    }
+
     @PostConstruct
     public void init() {
         filter.setContent(filterContent);
@@ -65,11 +71,6 @@ public class ApplicationSecurityGroupListAlt
     @Override
     protected List<ApplicationSecurityGroup> getFetchedItemsInternal(Map<String, Object> parameters, List<FilterData> filters, List<SorterData> sorters, DefaultList<ApplicationSecurityGroup> defaultList, AbstractFacade.DefaultChecker defaultChecker) {
         return dao.findAll(parameters, filters, sorters);
-    }
-
-    @Override
-    public List<SorterData> getSorters() {
-        return Arrays.asList(new SorterData("id"));
     }
 
 }

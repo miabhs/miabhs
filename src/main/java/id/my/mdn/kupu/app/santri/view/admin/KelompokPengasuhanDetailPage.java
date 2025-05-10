@@ -6,9 +6,8 @@ package id.my.mdn.kupu.app.santri.view.admin;
 
 import id.my.mdn.kupu.app.santri.dao.KelompokPengasuhanFacade;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
-import id.my.mdn.kupu.app.santri.view.widget.KakakKepengasuhanList;
-import id.my.mdn.kupu.app.santri.view.widget.PembantuPelaksanaKepengasuhanList;
-import id.my.mdn.kupu.app.santri.view.widget.PembinaKepengasuhanList;
+import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanSelectList;
+import id.my.mdn.kupu.app.santri.view.widget.PelaksanaKepengasuhanList;
 import id.my.mdn.kupu.app.santri.view.widget.PengasuhanList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.ChildPage;
@@ -18,12 +17,12 @@ import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.party.entity.Organization;
 import id.my.mdn.kupu.core.party.view.OrganizationDetailPage;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -44,25 +43,21 @@ public class KelompokPengasuhanDetailPage extends ChildPage implements Serializa
 
     @Bookmarked
     @Inject
-    private PembinaKepengasuhanList pembinaKepengasuhanList;
-
-    @Bookmarked
-    @Inject
-    private KakakKepengasuhanList kakakKepengasuhanList;
-
-    @Bookmarked
-    @Inject
-    private PembantuPelaksanaKepengasuhanList pembantuPelaksanaKepengasuhanList;
+    private PelaksanaKepengasuhanList pelaksanaKepengasuhanList;
     
     @Bookmarked
     @Inject
     private PengasuhanList pengasuhanList;
+    
+    @Inject
+    private KelompokPengasuhanSelectList kelompokPengasuhanList;
 
     @PostConstruct
     @Override
     public void init() {
         super.init();
         partyDetailPage.init();
+        
     }
     
     @Override
@@ -72,23 +67,11 @@ public class KelompokPengasuhanDetailPage extends ChildPage implements Serializa
         partyDetailPage.setUpdateListener(party -> kelompokPengasuhanFacade.edit(kelompokPengasuhan));
         partyDetailPage.load();
 
-        pembinaKepengasuhanList.setName("pembinaKepengasuhanTbl");
-        pembinaKepengasuhanList.getFilter().setStaticFilter(this::filterToRole);
-        pembinaKepengasuhanList.getSelector().setSelectionsLabel("pks");
-        pembinaKepengasuhanList.getPager().setPageSizeLabel("pkp");
-        pembinaKepengasuhanList.getPager().setOffsetLabel("pko");
-
-        pembantuPelaksanaKepengasuhanList.setName("pembantuPelaksanaKepengasuhanTbl");
-        pembantuPelaksanaKepengasuhanList.getFilter().setStaticFilter(this::filterToRole);
-        pembantuPelaksanaKepengasuhanList.getSelector().setSelectionsLabel("bks");
-        pembantuPelaksanaKepengasuhanList.getPager().setPageSizeLabel("bkp");
-        pembantuPelaksanaKepengasuhanList.getPager().setOffsetLabel("bko");
-
-        kakakKepengasuhanList.setName("kakakKepengasuhanTbl");
-        kakakKepengasuhanList.getFilter().setStaticFilter(this::filterToRole);
-        kakakKepengasuhanList.getSelector().setSelectionsLabel("kks");
-        kakakKepengasuhanList.getPager().setPageSizeLabel("kkp");
-        kakakKepengasuhanList.getPager().setOffsetLabel("kko");
+        pelaksanaKepengasuhanList.setName("pembantuPelaksanaKepengasuhanTbl");
+        pelaksanaKepengasuhanList.getFilter().setStaticFilter(this::filterToRole);
+        pelaksanaKepengasuhanList.getSelector().setSelectionsLabel("bks");
+        pelaksanaKepengasuhanList.getPager().setPageSizeLabel("bkp");
+        pelaksanaKepengasuhanList.getPager().setOffsetLabel("bko");
 
         pengasuhanList.setName("pengasuhanTbl");
         pengasuhanList.getFilter().setStaticFilter(this::filterFromRole);
@@ -97,43 +80,17 @@ public class KelompokPengasuhanDetailPage extends ChildPage implements Serializa
         pengasuhanList.getPager().setOffsetLabel("po");
     }
 
-    @Creator(of = "pembinaKepengasuhanList")
-    public void openPembinaKepengasuhanEditor() {
-        gotoChild(PembinaKepengasuhanEditorPage.class)
+    @Creator(of = "pelaksanaKepengasuhanList")
+    public void openPelaksanaKepengasuhanEditor() {
+        gotoChild(PelaksanaKepengasuhanEditorPage.class)
                 .addParam("toRole")
                 .withValues(kelompokPengasuhan)
                 .open();
     }
 
-    @Deleter(of = "pembinaKepengasuhanList")
-    public void openPembinaKepengasuhanDeleter() {
-        pembinaKepengasuhanList.delete(pembinaKepengasuhanList.getSelector().getSelections());
-    }
-
-    @Creator(of = "kakakKepengasuhanList")
-    public void openKakakKepengasuhanEditor() {
-        gotoChild(KakakKepengasuhanEditorPage.class)
-                .addParam("toRole")
-                .withValues(kelompokPengasuhan)
-                .open();
-    }
-
-    @Deleter(of = "kakakKepengasuhanList")
-    public void openKakakKepengasuhanDeleter() {
-        kakakKepengasuhanList.delete(kakakKepengasuhanList.getSelector().getSelections());
-    }
-
-    @Creator(of = "pembantuPelaksanaKepengasuhanList")
-    public void openPembantuPelaksanaKepengasuhanEditor() {
-        gotoChild(PembantuPelaksanaKepengasuhanEditorPage.class)
-                .addParam("toRole")
-                .withValues(kelompokPengasuhan)
-                .open();
-    }
-
-    @Deleter(of = "pembantuPelaksanaKepengasuhanList")
-    public void openPembantuPelaksanaKepengasuhanDeleter() {
-        pembantuPelaksanaKepengasuhanList.delete(pembantuPelaksanaKepengasuhanList.getSelector().getSelections());
+    @Deleter(of = "pelaksanaKepengasuhanList")
+    public void openPelaksanaKepengasuhanDeleter() {
+        pelaksanaKepengasuhanList.delete(pelaksanaKepengasuhanList.getSelector().getSelections());
     }
 
     @Creator(of = "pengasuhanList")
@@ -175,16 +132,8 @@ public class KelompokPengasuhanDetailPage extends ChildPage implements Serializa
         return kelompokPengasuhan;
     }
 
-    public PembinaKepengasuhanList getPembinaKepengasuhanList() {
-        return pembinaKepengasuhanList;
-    }
-
-    public KakakKepengasuhanList getKakakKepengasuhanList() {
-        return kakakKepengasuhanList;
-    }
-
-    public PembantuPelaksanaKepengasuhanList getPembantuPelaksanaKepengasuhanList() {
-        return pembantuPelaksanaKepengasuhanList;
+    public PelaksanaKepengasuhanList getPelaksanaKepengasuhanList() {
+        return pelaksanaKepengasuhanList;
     }
 
     public PengasuhanList getPengasuhanList() {

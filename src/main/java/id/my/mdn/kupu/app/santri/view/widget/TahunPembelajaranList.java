@@ -9,13 +9,12 @@ import id.my.mdn.kupu.app.santri.entity.TahunPembelajaran;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.CommonFilter;
-import static id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData.DESC;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.view.widget.CommonFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +32,10 @@ public class TahunPembelajaranList extends AbstractMutablePagedValueList<TahunPe
     @Inject
     private CommonFilter filterContent;
 
+    public TahunPembelajaranList() {
+        super(TahunPembelajaran.class);
+    }
+
     @PostConstruct
     public void init() {        
         filter.setContent(filterContent);
@@ -46,11 +49,6 @@ public class TahunPembelajaranList extends AbstractMutablePagedValueList<TahunPe
     @Override
     protected long getItemsCountInternal(Map<String, Object> parameters, List<FilterData> filters, DefaultCount defaultCount, AbstractFacade.DefaultChecker defaultChecker) {
         return dao.countAll(parameters, filters);
-    }
-
-    @Override
-    public List<SorterData> getSorters() {
-        return Arrays.asList(new SorterData("fromDate", DESC));
     }
 
     @Override
@@ -70,17 +68,20 @@ public class TahunPembelajaranList extends AbstractMutablePagedValueList<TahunPe
 
     @Override
     public String[] getCreatePermission() {
-        return new String[]{"create_tahun_pembelajaran"};
+//        return new String[]{"create_tahun_pembelajaran"};
+        return new String[]{};
     }
 
     @Override
     public String[] getUpdatePermission() {
-        return new String[]{"update_tahun_pembelajaran"};
+//        return new String[]{"update_tahun_pembelajaran"};
+        return new String[]{};
     }
 
     @Override
     public String[] getDeletePermission() {
-        return new String[]{"delete_tahun_pembelajaran"};
+//        return new String[]{"delete_tahun_pembelajaran"};
+        return new String[]{};
     }
     
 }

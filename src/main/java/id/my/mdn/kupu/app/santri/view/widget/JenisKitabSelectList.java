@@ -9,6 +9,9 @@ import id.my.mdn.kupu.app.santri.entity.JenisKitab;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -25,6 +28,10 @@ public class JenisKitabSelectList extends AbstractValueList<JenisKitab> {
 
     @Inject
     private JenisKitabFacade dao;
+
+    public JenisKitabSelectList() {
+        super(JenisKitab.class);
+    }
 
     @Override
     protected List<JenisKitab> getFetchedItemsInternal(Map<String, Object> parameters, List<FilterData> filters, List<SorterData> sorters, DefaultList<JenisKitab> defaultList, AbstractFacade.DefaultChecker defaultChecker) {

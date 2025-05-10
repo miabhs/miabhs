@@ -7,16 +7,13 @@
                 xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <f:metadata>
-        <ui:param name="viewPage" value="#{jenisKitabEditorPage}" />
-
         <ui:param name="primaryTitle" value="Editor Kitab" /> 
+        
+        <ui:param name="viewPage" value="#{jenisKitabEditorPage}" />
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/> 
 
-        <ui:param name="notool" value="true" />
-        <ui:param name="nofilter" value="true"/>
-
-        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>          
-
-        <f:viewParam name="entity" value="#{viewPage.entity}" converter="JenisKitabConverter" />
+        <f:viewParam name="entity" value="#{viewPage.entity}" converter="JenisKitabConverter" transient="true" />
+        <f:viewParam name="parent" value="#{viewPage.parent}" converter="JenisKitabConverter" transient="true" />
 
         <f:viewAction action="#{viewPage.load}" />
     </f:metadata>
@@ -30,6 +27,21 @@
             <div class="col-12 md:col-6">
                 <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
                     <ui:define name="fields">
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="kode" value="Kode" />
+                            <p:inputText id="kode" value="#{viewPage.entity.kode}" /> 
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="judul" value="Judul" />
+                            <p:inputText id="judul" value="#{viewPage.entity.judul}" /> 
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="sub-judul" value="Sub Judul" />
+                            <p:inputText id="sub-judul" value="#{viewPage.entity.subJudul}" /> 
+                        </div>
 
                         <div class="field ui-fluid">
                             <p:outputLabel for="jenis-pengajaran" value="Jenis Pengajaran" />
@@ -52,10 +64,10 @@
                         </div>
 
                         <div class="field ui-fluid">
-                            <p:outputLabel for="judul" value="Judul" />
-                            <p:inputText id="judul" value="#{viewPage.entity.judul}" /> 
+                            <p:outputLabel for="jilid" value="Berjilid" />
+                            <p:selectBooleanCheckbox id="jilid" value="#{viewPage.entity.berjilid}" /> 
                         </div>
-
+                        <ui:remove>
                         <div class="field ui-fluid">
                             <p:outputLabel for="penulis" value="Penulis" />
                             <p:inputText id="penulis" value="#{viewPage.entity.penulis}" /> 
@@ -70,7 +82,7 @@
                             <p:outputLabel for="deskripsi" value="Deskripsi" />
                             <p:inputTextarea id="deskripsi" value="#{viewPage.entity.description}" /> 
                         </div>
-
+                        </ui:remove>
                     </ui:define>
                 </ui:decorate>
             </div>

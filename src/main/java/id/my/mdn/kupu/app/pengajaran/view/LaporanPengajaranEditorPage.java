@@ -10,21 +10,24 @@ import id.my.mdn.kupu.app.pengajaran.entity.CatatanPengajaran;
 import id.my.mdn.kupu.app.pengajaran.entity.CatatanPengajaranId;
 import id.my.mdn.kupu.app.pengajaran.entity.LaporanPengajaran;
 import id.my.mdn.kupu.app.pengajaran.entity.PencapaianBelajar;
+import id.my.mdn.kupu.app.pengajaran.view.widget.PengajaranSantriFilter;
+import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.app.santri.entity.StatusKesantrian;
-import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanAltList;
+import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanSelectList;
 import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranTree;
 import id.my.mdn.kupu.app.santri.view.widget.SantriFilter;
 import id.my.mdn.kupu.app.santri.view.widget.SantriList;
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.Page;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
+import id.my.mdn.kupu.core.base.view.widget.Filter;
 import id.my.mdn.kupu.core.base.view.widget.Selector;
 import id.my.mdn.kupu.core.base.view.widget.TextEditorBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.ValueChangeEvent;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -56,10 +60,7 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
 
     @Inject
     @Bookmarked
-    private KelompokPengasuhanAltList kelompokPengasuhanList;
-    
-    @Bookmarked(name = "sn")
-    private Santri santri;
+    private KelompokPengasuhanSelectList kelompokPengasuhanList;
 
     @Inject
     @Bookmarked
@@ -76,18 +77,46 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
 
     private final Map<String, CacheContent> cache = new HashMap<>();
 
+    private final Filter filter;
+
+    @Inject
+    private PengajaranSantriFilter filterContent;
+
+    public LaporanPengajaranEditorPage() {
+        filter = new Filter(this::onFilter);
+    }
+
+    public void onFilter(Object obj) {
+        santriList.getFilter().<SantriFilter>getContent()
+                .setKelompokPengasuhan(
+                        filterContent.getKelompokPengasuhan()
+                );
+        santriList.reset();
+    }
+
+    @Override
+    public Map<String, List<String>> getStates() {
+        Map<String, List<String>> states = super.getStates();
+        states.putAll(filter.getStates());
+        return states;
+    }
+
+    public Filter getFilter() {
+        return filter;
+    }
 
     @PostConstruct
     @Override
     public void init() {
         super.init();
 
-        periodePembelajaranTreeInit();        
-        
+        filter.setContent(filterContent);
+
+        periodePembelajaranTreeInit();
+
         santriList.getFilter()
                 .<SantriFilter>getContent()
                 .setStatusKesantrian(StatusKesantrian.ACTIVE);
-        santriList.getFilter().setFiltering(true);
         santriList.getPager().setPageSize(1L);
         santriList.getPager().setPageSizeLabel("dPSz");
         santriList.getPager().setOffsetLabel("dOff");
@@ -97,18 +126,30 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
         santriList.setDefaultList(() -> new ArrayList<>());
         santriList.setDefaultCount(() -> 0L);
         santriList.setDefaultChecker(() -> periodePembelajaranTree.getSelection() == null);
+        
+        santriList.getFilter().setStaticFilter(() -> {
+            List<FilterData> filters = new ArrayList<>();
+            
+            Santri santri = filterContent.getSantri();
+            if(santri != null) filters.add(FilterData.by("santri", santri));
+            
+            KelompokPengasuhan kelompok = filterContent.getKelompokPengasuhan();
+            if(kelompok != null) filters.add(FilterData.by("kelompokPengasuhan", kelompok));
+            
+            return filters;
+        });
 
         editorCatatan.addLoadListener(this::loadEditorCatatan);
         editorCatatan.addSaveListener(this::saveCatatan);
-
-        kelompokPengasuhanList.setSelectionMode(() -> Selector.SINGLE);
-        kelompokPengasuhanList.getSelector().setSelectionsLabel("kp");
     }
 
     private void periodePembelajaranTreeInit() {
         periodePembelajaranTree.setSelectionMode(() -> Selector.SINGLE);
         periodePembelajaranTree.setName("periodePembelajaranTbl");
         periodePembelajaranTree.setSelectionsLabel("ps");
+        periodePembelajaranTree.getFilter().setName("periodeFilter");
+
+        periodePembelajaranTree.getSelector().addListener(s -> santriList.reset());
     }
 
     public void onChangePeriodePembelajaran(ValueChangeEvent evt) {
@@ -160,7 +201,9 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
     }
 
     public List<PencapaianBelajar> getPencapaianBelajar(Santri santri) {
-        if(santri == null) return List.of();
+        if (santri == null) {
+            return List.of();
+        }
         return getPencapaianBelajar(santri, periodePembelajaranTree.getSelection());
     }
 
@@ -206,20 +249,12 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
         return santriList;
     }
 
-    public KelompokPengasuhanAltList getKelompokPengasuhanList() {
+    public KelompokPengasuhanSelectList getKelompokPengasuhanList() {
         return kelompokPengasuhanList;
     }
 
-    public void setKelompokPengasuhanList(KelompokPengasuhanAltList kelompokPengasuhanList) {
+    public void setKelompokPengasuhanList(KelompokPengasuhanSelectList kelompokPengasuhanList) {
         this.kelompokPengasuhanList = kelompokPengasuhanList;
-    }
-
-    public Santri getSantri() {
-        return santri;
-    }
-
-    public void setSantri(Santri santri) {
-        this.santri = santri;
     }
 
     public TextEditorBean getEditorCatatan() {

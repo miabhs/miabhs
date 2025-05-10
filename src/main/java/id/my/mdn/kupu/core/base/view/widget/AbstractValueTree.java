@@ -5,7 +5,7 @@
  */
 package id.my.mdn.kupu.core.base.view.widget;
 
-import id.my.mdn.kupu.core.base.dao.AbstractFacade;
+import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
 import id.my.mdn.kupu.core.base.model.HierarchicalEntity;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList.DefaultCount;
@@ -28,14 +28,6 @@ import org.primefaces.model.TreeNode;
 public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
         extends AbstractValueList<E> {
 
-    private static enum NodeEvent {
-        NONE,
-        SELECT,
-        UNSELECT,
-        EXPAND,
-        COLLAPSE
-    }
-
     @FunctionalInterface
     public static interface TreeNodeConstructor<E> {
 
@@ -48,69 +40,21 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
 
     private TreeNodeConstructor<E> constructor;
 
-    private NodeEvent latestEvent = NodeEvent.NONE;
-
     private TreeNode<E> nodeSelection;
 
     private List<TreeNode<E>> nodeSelections;
 
-    public AbstractValueTree() {
-        super();
-    }
-
-    @Override
-    public void setSelections(List<E> selections) {
-        selector.setSelectionsInternal(selections);
-
-        if (rootNode == null) {
-            rootNode = createNode(getRoot(), null);
-            constructRoot();
-        }
-
-        List<TreeNode<E>> selectedNodes = new ArrayList<>();
-        findSelections(rootNode, selectedNodes);
-
-        nodeSelections = !selectedNodes.isEmpty() ? selectedNodes : null;
-    }
-
-    public void setNodeSelections(List<TreeNode<E>> nodeSelections) {
-        if (!latestEvent.equals(NodeEvent.EXPAND)) {
-            setNodeSelectionsInternal(nodeSelections);
-        }
-        latestEvent = NodeEvent.NONE;
-
+    public AbstractValueTree(Class<E> entityClass) {
+        super(entityClass);
     }
 
     public List<TreeNode<E>> getNodeSelections() {
         return getNodeSelectionsInternal();
     }
 
-    public void setNodeSelectionsInternal(List<TreeNode<E>> nodeSelections) {
-        this.nodeSelections = nodeSelections;
-
-        PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
-        if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES)) {
-
-            List<E> selections = null;
-
-            if (nodeSelections != null) {
-                selections = new ArrayList<>();
-                for (TreeNode<E> node : nodeSelections) {
-                    selections.add(node.getData());
-                }
-            }
-
-            selector.setSelectionsInternal(selections);
-        }
-    }
-
-    public List<TreeNode<E>> getNodeSelectionsInternal() {
-        return nodeSelections;
-    }
-
     @Override
     public void setSelection(E selection) {
-        selector.setSelectionInternal(selection);
+        selector.setSelection(selection);
 
         if (rootNode == null) {
             rootNode = createNode(getRoot(), null);
@@ -123,27 +67,30 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
         nodeSelection = selectedNode;
     }
 
-    public TreeNode<E> getNodeSelection() {
-        return nodeSelection;
+    @Override
+    public void setSelections(List<E> selections) {
+        selector.setSelections(selections);
+
+        if (rootNode == null) {
+            rootNode = createNode(getRoot(), null);
+            constructRoot();
+        }
+
+        List<TreeNode<E>> selectedNodes = new ArrayList<>();
+        findSelections(rootNode, selectedNodes);
+
+        nodeSelections = !selectedNodes.isEmpty() ? selectedNodes : null;
     }
 
     public void setNodeSelection(TreeNode<E> nodeSelection) {
-        if (!latestEvent.equals(NodeEvent.EXPAND)) {
-            setNodeSelectionInternal(nodeSelection);
-        }
-        latestEvent = NodeEvent.NONE;
-
-    }
-
-    public TreeNode<E> getNodeSelectionInternal() {
-        return nodeSelection;
-    }
-
-    public void setNodeSelectionInternal(TreeNode<E> nodeSelection) {
-        this.nodeSelection = nodeSelection;
-
+//        if (!latestEvent.equals(NodeEvent.EXPAND)) {
+//            setNodeSelectionInternal(nodeSelection);
+//        }
+//        latestEvent = NodeEvent.NONE;E selection = null;
+        System.err.printf("SELEKTRI %s", nodeSelection);
         PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
         if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES)) {
+            this.nodeSelection = nodeSelection;
 
             E selection = null;
 
@@ -151,8 +98,90 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
                 selection = nodeSelection.getData();
             }
 
-            selector.setSelectionInternal(selection);
+            selector.setSelection(selection);
         }
+
+    }
+
+    public void setNodeSelections(List<TreeNode<E>> nodeSelections) {
+//        if (!latestEvent.equals(NodeEvent.EXPAND)) {
+//            setNodeSelectionsInternal(nodeSelections);
+//        }
+//        latestEvent = NodeEvent.NONE;
+        PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
+        if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES)) {
+            this.nodeSelections = nodeSelections;
+
+            List<E> selections = null;
+
+            if (nodeSelections != null) {
+                selections = new ArrayList<>();
+                for (TreeNode<E> node : nodeSelections) {
+                    selections.add(node.getData());
+                }
+            }
+
+            selector.setSelections(selections);
+        }
+
+    }
+
+    public TreeNodeConstructor<E> getConstructor() {
+        if (constructor == null) {
+            constructor = (data, parent) -> new LazyDefaultTreeNode<E>(data, parent,
+                    this::getChildren,
+                    this::countChildren);
+        }
+        return constructor;
+    }
+
+    public void setConstructor(TreeNodeConstructor<E> constructor) {
+        this.constructor = constructor;
+    }
+
+    public void setNodeSelectionInternal(TreeNode<E> nodeSelection) {
+        this.nodeSelection = nodeSelection;
+
+//        PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
+//        if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES)) {
+        E selection = null;
+
+        if (nodeSelection != null) {
+            selection = nodeSelection.getData();
+        }
+
+        selector.setSelectionInternal(selection);
+//        }
+    }
+
+    public void setNodeSelectionsInternal(List<TreeNode<E>> nodeSelections) {
+        this.nodeSelections = nodeSelections;
+
+//        PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
+//        if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES)) {
+        List<E> selections = null;
+
+        if (nodeSelections != null) {
+            selections = new ArrayList<>();
+            for (TreeNode<E> node : nodeSelections) {
+                selections.add(node.getData());
+            }
+        }
+
+        selector.setSelectionsInternal(selections);
+//        }
+    }
+
+    public List<TreeNode<E>> getNodeSelectionsInternal() {
+        return nodeSelections;
+    }
+
+    public TreeNode<E> getNodeSelection() {
+        return nodeSelection;
+    }
+
+    public TreeNode<E> getNodeSelectionInternal() {
+        return nodeSelection;
     }
 
     private void findSelection(TreeNode<E> firstNode, TreeNode<E> selectedNode) {
@@ -209,10 +238,12 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
             Map<String, Object> parameters,
             List<FilterData> filters,
             DefaultCount defaultCount,
-            AbstractFacade.DefaultChecker defaultChecker);
+            DefaultChecker defaultChecker);
 
     public TreeNode<E> getRootNode() {
-        if (rootNode == null) {
+        System.err.printf("SELEKTRI GETRUT (%s, %s)", isCached(), isValid());
+        if (!isCached() || !isValid()) {
+            System.err.println("SELEKTRI LOATRUT");
             rootNode = createNode(getRoot(), null);
             constructRoot();
         }
@@ -220,7 +251,7 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
     }
 
     private void constructRoot() {
-        if (!valid) {
+        if (!isCached()) {
 
             constructTree(rootNode);
 
@@ -232,8 +263,22 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
                 findSelections(rootNode, selectedNodes);
             }
 
-            validate();
+        } else {
+            if (!valid) {
 
+                constructTree(rootNode);
+
+                if (getSelectionMode().equals(SINGLE)) {
+                    TreeNode<E> selectedNode = null;
+                    findSelection(rootNode, selectedNode);
+                } else {
+                    List<TreeNode<E>> selectedNodes = new ArrayList<>();
+                    findSelections(rootNode, selectedNodes);
+                }
+
+                validate();
+
+            }
         }
     }
 
@@ -264,7 +309,7 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
     }
 
     protected TreeNode<E> createNode(E data, TreeNode<E> parent) {
-        return constructor.construct(data, parent);
+        return getConstructor().construct(data, parent);
     }
 
     private List<E> loadChildren(E t) {
@@ -294,7 +339,7 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
                 defaultChecker);
 
         return children.stream()
-                .map(e -> constructor.construct(parent.getData(), parent))
+                .map(e -> getConstructor().construct(parent.getData(), parent))
                 .collect(Collectors.toList());
 
     }
@@ -306,8 +351,8 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
     }
 
     @Override
-    protected void resetInternal() {       
-        if(getSelectionMode().equals(SINGLE)) {
+    protected void resetInternal() {
+        if (getSelectionMode().equals(SINGLE)) {
             nodeSelection = null;
         } else {
             nodeSelections = null;
@@ -320,13 +365,13 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
     public void setSelectionMode(SelectionModeSelector mode) {
         selector.setSelectionMode(mode);
         if (getSelectionMode().equals(CHECKBOX)) {
-            constructor = (data, parent) -> new LazyCheckboxTreeNode<>(data, parent,
+            setConstructor((data, parent) -> new LazyCheckboxTreeNode<>(data, parent,
                     this::getChildren,
-                    this::countChildren);
+                    this::countChildren));
         } else {
-            constructor = (data, parent) -> new LazyDefaultTreeNode<E>(data, parent,
+            setConstructor((data, parent) -> new LazyDefaultTreeNode<E>(data, parent,
                     this::getChildren,
-                    this::countChildren);
+                    this::countChildren));
         }
     }
 
@@ -335,6 +380,6 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
     }
 
     public void setNodeConstructor(TreeNodeConstructor<E> constructor) {
-        this.constructor = constructor;
+        setConstructor(constructor);
     }
 }

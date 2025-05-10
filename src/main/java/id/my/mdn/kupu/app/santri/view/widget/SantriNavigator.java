@@ -4,7 +4,7 @@
  */
 package id.my.mdn.kupu.app.santri.view.widget;
 
-import id.my.mdn.kupu.app.santri.view.HalaqohPengajaranPage;
+import id.my.mdn.kupu.app.santri.view.HalaqohPembelajaranPage;
 import id.my.mdn.kupu.app.santri.view.JenisKitabPage;
 import id.my.mdn.kupu.app.santri.view.JenisPengajaranPage;
 import id.my.mdn.kupu.app.santri.view.KategoriKitabPage;
@@ -33,8 +33,8 @@ public class SantriNavigator extends PageNavigator implements Serializable {
                 return TahunPembelajaranPage.class;
             case "KelompokPengasuhan":
                 return KelompokPengasuhanPage.class;
-            case "HalaqohPengajaran":
-                return HalaqohPengajaranPage.class;
+            case "HalaqohPembelajaran":
+                return HalaqohPembelajaranPage.class;
             case "JenisKitab":
                 return JenisKitabPage.class;
             case "KategoriKitab":

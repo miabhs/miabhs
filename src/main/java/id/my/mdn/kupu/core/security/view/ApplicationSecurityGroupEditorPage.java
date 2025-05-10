@@ -10,7 +10,7 @@ import id.my.mdn.kupu.core.base.view.FormPage;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.security.dao.ApplicationSecurityMapFacade;
 import id.my.mdn.kupu.core.security.model.ApplicationSecurityGroup;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 

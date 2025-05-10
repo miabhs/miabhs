@@ -7,9 +7,10 @@ package id.my.mdn.kupu.app.santri.view.widget;
 import id.my.mdn.kupu.app.santri.dao.SantriFacade;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.Filter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.Filter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -33,6 +34,10 @@ public class SantriList extends AbstractMutablePagedValueList<Santri> {
 
     @Inject
     private SantriFilter filterContent;
+
+    public SantriList() {
+        super(Santri.class);
+    }
 
     @PostConstruct
     public void init() {
@@ -73,17 +78,20 @@ public class SantriList extends AbstractMutablePagedValueList<Santri> {
 
     @Override
     public String[] getCreatePermission() {
-        return new String[]{"create_santri"};
+//        return new String[]{"create_santri"};
+        return new String[]{};
     }
 
     @Override
     public String[] getUpdatePermission() {
-        return new String[]{"update_santri"};
+//        return new String[]{"update_santri"};
+        return new String[]{};
     }
 
     @Override
     public String[] getDeletePermission() {
-        return new String[]{"delete_santri"};
+//        return new String[]{"delete_santri"};
+        return new String[]{};
     }
     
     private final SantriList that = this;

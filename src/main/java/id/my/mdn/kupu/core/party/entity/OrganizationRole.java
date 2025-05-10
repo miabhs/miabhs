@@ -17,7 +17,7 @@ public class OrganizationRole extends PartyRole {
         return (Organization) getParty();
     }
     
-    public void setPerson(Organization organization) {
+    public void setOrganization(Organization organization) {
         setParty(organization);
     }
 }

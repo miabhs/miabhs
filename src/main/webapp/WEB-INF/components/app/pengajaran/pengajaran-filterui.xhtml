@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+    
+    <div class="filter-field">
+        <p:outputLabel value="Halaqoh" />
+        <p:selectOneMenu value="#{filter.content.halaqohPengajaran}" 
+                         converter="HalaqohPengajaranConverter"
+                         autoWidth="false"  >                        
+            <f:selectItem itemLabel="Pilih" itemValue="#{null}" />
+            <f:selectItems value="#{filter.content.halaqohList.fetchedItems}" 
+                           var="item" itemValue="#{item}" 
+                           itemLabel="#{item.name}" />
+        </p:selectOneMenu>
+    </div>
+    
+    <div class="filter-field">
+        <p:outputLabel value="Tahun" />
+        <p:selectOneMenu value="#{filter.content.tahunPembelajaran}" 
+                         converter="TahunPembelajaranConverter"
+                         autoWidth="false"  >                        
+            <f:selectItem itemLabel="Pilih" itemValue="#{null}" />
+            <f:selectItems value="#{filter.content.tahunList.fetchedItems}" 
+                           var="item" itemValue="#{item}" 
+                           itemLabel="#{item.name}" />
+            <p:ajax listener="#{filter.content.onTahunChanged}" update="month pekan" />
+        </p:selectOneMenu>
+    </div>
+    
+    <div class="filter-field">
+        <p:outputLabel value="Bulan" />
+        <p:selectOneMenu id="month" value="#{filter.content.bulanPembelajaran}" 
+                         converter="PeriodePembelajaranConverter"
+                         autoWidth="false"  >                        
+            <f:selectItem itemLabel="Pilih" itemValue="#{null}" />
+            <f:selectItems value="#{filter.content.bulanList.fetchedItems}" 
+                           var="item" itemValue="#{item}" 
+                           itemLabel="#{item.name}" />
+            <p:ajax listener="#{filter.content.onBulanChanged}" update="pekan" />
+        </p:selectOneMenu>
+    </div>
+    
+    <div class="filter-field">
+        <p:outputLabel value="Pekan" />
+        <p:selectOneMenu id="pekan" value="#{filter.content.periodePembelajaran}" 
+                         converter="PeriodePembelajaranConverter"
+                         autoWidth="false"  >                        
+            <f:selectItem itemLabel="Pilih" itemValue="#{null}" />
+            <f:selectItems value="#{filter.content.pekanList.fetchedItems}" 
+                           var="item" itemValue="#{item}" 
+                           itemLabel="#{item.name}" />
+            
+        </p:selectOneMenu>
+    </div>
+
+</ui:composition>
+

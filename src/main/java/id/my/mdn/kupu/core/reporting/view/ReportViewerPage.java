@@ -7,7 +7,7 @@ package id.my.mdn.kupu.core.reporting.view;
 import id.my.mdn.kupu.core.base.view.ChildPage;
 import java.io.Serializable;
 import java.util.Map;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Named;
 
 /**

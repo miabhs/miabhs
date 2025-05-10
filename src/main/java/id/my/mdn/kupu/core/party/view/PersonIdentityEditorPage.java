@@ -14,7 +14,7 @@ import id.my.mdn.kupu.core.party.entity.Person;
 import id.my.mdn.kupu.core.party.entity.PersonIdentity;
 import id.my.mdn.kupu.core.party.view.form.PersonIdentityForm;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 

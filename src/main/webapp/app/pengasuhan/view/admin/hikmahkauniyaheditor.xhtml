@@ -10,9 +10,6 @@
         <ui:param name="primaryTitle" value="Editor Hikmah Kauniyah" />
         <ui:param name="form" value="#{viewPage.form}" />
 
-        <ui:param name="notool" value="true" />
-        <ui:param name="nofilter" value="true" />
-
         <f:viewParam name="entity" value="#{viewPage.entity}" converter="HikmahKauniyahConverter" transient="true" />
 
         <f:viewAction action="#{viewPage.load}" />
@@ -26,12 +23,12 @@
                     <ui:define name="fields">
                         <div class="field ui-fluid">
                             <p:outputLabel for="santri" value="Santri" />
-                            <p:inputText id="santri" value="#{form.entity.santri.person.name}" readonly="true" />
+                            <p:inputText id="santri" value="#{form.entity.santriName}" readonly="true" />
                         </div>
 
                         <div class="field ui-fluid">
                             <p:outputLabel for="kelompok" value="Kelompok" />
-                            <p:inputText id="kelompok" value="#{form.entity.santri.kelompokPengasuhan.organization.name}" readonly="true" />
+                            <p:inputText id="kelompok" value="#{form.entity.kelompokPengasuhanName}" readonly="true" />
                         </div>
 
                         <div class="field ui-fluid">

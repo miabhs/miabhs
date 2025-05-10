@@ -30,8 +30,11 @@ public class SantriEditorPage extends FormPage<Santri> {
     @Inject
     private SantriFacade dao;
 
-    @Inject @Form
+    @Inject
+    @Form
     private PersonEditorForm form;
+
+    private boolean generateNis;
 
     @Override
     public void load() {
@@ -42,12 +45,12 @@ public class SantriEditorPage extends FormPage<Santri> {
     @Override
     protected Santri newEntity() {
         Person person = Person.builder()
-//                .identity(new PersonIdentity())
-//                .postalAddress(new PostalAddress())
-//                .telecommunicationNumber(new TelecommunicationNumber())
-//                .electronicAddress(new ElectronicAddress())
+                //                .identity(new PersonIdentity())
+                //                .postalAddress(new PostalAddress())
+                //                .telecommunicationNumber(new TelecommunicationNumber())
+                //                .electronicAddress(new ElectronicAddress())
                 .get();
-        
+
         return Santri.builder()
                 .withPerson(person)
                 .get();
@@ -60,9 +63,13 @@ public class SantriEditorPage extends FormPage<Santri> {
         statusSantri.setFromDate(entity.getTahunMasuk().getFromDate());
         statusSantri.setSantri(entity);
         statusSantri.setStatus(StatusKesantrian.ACTIVE);
-        entity.setListStatus(List.of(statusSantri));        
+        entity.setListStatus(List.of(statusSantri));
         
-        return dao.create(entity);
+        if (generateNis) {
+            return dao.createAndGenerateNis(entity);
+        } else {
+            return dao.create(entity);
+        }
     }
 
     @Override
@@ -72,6 +79,14 @@ public class SantriEditorPage extends FormPage<Santri> {
 
     public PersonEditorForm getForm() {
         return form;
+    }
+
+    public boolean isGenerateNis() {
+        return generateNis;
+    }
+
+    public void setGenerateNis(boolean generateNis) {
+        this.generateNis = generateNis;
     }
 
 }

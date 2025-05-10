@@ -2,46 +2,85 @@
                 xmlns:ui="jakarta.faces.facelets"
                 template="/WEB-INF/templates/page.xhtml"
                 xmlns:h="jakarta.faces.html"
-                xmlns:f="jakarta.faces.core">
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
 
     <f:metadata>
         <ui:param name="title" value="Jenis Kitab" />
 
         <ui:param name="viewPage" value="#{jenisKitabPage}" />
-        <ui:param name="dataView" value="#{jenisKitabPage.dataView}" />
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
         
-        <ui:param name="pager" value="#{dataView.pager}" />
-        <ui:param name="filter" value="#{dataView.filter}" />
-        <ui:param name="filterName" value="#{filter.name}" />
+        <ui:param name="dataView" value="#{viewPage.dataView}" />
         <ui:param name="contentId" value=":data-frm:#{dataView.name}" /> 
-
-        <ui:param name="nofilter" value="true" />
+        <ui:param name="notool" value="true" />
         
-        <ui:include src="/WEB-INF/components/core/base/meta/filter.xhtml" />
-        <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
-        
+        <ui:param name="filter" value="#{dataView.filter}" />
+        <ui:param name="filterType" value="overlay" />
+        <ui:param name="filterUi" value="/WEB-INF/components/app/santri/jeniskitab-filterui.xhtml" />
         <ui:include src="/WEB-INF/components/app/santri/meta/jeniskitab-filterui.xhtml" />
-        
-        <f:viewParam name="s" value="#{dataView.selections}" converter="JenisKitabListConverter" />
-        
+
+        <f:viewParam name="s" value="#{dataView.selectionsInternal}" converter="JenisKitabListConverter" transient="true" />
+
     </f:metadata> 
 
     <ui:define name="module-menu">
         <ui:include src="/WEB-INF/components/app/santri/module-menu.xhtml" />
     </ui:define>
 
-    <ui:define name="overlay-filter">
-        <ui:include src="/WEB-INF/components/core/base/filter.xhtml" >
-            <ui:param name="filterUi" value="/WEB-INF/components/app/santri/jeniskitab-filterui.xhtml" />
-        </ui:include>
-    </ui:define>
-
     <ui:define name="content">
         <h:form id="data-frm" class="flex-grow-1 flex align-items-stretch">            
-            <ui:include src="/WEB-INF/components/app/santri/jeniskitablist.xhtml">
-                <ui:param name="selectListener" value=":tools-frm" />
-            </ui:include>
+            <ui:decorate template="/WEB-INF/components/app/santri/jeniskitabtree.xhtml">
+                <ui:define name="context-menu">
+                    <p:menuitem icon="pi pi-bookmark" value="Daftar Atribut"
+                                update="dlg-atribut" oncomplete="PF('dlgAtribut').show()" />
+                </ui:define>
+            </ui:decorate>
         </h:form>
+        <p:dialog id="dlg-atribut" header="Daftar Atribut" widgetVar="dlgAtribut"
+                  dynamic="true" minHeight="40" width="50%" showEffect="fade" 
+                  modal="true" closeOnEscape="true">
+            <h:form>
+                <p:dataTable id="attTbl" value="#{dataView.selected.listAtribut}" var="data" 
+                             editable="true" editMode="cell" size="small"
+                             showGridlines="true" stripedRows="true">
+                    <p:ajax event="cellEdit" listener="#{viewPage.onEditAtribut}" />
+                    <f:facet name="header">
+                        <p:commandButton icon="pi pi-plus" 
+                                         actionListener="#{viewPage.addAtribut}" 
+                                         immediate="true" update="@form:attTbl"
+                                         class="ui-button-flat" />
+                    </f:facet>
+                    <p:column headerText="Nama">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{data.name}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{data.name}" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="Isian">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{data.allowableValues}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{data.allowableValues}" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column width="10%">
+                        <p:commandButton icon="pi pi-trash" class="ui-button-flat"
+                                         action="#{viewPage.removeAtribut(data)}"
+                                         immediate="true" update="@form:attTbl" />
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
     </ui:define>
-  
+
+    <ui:define name="pager"/>
+
 </ui:composition>

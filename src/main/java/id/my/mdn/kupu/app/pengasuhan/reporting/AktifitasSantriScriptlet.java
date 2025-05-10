@@ -4,11 +4,11 @@
  */
 package id.my.mdn.kupu.app.pengasuhan.reporting;
 
-import java.time.LocalDate;
-import java.util.logging.Logger;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
+import java.time.LocalDate;
+import java.util.logging.Logger;
 import net.sf.jasperreports.engine.JRDefaultScriptlet;
 import net.sf.jasperreports.engine.JRScriptletException;
 
@@ -38,8 +38,10 @@ public class AktifitasSantriScriptlet extends JRDefaultScriptlet {
         LocalDate fromDate = (LocalDate) getParameterValue("fromDate");
         LocalDate thruDate = (LocalDate) getParameterValue("thruDate");
         
-        setVariableValue("kesimpulanPokok", helper.getAktifitasFacade().calculateKesimpulanBDAS(santriId, fromDate, thruDate).getName());
-        setVariableValue("kesimpulanTambahan", helper.getAktifitasFacade().calculateKesimpulanNonBDAS(santriId, fromDate, thruDate).getName());
+        setVariableValue("kesimpulanPokok", 
+                helper.getAktifitasFacade().calculateKesimpulanBDAS(santriId, fromDate, thruDate).getName());
+        setVariableValue("kesimpulanTambahan", 
+                helper.getAktifitasFacade().calculateKesimpulanNonBDAS(santriId, fromDate, thruDate).getName());
 
     }
 }

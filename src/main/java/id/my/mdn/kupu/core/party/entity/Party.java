@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
@@ -37,6 +38,22 @@ public abstract class Party implements Serializable {
 
     @Column(name = "dtype")
     private String type;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    private String lastName;
+    
+    @Lob
+    private byte [] picture;
+
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
+    }
 
     @OneToMany(mappedBy = "party", cascade = CascadeType.ALL)
     private List<PartyClassification> classifications;
@@ -102,6 +119,22 @@ public abstract class Party implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public List<PartyContactMechanism> getContactMechanisms() {

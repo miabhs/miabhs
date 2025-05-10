@@ -7,7 +7,6 @@ package id.my.mdn.kupu.core.party.entity;
 
 import id.my.mdn.kupu.core.base.model.EntityBuilder;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 
@@ -70,34 +69,20 @@ public class Organization extends Party {
         return new Builder();
     }
 
-    
-    private String name;
-    
-    @Lob
-    private byte [] logo;
-
     public Organization() {
     }
 
     public Organization(Long id, String name) {
         setId(id);
-        this.name = name;
+        setFirstName(name);
     }
 
     @Override
     public String getName() {
-        return name;
+        return getFirstName();
     }
 
     public void setName(String name) {
-        this.name = name;
-    }
-
-    public byte[] getLogo() {
-        return logo;
-    }
-
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
+        setFirstName(name);
     }
 }

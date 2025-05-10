@@ -5,12 +5,15 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-    <div class="col-12 md:col-6 lg:col-4">
-        <ui:include src="/WEB-INF/components/core/party/organizationform.xhtml" >
-            <ui:param name="form" value="#{editor.organizationForm}" />
-            <ui:param name="required" value="#{editor.organizationForm.required}" />
-        </ui:include>
-    </div>
+
+    <ui:insert name="organization-form">
+        <div class="col-12 md:col-6 lg:col-4">
+            <ui:include src="/WEB-INF/components/core/party/organizationform.xhtml" >
+                <ui:param name="form" value="#{editor.organizationForm}" />
+                <ui:param name="required" value="#{editor.organizationForm.required}" />
+            </ui:include>
+        </div>
+    </ui:insert>
 
     <ui:insert name="postaladdress-form">
         <div class="col-12 md:col-6 lg:col-4">

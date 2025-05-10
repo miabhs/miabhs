@@ -1,0 +1,134 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/editor-page.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+    <f:metadata>  
+
+        <ui:param name="primaryTitle" value="Editor Pengajaran" />  
+        <ui:param name="secondaryTitle" value="Baru" />
+
+        <ui:param name="viewPage" value="#{pengajaranEditorPage}" />
+
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/> 
+
+        <ui:param name="notool" value="true" />
+        <ui:param name="nofilter" value="true"/>          
+
+        <f:viewParam name="entity" value="#{viewPage.entity}" converter="PengajaranConverter" transient="true" />
+
+        <f:viewParam name="fromRole" value="#{viewPage.fromRole}" converter="HalaqohPengajaranConverter" />
+        <f:viewParam name="toRole" value="#{viewPage.toRole}" converter="SantriConverter" />
+
+        <f:viewAction action="#{viewPage.load}" />
+    </f:metadata>
+
+    <ui:define name="content-header" />
+
+    <ui:define name="form">
+
+        <div class="grid w-full p-3">
+
+            <div class="col-12 md:col-6">
+                <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
+                    <ui:define name="fields">
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="fromrole" value="Halaqoh" />
+                            <p:outputPanel class="ui-inputgroup">
+                                <p:inputText id="fromrole" 
+                                             value="#{viewPage.entity.fromRole ne null ? viewPage.entity.fromRole.label : ''}" readonly="true" />
+                            </p:outputPanel>
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="kelompok" value="Kelompok" />
+                            <p:outputPanel class="ui-inputgroup">
+                                <p:inputText id="kelompok" 
+                                             value="#{viewPage.entity.fromRole ne null ? viewPage.entity.fromRole.kelompokWaktu : ''}" readonly="true" />
+                            </p:outputPanel>
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="pengampu" value="Pengampu" />
+                            <p:outputPanel class="ui-inputgroup">
+                                <p:inputText id="pengampu" 
+                                             value="#{viewPage.entity.fromRole ne null ? viewPage.entity.fromRole.pengampuName : ''}" readonly="true" />
+                            </p:outputPanel>
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="santri" value="Santri" />
+                            <span class="ui-input-icon-right">
+                                <i class="pi pi-chevron-down" />
+                                <p:inputText id="santri" value="#{viewPage.entity.toRole ne null ? viewPage.entity.toRole.party.name : ''}" 
+                                             style="cursor: pointer;" 
+                                             readonly="true" styleClass="w-full"
+                                             onclick="showSantriSelector('#{component.clientId}', '#{component.clientId}')" />
+                            </span>
+
+                            <ui:decorate template="/WEB-INF/components/core/base/lazychooser.xhtml" >
+                                <ui:param name="name" value="SantriSelector" />
+                                <ui:param name="widgetVar" value="santriSelector" />
+                                <ui:param name="id" value="santri-selector" />
+                                <ui:param name="chooser" value="#{viewPage.santriChooser}" />
+                                <ui:define name="columns">
+                                    <p:column>
+                                        <h:outputText value="#{data ne null ? data.name : ''}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <h:outputText value="#{((data ne null) and (data.kelompokPengasuhan ne null)) ? data.kelompokPengasuhan.organization.name : ' '}" />
+                                    </p:column>
+                                </ui:define>
+                            </ui:decorate>
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="kitab" value="Kitab" />
+                            <p:selectOneMenu id="kitab" value="#{viewPage.entity.jenisKitab}"
+                                             converter="JenisKitabConverter" var="i"
+                                             autoWidth="false" required="true" > 
+                                <f:selectItems value="#{viewPage.jenisKitabList.fetchedItems}" 
+                                               var="item" itemValue="#{item}"
+                                               itemLabel="#{item.label}" />
+                                <p:column>
+                                    <h:outputText class="block text-xl font-bold white-space-normal amiri-bold text-lg" 
+                                                  style="direction: rtl"  
+                                                  value="#{i.judul}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText class="block text-xl font-bold white-space-normal amiri-bold text-lg" 
+                                                  style="direction: rtl"  
+                                                  value="#{i.subJudul}" />
+                                </p:column>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="from" value="Sejak" />
+                            <p:datePicker id="from" value="#{viewPage.entity.fromDate}"
+                                          pattern="dd/MM/yyyy" showTime="false" monthNavigator="true" yearNavigator="true"
+                                          required="true" />
+                        </div>
+
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="thru" value="Sampai" />
+                            <p:datePicker id="thru" value="#{viewPage.entity.thruDate}"
+                                          pattern="dd/MM/yyyy" showTime="false" monthNavigator="true" yearNavigator="true" />
+                        </div>
+
+                    </ui:define>
+                </ui:decorate>
+            </div>
+
+        </div>
+
+
+    </ui:define>
+
+
+</ui:composition>

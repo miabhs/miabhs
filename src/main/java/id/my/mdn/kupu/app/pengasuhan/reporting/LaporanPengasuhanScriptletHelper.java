@@ -7,7 +7,6 @@ package id.my.mdn.kupu.app.pengasuhan.reporting;
 import id.my.mdn.kupu.app.pengasuhan.dao.AktifitasFacade;
 import id.my.mdn.kupu.app.pengasuhan.dao.CatatanKepengasuhanFacade;
 import id.my.mdn.kupu.app.pengasuhan.service.PengasuhanService;
-import id.my.mdn.kupu.app.santri.service.PeriodePembelajaranService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -19,9 +18,6 @@ import jakarta.inject.Singleton;
 @Named(value = "laporanPengasuhanScriptletHelper")
 @Singleton
 public class LaporanPengasuhanScriptletHelper {
-
-    @Inject
-    private PeriodePembelajaranService periodePembelajaranService;
     
     @Inject
     private CatatanKepengasuhanFacade catatanLaporanFacade;
@@ -31,10 +27,6 @@ public class LaporanPengasuhanScriptletHelper {
     
     @Inject
     private PengasuhanService pengasuhanService;
-
-    public PeriodePembelajaranService getPeriodePembelajaranService() {
-        return periodePembelajaranService;
-    }
 
     public CatatanKepengasuhanFacade getCatatanLaporanFacade() {
         return catatanLaporanFacade;

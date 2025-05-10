@@ -9,6 +9,9 @@ import id.my.mdn.kupu.app.santri.entity.Ustadz;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.util.FilterTypes;
 import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -25,6 +28,10 @@ public class UstadzSelectList extends AbstractValueList<Ustadz> {
     
     @Inject
     private UstadzFacade dao;
+
+    public UstadzSelectList() {
+        super(Ustadz.class);
+    }
 
     @Override
     protected List<Ustadz> getFetchedItemsInternal(Map<String, Object> parameters, List<FilterTypes.FilterData> filters, List<SorterData> sorters, DefaultList<Ustadz> defaultList, AbstractFacade.DefaultChecker defaultChecker) {

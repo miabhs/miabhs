@@ -18,7 +18,7 @@
 			<element kind="frame" uuid="d43bad9e-eec2-4f81-9104-d0fe0d81f7de" x="0" y="0" width="200" height="24" removeLineWhenBlank="true">
 				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 				<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				<element kind="textField" uuid="1f93c396-aae4-4330-acb6-ae7ec8035bc8" x="0" y="0" width="192" height="16" removeLineWhenBlank="true" vTextAlign="Top">
+				<element kind="textField" uuid="1f93c396-aae4-4330-acb6-ae7ec8035bc8" x="0" y="0" width="192" height="16" textAdjust="StretchHeight" removeLineWhenBlank="true" vTextAlign="Top">
 					<expression><![CDATA[$F{catatan}]]></expression>
 				</element>
 				<box padding="4"/>

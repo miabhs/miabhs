@@ -7,7 +7,7 @@ package id.my.mdn.kupu.core.base.dao;
 
 import id.my.mdn.kupu.core.base.model.HierarchicalEntity;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -38,10 +38,15 @@ public abstract class AbstractHierarchicalFacade<T extends HierarchicalEntity>
             Map<String, Object> parameters,
             List<FilterData> filters,
             List<SorterData> sorters,
-            List<T> defaultReturn
+            List<T> defaultReturn, 
+            DefaultChecker defaultChecker
     ) {
+        
+        if (defaultChecker == null) {
+            defaultChecker = () -> shouldReturnDefault(filters);
+        }
 
-        if (defaultReturn != null
+        if (defaultChecker.passed() && defaultReturn != null
                 && (filters == null || filters.isEmpty()
                 || (filters.size() == 1 && filters.get(0).name.equals("parent")))) {
             return defaultReturn;
@@ -53,12 +58,16 @@ public abstract class AbstractHierarchicalFacade<T extends HierarchicalEntity>
     }
 
     @Override
-    public Long countAll(Map<String, Object> parameters, List<FilterData> filters, Long defaultReturn) {
+    public Long countAll(Map<String, Object> parameters, List<FilterData> filters, Long defaultCount, DefaultChecker defaultChecker) {
 
-        if (defaultReturn != null
+        if (defaultChecker == null) {
+            defaultChecker = () -> shouldReturnDefault(filters);
+        }
+
+        if (defaultChecker.passed() && defaultCount != null
                 && (filters == null || filters.isEmpty()
                 || (filters.size() == 1 && filters.get(0).name.equals("parent")))) {
-            return defaultReturn;
+            return defaultCount;
         }
         
         CriteriaQuery<Long> cq = countingQuery(filters);

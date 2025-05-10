@@ -28,8 +28,9 @@
 package id.my.mdn.kupu.core.security.view.widget;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.security.dao.ApplicationSecurityGroupFacade;
 import id.my.mdn.kupu.core.security.model.ApplicationSecurityGroup;
 import jakarta.annotation.PostConstruct;
@@ -37,7 +38,6 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +57,10 @@ public class ApplicationSecurityGroupList
     @Inject
     private ApplicationSecurityGroupFilter filterContent;
 
+    public ApplicationSecurityGroupList() {
+        super(ApplicationSecurityGroup.class);
+    }
+
     @PostConstruct
     public void init() {
         filter.setContent(filterContent);
@@ -72,11 +76,6 @@ public class ApplicationSecurityGroupList
     protected long getItemsCountInternal(Map<String, Object> parameters, List<FilterData> filters, DefaultCount defaultCount, AbstractFacade.DefaultChecker defaultChecker) {
         
         return dao.countAll(parameters, filters);
-    }
-
-    @Override
-    public List<SorterData> getSorters() {
-        return Arrays.asList(new SorterData("id"));
     }
 
     @Override

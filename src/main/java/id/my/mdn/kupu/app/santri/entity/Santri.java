@@ -5,6 +5,9 @@
 package id.my.mdn.kupu.app.santri.entity;
 
 import id.my.mdn.kupu.core.base.model.EntityBuilder;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Sort;
+import id.my.mdn.kupu.core.base.view.annotation.SorterFields;
 import id.my.mdn.kupu.core.party.entity.GenderType;
 import id.my.mdn.kupu.core.party.entity.Organization;
 import id.my.mdn.kupu.core.party.entity.PartyRoleType;
@@ -14,7 +17,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.ColumnResult;
 import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SqlResultSetMapping;
@@ -45,16 +49,17 @@ import java.util.List;
                             @ColumnResult(name = "ID", type = Long.class),
                             @ColumnResult(name = "PARTYID", type = Long.class),
                             @ColumnResult(name = "PARTYROLETYPEID", type = String.class),
-                            @ColumnResult(name = "FIRSTNAME", type = String.class),
-                            @ColumnResult(name = "LASTNAME", type = String.class),
+                            @ColumnResult(name = "NAME", type = String.class),
                             @ColumnResult(name = "NAMABAPAK", type = String.class),
                             @ColumnResult(name = "GENDER", type = String.class),
                             @ColumnResult(name = "DATEOFBIRTH", type = LocalDate.class),
                             @ColumnResult(name = "NIS", type = String.class),
+                            @ColumnResult(name = "JENISSANTRI", type = String.class),
                             @ColumnResult(name = "STATUS", type = String.class),
                             @ColumnResult(name = "TAHUNMASUKID", type = Long.class),
                             @ColumnResult(name = "TAHUNMASUKNAME", type = String.class),
                             @ColumnResult(name = "TAHUNMASUKFROMDATE", type = LocalDate.class),
+                            @ColumnResult(name = "ANGKATAN", type = Integer.class),
                             @ColumnResult(name = "KELOMPOKPENGASUHANID", type = Long.class),
                             @ColumnResult(name = "KELOMPOKPENGASUHANPARTYID", type = Long.class),
                             @ColumnResult(name = "KELOMPOKPENGASUHANPARTYNAME", type = String.class),
@@ -64,8 +69,13 @@ import java.util.List;
             }
     )
 })
+@SorterFields({
+    @SorterField(value = "nis", label = "NIS", sort = Sort.MANUAL),
+    @SorterField(value = "name", label = "Nama", sort = Sort.MANUAL),
+    @SorterField(value = "dateOfBirth", label = "Tanggal Lahir", sort = Sort.MANUAL)
+})
 public class Santri extends PersonRole {
-    
+
     public static final Builder builder() {
         return new Builder();
     }
@@ -93,8 +103,20 @@ public class Santri extends PersonRole {
     @ManyToOne
     private TahunPembelajaran tahunMasuk;
 
+    private Integer angkatan;
+
     @OneToMany(mappedBy = "santri", cascade = CascadeType.ALL)
     private List<StatusSantri> listStatus;
+
+    private String namaBapak;
+
+    private String namaIbu;
+
+    @Enumerated(EnumType.STRING)
+    private JenisSantri jenisSantri;
+
+    @Transient
+    private String name;
 
     @Transient
     private StatusKesantrian status;
@@ -102,31 +124,31 @@ public class Santri extends PersonRole {
     @Transient
     private KelompokPengasuhan kelompokPengasuhan;
 
-    @ManyToMany(mappedBy = "listSantri")
-    private List<HalaqohPengajaran> listHalaqohPengajaran;
-
     @Transient
     private Boolean koordinator;
-    
-    private String namaBapak;
-    
-    private String namaIbu;
 
     public Santri() {
     }
 
-    public Santri(Long id, Long partyId, String partyRoleTypeId, String firstName, String lastName, String namaBapak, String gender, LocalDate dateOfBirth, String nis, String status,
-            Long tahunMasukId, String tahunMasukName, LocalDate tahunMasukFromDate, Long kelompokPengasuhanId, Long kelompokPengasuhanPartyId, String kelompokPengasuhanPartyName, Boolean koordinator) {
+    public Santri(Long id) {
+        setId(id);
+    }
+
+    public Santri(Long id, Long partyId, String partyRoleTypeId, String name, String namaBapak, String gender, LocalDate dateOfBirth, String nis, String jenisSantri, String status,
+            Long tahunMasukId, String tahunMasukName, LocalDate tahunMasukFromDate, Integer angkatan, Long kelompokPengasuhanId, Long kelompokPengasuhanPartyId, String kelompokPengasuhanPartyName, Boolean koordinator) {
         setId(id);
         setPartyRoleType(new PartyRoleType(partyRoleTypeId, "Santri"));
-        Person person = new Person(partyId, firstName, lastName, GenderType.valueOf(gender), dateOfBirth);
+        Person person = new Person(partyId, name, "", GenderType.valueOf(gender), dateOfBirth);
         person.setType("Person");
         this.setPerson(person);
         this.namaBapak = namaBapak;
         this.nis = nis;
+        if (jenisSantri != null) {
+            this.jenisSantri = JenisSantri.valueOf(jenisSantri);
+        }
         this.tahunMasuk = new TahunPembelajaran(tahunMasukId, tahunMasukName);
         this.tahunMasuk.setFromDate(tahunMasukFromDate);
-        
+        this.angkatan = angkatan;
         this.setFromDate(LocalDateTime.of(tahunMasukFromDate, LocalTime.of(0, 0, 0)));
         this.status = StatusKesantrian.valueOf(status);
         if (kelompokPengasuhanId != null) {
@@ -168,6 +190,14 @@ public class Santri extends PersonRole {
         this.tahunMasuk = tahunMasuk;
     }
 
+    public Integer getAngkatan() {
+        return angkatan;
+    }
+
+    public void setAngkatan(Integer angkatan) {
+        this.angkatan = angkatan;
+    }
+
     public List<StatusSantri> getListStatus() {
         return listStatus;
     }
@@ -182,6 +212,14 @@ public class Santri extends PersonRole {
 
     public void setStatus(StatusKesantrian status) {
         this.status = status;
+    }
+
+    public JenisSantri getJenisSantri() {
+        return jenisSantri;
+    }
+
+    public void setJenisSantri(JenisSantri jenisSantri) {
+        this.jenisSantri = jenisSantri;
     }
 
     public KelompokPengasuhan getKelompokPengasuhan() {
@@ -216,11 +254,11 @@ public class Santri extends PersonRole {
         this.namaIbu = namaIbu;
     }
 
-    public List<HalaqohPengajaran> getListHalaqohPengajaran() {
-        return listHalaqohPengajaran;
+    public String getName() {
+        return getPerson() != null ? getPerson().getName() : name;
     }
 
-    public void setListHalaqohPengajaran(List<HalaqohPengajaran> listHalaqohPengajaran) {
-        this.listHalaqohPengajaran = listHalaqohPengajaran;
+    public void setName(String name) {
+        this.name = name;
     }
 }

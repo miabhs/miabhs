@@ -20,9 +20,11 @@ import jakarta.inject.Named;
 @Named(value = "jenisKitabEditorPage")
 @ConversationScoped
 public class JenisKitabEditorPage extends FormPage<JenisKitab> {
-    
+
     @Inject
     private JenisKitabFacade dao;
+
+    private JenisKitab parent;
 
     @PostConstruct
     @Override
@@ -32,7 +34,16 @@ public class JenisKitabEditorPage extends FormPage<JenisKitab> {
 
     @Override
     protected JenisKitab newEntity() {
-        return new JenisKitab();
+        JenisKitab jenisKitab = new JenisKitab();
+        if (parent != null) {
+            jenisKitab.setParent(parent);
+            jenisKitab.setKode(parent.getKode() + "-");
+            jenisKitab.setJudul(parent.getJudul());
+            jenisKitab.setKategoriKitab(parent.getKategoriKitab());
+            jenisKitab.setJenisPengajaran(parent.getJenisPengajaran());
+        }
+        jenisKitab.setBerjilid(false);
+        return jenisKitab;
     }
 
     @Override
@@ -41,10 +52,16 @@ public class JenisKitabEditorPage extends FormPage<JenisKitab> {
     }
 
     @Override
-    protected Result<String>  edit(JenisKitab entity) {
+    protected Result<String> edit(JenisKitab entity) {
         return dao.edit(entity);
     }
 
-    
-    
+    public JenisKitab getParent() {
+        return parent;
+    }
+
+    public void setParent(JenisKitab parent) {
+        this.parent = parent;
+    }
+
 }

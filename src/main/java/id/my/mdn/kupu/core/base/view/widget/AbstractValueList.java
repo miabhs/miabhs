@@ -8,6 +8,7 @@ import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterListener;
 import id.my.mdn.kupu.core.base.view.util.ConverterUtil;
+import id.my.mdn.kupu.core.base.view.widget.IValueList.Parameters;
 import static id.my.mdn.kupu.core.base.view.widget.Selector.SINGLE;
 import id.my.mdn.kupu.core.base.view.widget.Selector.SelectionModeSelector;
 import id.my.mdn.kupu.core.base.view.widget.Selector.SelectorListener;
@@ -16,7 +17,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.event.ActionEvent;
 import jakarta.faces.event.PhaseId;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,33 +31,16 @@ import org.primefaces.event.UnselectEvent;
 public abstract class AbstractValueList<E>
         implements IValueList<E>, IBookmarkable, ISelectable<E>, IFilterable {
 
-    private static enum RowEvent {
-        NONE,
-        SELECT,
-        UNSELECT
-    }
-
     @FunctionalInterface
     public static interface DefaultList<E> {
-
         List<E> get();
-    }
-
-    @FunctionalInterface
-    public static interface Parameters {
-
-        Map<String, Object> get();
     }
 
     protected List<E> fetchedItems;
 
-    public void setFetchedItems(List<E> fetchedItems) {
-        this.fetchedItems = fetchedItems;
-    }
-
     protected boolean valid = false;
 
-    protected final Filter filter;
+    protected boolean cached = false;
 
     protected Selector<E> selector;
 
@@ -65,17 +48,17 @@ public abstract class AbstractValueList<E>
 
     protected Parameters hiddenParameters;
 
-    protected final List<SorterData> listSorterData = new ArrayList<>();
-
     protected String name = "dataTbl";
 
     protected DefaultList<E> defaultList = () -> null;
 
     protected DefaultChecker defaultChecker = null;
 
-    private RowEvent latestEvent = RowEvent.NONE;
+    protected final Filter filter;
+    
+    private final Sorter<E> sorter;
 
-    public AbstractValueList() {
+    public AbstractValueList(Class<E> entityClass) {
         this.hiddenParameters = () -> new HashMap<String, Object>();
         this.parameters = () -> new HashMap<String, Object>();
 
@@ -83,13 +66,8 @@ public abstract class AbstractValueList<E>
         this.selector.setName(name);
 
         this.filter = new Filter(this::onFilter);
-    }
-
-    public AbstractValueList(List<E> fetchedItems) {
-        this();
-        this.hiddenParameters = () -> new HashMap<>();
-        this.parameters = () -> new HashMap<String, Object>();
-        this.fetchedItems = fetchedItems;
+        
+        this.sorter = new Sorter(entityClass, this::onSort);
     }
 
     protected abstract List<E> getFetchedItemsInternal(
@@ -102,21 +80,34 @@ public abstract class AbstractValueList<E>
 
     @Override
     public List<E> getFetchedItems() {
-        if (!isValid()) {
-            fetchedItems = getFetchedItemsInternal(
+        if (!isCached()) {
+            return getFetchedItemsInternal(
                     getParameters(),
                     filter.getValues(),
                     getSorters(),
                     defaultList,
                     defaultChecker);
-            validate();
-        }
+        } else {
+            if (!isValid()) {
+                fetchedItems = getFetchedItemsInternal(
+                        getParameters(),
+                        filter.getValues(),
+                        getSorters(),
+                        defaultList,
+                        defaultChecker);
+                validate();
+            }
 
-        return fetchedItems;
+            return fetchedItems;
+        }
     }
 
-    public List<SorterData> getSorters() {
-        return listSorterData;
+    public Sorter getSorter() {
+        return sorter;
+    }
+
+    public final List<SorterData> getSorters() {
+        return sorter.getListSorterData();
     }
 
     public void validate() {
@@ -131,35 +122,12 @@ public abstract class AbstractValueList<E>
         return valid;
     }
 
-    @Override
-    public void setSelections(List<E> selections) {
-        PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
-        if (phaseId.equals(PhaseId.APPLY_REQUEST_VALUES)) {
-            selector.setSelections(selections);
-            latestEvent = RowEvent.SELECT;
-        } else {
-            setSelectionsInternal(selections);
-        }
+    public boolean isCached() {
+        return cached;
     }
 
-    @Override
-    public List<E> getSelections() {
-        return selector.getSelections();
-    }
-
-    public void setSelectionsInternal(List<E> selections) {
-
-        if (!latestEvent.equals(RowEvent.SELECT)) {
-            PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
-            if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES)) {
-                selector.setSelectionsInternal(selections);
-            }
-        }
-        latestEvent = RowEvent.NONE;
-    }
-
-    public List<E> getSelectionsInternal() {
-        return selector.getSelectionsInternal();
+    public void setCached(boolean cached) {
+        this.cached = cached;
     }
 
     @Override
@@ -167,10 +135,23 @@ public abstract class AbstractValueList<E>
         PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
         if (phaseId.equals(PhaseId.APPLY_REQUEST_VALUES)) {
             selector.setSelection(selection);
-            latestEvent = RowEvent.SELECT;
-        } else {
-            setSelectionInternal(selection);
         }
+    }
+
+    public void setSelectionInternal(E selection) {
+        selector.setSelectionInternal(selection);
+    }
+
+    @Override
+    public void setSelections(List<E> selections) {
+        PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
+        if (phaseId.equals(PhaseId.APPLY_REQUEST_VALUES)) {
+            selector.setSelections(selections);
+        }
+    }
+
+    public void setSelectionsInternal(List<E> selections) {
+        selector.setSelectionsInternal(selections);
     }
 
     @Override
@@ -178,15 +159,13 @@ public abstract class AbstractValueList<E>
         return selector.getSelection();
     }
 
-    public void setSelectionInternal(E selection) {
+    @Override
+    public List<E> getSelections() {
+        return selector.getSelections();
+    }
 
-        if (!latestEvent.equals(RowEvent.SELECT)) {
-            PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
-            if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES)) {
-                selector.setSelectionInternal(selection);
-            }
-        }
-        latestEvent = RowEvent.NONE;
+    public List<E> getSelectionsInternal() {
+        return selector.getSelectionsInternal();
     }
 
     public E getSelectionInternal() {
@@ -216,7 +195,7 @@ public abstract class AbstractValueList<E>
     }
 
     protected void resetInternal() {
-        if(getSelectionMode().equals(SINGLE)) {
+        if (getSelectionMode().equals(SINGLE)) {
             selector.setSelectionInternal(null);
         } else {
             selector.setSelectionsInternal(null);
@@ -244,6 +223,14 @@ public abstract class AbstractValueList<E>
 
     public void clearFilter(ActionEvent evt) {
         clearFilter();
+    }
+
+    public void onSort(Object obj) {
+        doSort();
+    }
+
+    public void doSort() {
+        invalidate();
     }
 
     public void setParameter(String name, Object value) {
@@ -277,6 +264,8 @@ public abstract class AbstractValueList<E>
         states.putAll(selector.getStates());
 
         states.putAll(filter.getStates());
+        
+        states.putAll(sorter.getStates());
 
         return states;
     }
@@ -297,9 +286,6 @@ public abstract class AbstractValueList<E>
         return selector;
     }
 
-//    public void setFilter(Filter filter) {
-//        this.filter = filter;
-//    }
     public void setSelector(Selector<E> selector) {
         this.selector = selector;
     }
@@ -327,6 +313,10 @@ public abstract class AbstractValueList<E>
 
     public void setHiddenParameters(Parameters hiddenParameters) {
         this.hiddenParameters = hiddenParameters;
+    }
+
+    public void setFetchedItems(List<E> fetchedItems) {
+        this.fetchedItems = fetchedItems;
     }
 
     public Map<String, Object> getParameters() {

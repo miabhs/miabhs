@@ -5,11 +5,10 @@
  */
 package id.my.mdn.kupu.app.santri.dao;
 
+import id.my.mdn.kupu.app.santri.entity.JenisPeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.core.base.dao.AbstractHierarchicalFacade;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import id.my.mdn.kupu.core.base.util.QueryHelper;
-import id.my.mdn.kupu.core.base.util.QueryParameter;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -18,7 +17,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Predicate;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,9 +30,6 @@ public class PeriodePembelajaranFacade extends AbstractHierarchicalFacade<Period
 
     @Inject
     private EntityManager em;
-
-    @Inject
-    private QueryHelper helper;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -54,31 +50,25 @@ public class PeriodePembelajaranFacade extends AbstractHierarchicalFacade<Period
                 } else {
                     return cb.isNull(from[0].get("tahunPembelajaran"));
                 }
+            case "geFromDate":
+                return cb.greaterThanOrEqualTo(from[0].<LocalDate>get("fromDate"), (LocalDate) filterValue);
+            case "leThruDate":
+                return cb.lessThanOrEqualTo(from[0].<LocalDate>get("thruDate"), (LocalDate) filterValue);
+            case "onDate":
+                return cb.and(
+                        cb.lessThanOrEqualTo(from[0].<LocalDate>get("fromDate"), (LocalDate) filterValue),
+                        cb.greaterThanOrEqualTo(from[0].<LocalDate>get("thruDate"), (LocalDate) filterValue)
+                );
+            case "jenisPeriode":
+                return cb.equal(from[0].get("jenisPeriode"), filterValue);
             default:
                 return super.applyFilter(filterName, filterValue, cq, from);
         }
     }
 
+    @Override
     public List<PeriodePembelajaran> getChildren(PeriodePembelajaran parentPeriod) {
         return findAll(Arrays.asList(new FilterData("parent", parentPeriod)));
-    }
-
-    public PeriodePembelajaran getPeriod(String periodName, LocalDateTime fromDate, LocalDateTime thruDate) {
-        return helper.queryOne(em,
-                "PeriodePengasuhan.getPeriod",
-                PeriodePembelajaran.class,
-                new QueryParameter[]{
-                    new QueryParameter("fromDate", fromDate),
-                    new QueryParameter("thruDate", thruDate)
-                }
-        );
-    }
-
-    public PeriodePembelajaran getPrevPeriodOf(PeriodePembelajaran currPeriod) {
-        return helper.queryOne(em,
-                "PeriodePengasuhan.getPrevPeriod",
-                PeriodePembelajaran.class,
-                new QueryParameter("fromDate", currPeriod.getFromDate()));
     }
 
     @Override
@@ -90,6 +80,15 @@ public class PeriodePembelajaranFacade extends AbstractHierarchicalFacade<Period
             default ->
                 null;
         };
+    }
+
+    public PeriodePembelajaran getPeriodePembelajaranMin(
+            LocalDate currentDate, JenisPeriodePembelajaran jenisPeriode) {
+        return findSingleByAttributes(
+                List.of(
+                        FilterData.by("onDate", currentDate), 
+                        FilterData.by("jenisPeriode", jenisPeriode)
+                ));
     }
 
 }

@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+    <ui:decorate template="/WEB-INF/components/core/base/tree-table.xhtml" >        
+        <ui:define name="columns">            
+            <p:column headerText="Kode">
+                <h:outputText value="#{data.kode}" />
+            </p:column>
+
+            <p:column headerText="Judul">
+                <h:outputText class="block text-xl font-bold white-space-normal" 
+                              style="font-family: ScheherazadeNew; direction: rtl" 
+                              value="#{data.judul}" rendered="#{data.parent eq null}" />
+            </p:column>
+
+            <p:column headerText="Sub Judul">
+                <h:outputText class="white-space-normal" style="font-family: ScheherazadeNew, Roboto, sans-serif; direction: rtl" value="#{data.subJudul}" />
+            </p:column>
+            
+            <p:column headerText="Jenis">
+                <h:outputText value="#{data.jenisPengajaran.nama}" />
+            </p:column>
+
+            <p:column headerText="Kategori">
+                <h:outputText value="#{data.kategoriKitab.name}" />
+            </p:column>
+        </ui:define>
+    </ui:decorate>
+</ui:composition>

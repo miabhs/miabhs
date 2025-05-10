@@ -4,6 +4,7 @@
  */
 package id.my.mdn.kupu.app.pengasuhan.entity;
 
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,6 +32,7 @@ public class BentukAktifitas implements Serializable {
     @Id
     private String id;
     
+    @SorterField(label = "Kode")
     private String kode;
     
     @Lob @Basic(fetch = FetchType.EAGER)
@@ -42,6 +44,7 @@ public class BentukAktifitas implements Serializable {
     @Enumerated(EnumType.STRING)
     private NilaiAktifitas nilai;
     
+    @SorterField(label = "Tanggal Input")
     private LocalDateTime created;
 
     public BentukAktifitas() {

@@ -7,6 +7,9 @@ package id.my.mdn.kupu.core.hr.view.widget;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.hr.dao.PositionAltFacade;
 import id.my.mdn.kupu.core.hr.entity.Position;
 import jakarta.enterprise.context.Dependent;
@@ -25,6 +28,10 @@ public class PositionList extends AbstractValueList<Position>{
 
     @Inject
     private PositionAltFacade dao;
+
+    public PositionList() {
+        super(Position.class);
+    }
 
     @Override
     protected List<Position> getFetchedItemsInternal(

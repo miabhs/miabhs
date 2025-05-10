@@ -15,7 +15,7 @@ import id.my.mdn.kupu.core.party.entity.PartyContactMechanism;
 import id.my.mdn.kupu.core.party.entity.TelecommunicationNumber;
 import id.my.mdn.kupu.core.party.view.form.TelecommunicationNumberForm;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 

@@ -6,14 +6,15 @@
 package id.my.mdn.kupu.core.party.view.widget;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.party.dao.TelecommunicationNumberPurposeTypeFacade;
 import id.my.mdn.kupu.core.party.entity.TelecommunicationNumberPurposeType;
-import java.util.List;
-import java.util.Map;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -25,6 +26,10 @@ public class TelecommunicationNumberPurposeTypeList
     
     @Inject
     private TelecommunicationNumberPurposeTypeFacade dao;
+
+    public TelecommunicationNumberPurposeTypeList() {
+        super(TelecommunicationNumberPurposeType.class);
+    }
 
     @Override
     protected List<TelecommunicationNumberPurposeType> getPagedFetchedItemsInternal(int first, int pageSize, Map<String, Object> parameters, List<FilterData> filters, List<SorterData> sorters, DefaultList<TelecommunicationNumberPurposeType> defaultList, AbstractFacade.DefaultChecker defaultChecker) {

@@ -6,6 +6,7 @@ package id.my.mdn.kupu.app.pengasuhan.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  *
@@ -16,7 +17,10 @@ import java.time.LocalDate;
     private final String name;
     private final Long santriId;
     private final String nis;
+    private final Long kelompokPengasuhanId;
     private final String kelompokPengasuhanPartyName;
+    private final Boolean koordinator;
+    private final Integer lamaBelajar;
     private final String label;
     private final LocalDate fromDate;
     private final LocalDate thruDate;
@@ -28,7 +32,7 @@ import java.time.LocalDate;
     private final String nonBdas;
 
     public RangkumanKepengasuhan(Long partyId, String firstname, String lastname, 
-            Long santriId, String nis, String kelompokPengasuhanPartyName, 
+            Long santriId, String nis, LocalDate tahunMasukFromDate, Long kelompokPengasuhanId, String kelompokPengasuhanPartyName, Boolean koordinator,
             String label, LocalDate fromDate, LocalDate thruDate, 
             Integer bdasMerah, Integer bdasKuning, String bdas, 
             Integer nonBdasMerah, Integer nonBdasKuning, String nonBdas) {
@@ -42,7 +46,13 @@ import java.time.LocalDate;
         
         this.santriId = santriId;
         this.nis = nis;
+        this.kelompokPengasuhanId = kelompokPengasuhanId;
         this.kelompokPengasuhanPartyName = kelompokPengasuhanPartyName;
+        this.koordinator = koordinator;       
+        
+        long days = DAYS.between(tahunMasukFromDate, LocalDate.now());
+        this.lamaBelajar =  ((int) (days / 365)) + (((int) (days % 365)) > 0 ? 0 : 0);
+        
         this.label = label;
         this.fromDate = fromDate;
         this.thruDate = thruDate;
@@ -70,8 +80,20 @@ import java.time.LocalDate;
         return nis;
     }
 
+    public Long getKelompokPengasuhanId() {
+        return kelompokPengasuhanId;
+    }
+
     public String getKelompokPengasuhanPartyName() {
         return kelompokPengasuhanPartyName;
+    }
+
+    public Boolean getKoordinator() {
+        return koordinator;
+    }
+
+    public Integer getLamaBelajar() {
+        return lamaBelajar;
     }
 
     public String getLabel() {

@@ -4,14 +4,16 @@
  */
 package id.my.mdn.kupu.app.santri.view.widget;
 
+import id.my.mdn.kupu.app.santri.entity.JenisSantri;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
-import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.app.santri.entity.StatusKesantrian;
+import id.my.mdn.kupu.app.santri.entity.TahunPembelajaran;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmark;
 import id.my.mdn.kupu.core.base.view.widget.FilterContent;
-import java.io.Serializable;
+import id.my.mdn.kupu.core.party.entity.GenderType;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
+import java.io.Serializable;
 
 /**
  *
@@ -24,14 +26,20 @@ public class SantriFilter extends FilterContent implements Serializable {
     @Bookmark(name = "nm")
     private String name;  
     
-    @Bookmark(name = "sn")
-    private Santri santri;  
+    @Bookmark(name = "tm")
+    private TahunPembelajaran tahunMasuk;
+    
+    @Bookmark(name = "kp")
+    private KelompokPengasuhan kelompokPengasuhan;
+    
+    @Bookmark(name = "gd")
+    private GenderType gender;
     
     @Bookmark(name = "sk")
     private StatusKesantrian statusKesantrian;
     
-    @Bookmark(name = "kp")
-    private KelompokPengasuhan kelompokPengasuhan;
+    @Bookmark(name = "js")
+    private JenisSantri jenisSantri;
 
     public String getName() {
         return name;
@@ -41,21 +49,27 @@ public class SantriFilter extends FilterContent implements Serializable {
         this.name = name;
     }
 
-    public Santri getSantri() {
-        return santri;
+    public TahunPembelajaran getTahunMasuk() {
+        return tahunMasuk;
     }
 
-    public void setSantri(Santri santri) {
-        this.santri = santri;
+    public void setTahunMasuk(TahunPembelajaran tahunMasuk) {
+        this.tahunMasuk = tahunMasuk;
     }
 
-    public StatusKesantrian getStatusKesantrian() {
-        
+    public GenderType getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
+    }
+
+    public StatusKesantrian getStatusKesantrian() {        
         return statusKesantrian;
     }
 
-    public void setStatusKesantrian(StatusKesantrian statusKesantrian) {
-        
+    public void setStatusKesantrian(StatusKesantrian statusKesantrian) {        
         this.statusKesantrian = statusKesantrian;
     }
 
@@ -65,6 +79,14 @@ public class SantriFilter extends FilterContent implements Serializable {
 
     public void setKelompokPengasuhan(KelompokPengasuhan kelompokPengasuhan) {
         this.kelompokPengasuhan = kelompokPengasuhan;
+    }
+
+    public JenisSantri getJenisSantri() {
+        return jenisSantri;
+    }
+
+    public void setJenisSantri(JenisSantri jenisSantri) {
+        this.jenisSantri = jenisSantri;
     }
     
 }

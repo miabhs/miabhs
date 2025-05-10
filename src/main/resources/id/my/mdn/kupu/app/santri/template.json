@@ -1,3 +1,6 @@
 {
-    "AbsensiHalaqoh": "AbsensiHalaqoh.jrxml"
+    "AbsensiHalaqoh": "AbsensiHalaqoh.jrxml",
+    "CatatanAbsensiHalaqoh": "CatatanAbsensiHalaqoh.jrxml",
+    "DetailCatatanAbsensiHalaqoh": "DetailCatatanAbsensiHalaqoh.jrxml",
+    "KPPAbsensiHalaqoh": "KPPAbsensiHalaqoh.jrxml"
 }

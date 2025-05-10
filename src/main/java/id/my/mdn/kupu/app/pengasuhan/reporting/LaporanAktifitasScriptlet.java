@@ -5,21 +5,21 @@
 package id.my.mdn.kupu.app.pengasuhan.reporting;
 
 import id.my.mdn.kupu.app.pengasuhan.entity.Aktifitas;
-import id.my.mdn.kupu.app.santri.entity.KakakKepengasuhan;
+import id.my.mdn.kupu.app.santri.entity.FungsionalKepengasuhan;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
-import id.my.mdn.kupu.app.santri.entity.PembantuPelaksanaKepengasuhan;
-import id.my.mdn.kupu.app.santri.entity.PembinaKepengasuhan;
-import id.my.mdn.kupu.app.santri.entity.Santri;
+import id.my.mdn.kupu.app.santri.entity.PelaksanaKepengasuhan;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 import net.sf.jasperreports.engine.JRDefaultScriptlet;
 import net.sf.jasperreports.engine.JRScriptletException;
@@ -55,48 +55,60 @@ public class LaporanAktifitasScriptlet extends JRDefaultScriptlet {
                         (LocalDate) getParameterValue("fromDate")
                 ).replace("Ahad", "Minggu")
         );
-        setVariableValue("thruDate", 
+        setVariableValue("thruDate",
                 formatter.format((LocalDate) getParameterValue("thruDate")
                 ).replace("Ahad", "Minggu"));
     }
 
     @Override
     public void beforeGroupInit(String groupName) throws JRScriptletException {
-        
+
         LaporanAktifitasScriptletHelper helper = findHelper();
 
-        Long toRoleId = (Long) this.getFieldValue("id");
+        Long toRoleId = (Long) this.getFieldValue("kelompokPengasuhanId");
 
         KelompokPengasuhan kelompokPengasuhan = helper.getKelompokPengasuhanFacade().find(toRoleId);
 
-        List<FilterData> filters = new ArrayList<>();
-        filters.add(new FilterData("toRole", kelompokPengasuhan));
+        FilterData toRoleFilter = FilterData.by("toRole", kelompokPengasuhan);
 
-        List<PembinaKepengasuhan> listPembina = helper.getPembinaFacade().findAll(filters);
+        List<PelaksanaKepengasuhan> listPembina = helper.getPelaksanaFacade().
+                findAll(
+                        toRoleFilter,
+                        FilterData.by("fungsi", List.of(FungsionalKepengasuhan.PEMBINA_KEPENGASUHAN))
+                );
         setVariableValue("listPembina", new JRBeanCollectionDataSource(listPembina));
 
-        List<PembantuPelaksanaKepengasuhan> listPembantu = helper.getPembantuFacade().findAll(filters);
+        List<PelaksanaKepengasuhan> listPembantu = helper.getPelaksanaFacade()
+                .findAll(
+                        toRoleFilter,
+                        FilterData.by("fungsi", List.of(
+                                FungsionalKepengasuhan.MASUL_KEPENGASUHAN,
+                                FungsionalKepengasuhan.PELAKSANA_KEPENGASUHAN,
+                                FungsionalKepengasuhan.PEMBANTU_PELAKSANA_KEPENGASUHAN
+                        ))
+                );
         setVariableValue("listPembantu", new JRBeanCollectionDataSource(listPembantu));
 
-        List<KakakKepengasuhan> listKakak = helper.getKakakFacade().findAll(filters);
+        List<PelaksanaKepengasuhan> listKakak = helper.getPelaksanaFacade().
+                findAll(
+                        toRoleFilter,
+                        FilterData.by("fungsi", List.of(FungsionalKepengasuhan.KAKAK_KEPENGASUHAN))
+                );
         setVariableValue("listKakak", new JRBeanCollectionDataSource(listKakak));
 
-        filters.add(new FilterData("kelompokPengasuhan", kelompokPengasuhan));
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("fromDate", getParameterValue("fromDate"));
+        parameters.put("thruDate", getParameterValue("thruDate"));
 
-        List<Santri> listSantri = helper.getSantriFacade().findAll(0, 0, filters);
-        setVariableValue("listSantri", new JRBeanCollectionDataSource(listSantri));
-
+        List<FilterData> filters = new ArrayList<>();
         filters.add(new FilterData("kelompokPengasuhan", kelompokPengasuhan));
-        filters.add(new FilterData("fromDate", getParameterValue("fromDate")));
-        filters.add(new FilterData("thruDate", getParameterValue("thruDate")));
 
         List<Aktifitas> listAktifitas = helper.getAktifitasFacade()
-                .findAll(0, 0, filters,
-                        List.of(
-                                new SorterData("santriId"),
-                                new SorterData("activityDate")
-                        )
-                );
+                .findAll(parameters, filters, List.of(
+                        new SorterData("santriId"),
+                        new SorterData("activityDate")
+                ));
+        
         setVariableValue("listAktifitas", new JRBeanCollectionDataSource(listAktifitas));
 
     }

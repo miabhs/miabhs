@@ -6,7 +6,7 @@ package id.my.mdn.kupu.core.base.dao;
 
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.util.Result;
-import id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.Query;
@@ -52,6 +52,7 @@ public abstract class AbstractSqlFacade<T extends Serializable> extends Abstract
             final Map<String, Object> parameters, final List<FilterData> filters,
             final List<SorterData> sorters, final List<T> defaultReturn,
             final DefaultChecker defaultChecker) {
+
         String filter = applyFilters(filters);
 
         DefaultChecker usedDefaultChecker
@@ -64,15 +65,18 @@ public abstract class AbstractSqlFacade<T extends Serializable> extends Abstract
         QueryGenerator usedQueryGenerator = (queryGenerator != null
                 ? queryGenerator : (this::getFindAllQuery));
 
+        String queryString = Stream.of(usedQueryGenerator.get(), filter, orderBy(sorters))
+                        .collect(Collectors.joining(" ")).trim();
+        
+        if(startPosition != null && maxResult != null && maxResult > 0) {
+            queryString = queryString.concat(String.format(" LIMIT %d OFFSET %d", maxResult, startPosition));
+        }
+
         Query q = getEntityManager().createNativeQuery(
-                Stream.of(usedQueryGenerator.get(), filter, orderBy(sorters))
-                        .collect(Collectors.joining(" ")).trim(),
+                queryString,
                 entityClass.getSimpleName());
 
         setParameters(q, parameters);
-
-        q.setFirstResult(startPosition);
-        q.setMaxResults(maxResult);
 
         return q.getResultList();
     }
@@ -113,6 +117,18 @@ public abstract class AbstractSqlFacade<T extends Serializable> extends Abstract
         return (Long) q.getSingleResult();
     }
 
+    @Override
+    public T findSingleByAttributes(List<FilterData> filters) {  
+        List<T> result = findAll(filters);
+        return ((result != null) && (!result.isEmpty())) ? result.getFirst() : null;
+    }
+
+    @Override
+    public T findSingleByAttribute(String attribute, Object value) {
+        List<T> result = findAll(FilterData.by(attribute, value));
+        return ((result != null) && (!result.isEmpty())) ? result.getFirst() : null;
+    }
+
     protected String applyFilters(List<FilterData> filters) {
         if (filters != null && !filters.isEmpty()) {
 
@@ -132,7 +148,7 @@ public abstract class AbstractSqlFacade<T extends Serializable> extends Abstract
                 strConditions.insert(0, " ").insert(0, getFilterClause());
             }
             return strConditions.toString();
-            
+
         } else {
             return "";
         }
@@ -148,8 +164,8 @@ public abstract class AbstractSqlFacade<T extends Serializable> extends Abstract
             List<String> normalizedOrderSpecs = orderSpecs.stream()
                     .map(spec -> {
 //                        String[] tokens = spec.split("\\W+");
-                        String normalizedFieldName = translateOrderField(spec.field);
-                        return normalizedFieldName != null ? normalizedFieldName + " " + spec.order : null;
+                        String normalizedFieldName = translateOrderField(spec.getField());
+                        return normalizedFieldName != null ? normalizedFieldName + " " + spec.getOrder() : null;
                     })
                     .filter(spec -> spec != null)
                     .collect(Collectors.toList());
@@ -169,6 +185,10 @@ public abstract class AbstractSqlFacade<T extends Serializable> extends Abstract
     }
 
     protected abstract String getFindAllQuery();
+    
+    protected String getFindQuery() {
+        return null;
+    }
 
     protected String getCountAllQuery() {
         return getFindAllQuery();
@@ -176,13 +196,19 @@ public abstract class AbstractSqlFacade<T extends Serializable> extends Abstract
 
     @Override
     public T find(Object id) {
-        if(id == null) return null;
-        List<T> result = findAll(List.of(new FilterData("id", id)));
-        if (result.isEmpty() || result.size() > 1) {
+        if(getFindQuery() == null) return findSingleByAttribute("id", id);
+        Query q = getEntityManager().createNativeQuery(getFindQuery(), entityClass.getSimpleName());
+        setIdParameters(q, Map.of("id", id));
+        
+        try {
+            return (T) q.getSingleResult();
+        } catch (Exception ex) {
             return null;
-        } else {
-            return result.get(0);
         }
+    }
+    
+    protected void setIdParameters(Query q, Map<String, Object> parameters) {
+        q.setParameter(1, parameters.get("id"));
     }
 
     protected T findNative(Object id) {
@@ -212,7 +238,7 @@ public abstract class AbstractSqlFacade<T extends Serializable> extends Abstract
             found.add(new SubStringIdx(matcher.start(), matcher.end()));
         }
         return found.toArray(new SubStringIdx[found.size()]);
-    }        
+    }
 
     private static final class SubStringIdx {
 

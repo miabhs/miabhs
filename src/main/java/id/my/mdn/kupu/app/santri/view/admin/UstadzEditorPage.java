@@ -33,8 +33,6 @@ public class UstadzEditorPage extends FormPage<Ustadz> {
     public void load() {
         super.load();
         form.init(getEntity().getPerson());
-//        form.setValidityChecker(this::checkValid);
-//        form.setPacker(this::doPack);
     }
 
     @Override

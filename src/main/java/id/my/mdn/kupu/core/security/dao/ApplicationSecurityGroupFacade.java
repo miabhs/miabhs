@@ -4,8 +4,8 @@
  */
 package id.my.mdn.kupu.core.security.dao;
 
-import id.my.mdn.kupu.core.base.util.Result;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.util.Result;
 import id.my.mdn.kupu.core.party.dao.AbstractPartyRoleFacade;
 import id.my.mdn.kupu.core.party.dao.PartyRoleTypeFacade;
 import id.my.mdn.kupu.core.party.entity.Organization;
@@ -69,7 +69,7 @@ public class ApplicationSecurityGroupFacade extends AbstractPartyRoleFacade<Appl
             case "module":
                 return cb.equal(from[0].get("module"), (String) filterValue);
             case "groupname":
-                return cb.equal(from[1].get("name"), (String) filterValue);
+                return cb.equal(from[1].get("firstName"), (String) filterValue);
             default:
                 return super.applyFilter(filterName, filterValue, cq, from);
         }

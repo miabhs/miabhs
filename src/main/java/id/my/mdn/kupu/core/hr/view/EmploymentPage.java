@@ -15,7 +15,7 @@ import id.my.mdn.kupu.core.hr.view.admin.EmploymentEditorPage;
 import id.my.mdn.kupu.core.hr.view.widget.EmploymentFilter;
 import id.my.mdn.kupu.core.hr.view.widget.EmploymentList;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;

@@ -13,53 +13,67 @@ import java.util.Map;
  * @param <E>
  */
 public abstract class AbstractPagedValueList<E> extends AbstractValueList<E>
-implements IPageable {
+        implements IPageable {
 
     @FunctionalInterface
     public static interface DefaultCount {
+
         Long get();
     }
 
     protected Pager pager;
-    
+
     protected DefaultCount defaultCount = () -> null;
 
-    public AbstractPagedValueList() {
-        super();
+    public AbstractPagedValueList(Class<E> entityClass) {
+        super(entityClass);
         pager = new Pager(this::onPaging);
     }
 
     protected abstract List<E> getPagedFetchedItemsInternal(
             int first, int pageSize,
-            Map<String, Object> parameters, 
-            List<FilterData> filters, 
+            Map<String, Object> parameters,
+            List<FilterData> filters,
             List<SorterData> sorters,
             DefaultList<E> defaultList,
             DefaultChecker defaultChecker);
 
     protected abstract long getItemsCountInternal(
-            Map<String, Object> parameters, 
-            List<FilterData> filters, 
-            DefaultCount defaultCount, 
+            Map<String, Object> parameters,
+            List<FilterData> filters,
+            DefaultCount defaultCount,
             DefaultChecker defaultChecker);
 
     @Override
     public List<E> getFetchedItems() {
-        if (!isValid()) {
-            fetchedItems = getFetchedItemsInternal(
-                    getParameters(), 
-                    filter.getValues(), 
-                    getSorters(), 
-                    defaultList, 
-                    defaultChecker);
-
+        if (!isCached()) {
             pager.setItemsCount(getItemsCountInternal(getParameters(), filter.getValues(), defaultCount, defaultChecker));
             pager.updatePages();
 
-            validate();
-        }
+            return getFetchedItemsInternal(
+                    getParameters(),
+                    filter.getValues(),
+                    getSorters(),
+                    defaultList,
+                    defaultChecker);
+        } else {
+            if (!isValid()) {
+                fetchedItems = getFetchedItemsInternal(
+                        //            return getFetchedItemsInternal(
+                        getParameters(),
+                        filter.getValues(),
+                        getSorters(),
+                        defaultList,
+                        defaultChecker);
 
-        return fetchedItems;
+                pager.setItemsCount(getItemsCountInternal(getParameters(), filter.getValues(), defaultCount, defaultChecker));
+                pager.updatePages();
+
+                validate();
+            }
+
+            return fetchedItems;
+        }
     }
 
     @Override
@@ -88,7 +102,7 @@ implements IPageable {
 
         return params;
     }
-    
+
     public void onPaging() {
         invalidate();
     }
@@ -111,7 +125,7 @@ implements IPageable {
     public void setPager(Pager pager) {
         this.pager = pager;
     }
-    
+
     public void setDefaultCount(DefaultCount defaultCount) {
         this.defaultCount = defaultCount;
     }

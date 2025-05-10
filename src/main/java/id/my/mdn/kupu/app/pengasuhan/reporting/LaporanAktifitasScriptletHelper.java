@@ -6,10 +6,8 @@ package id.my.mdn.kupu.app.pengasuhan.reporting;
 
 import id.my.mdn.kupu.app.pengasuhan.dao.AktifitasFacade;
 import id.my.mdn.kupu.app.pengasuhan.dao.HikmahKauniyahFacade;
-import id.my.mdn.kupu.app.santri.dao.KakakKepengasuhanFacade;
 import id.my.mdn.kupu.app.santri.dao.KelompokPengasuhanFacade;
-import id.my.mdn.kupu.app.santri.dao.PembantuPelaksanaKepengasuhanFacade;
-import id.my.mdn.kupu.app.santri.dao.PembinaKepengasuhanFacade;
+import id.my.mdn.kupu.app.santri.dao.PelaksanaKepengasuhanFacade;
 import id.my.mdn.kupu.app.santri.dao.SantriFacade;
 import id.my.mdn.kupu.app.santri.view.converter.IslamicDateConverter;
 import jakarta.enterprise.context.RequestScoped;
@@ -29,13 +27,7 @@ public class LaporanAktifitasScriptletHelper {
     private KelompokPengasuhanFacade kelompokPengasuhanFacade;
     
     @Inject
-    private PembinaKepengasuhanFacade pembinaFacade;
-    
-    @Inject
-    private PembantuPelaksanaKepengasuhanFacade pembantuFacade;
-    
-    @Inject
-    private KakakKepengasuhanFacade kakakFacade;
+    private PelaksanaKepengasuhanFacade pelaksanaFacade;
     
     @Inject
     private SantriFacade santriFacade;
@@ -53,16 +45,8 @@ public class LaporanAktifitasScriptletHelper {
         return kelompokPengasuhanFacade; 
     }
 
-    public PembinaKepengasuhanFacade getPembinaFacade() {
-        return pembinaFacade;
-    }
-
-    public PembantuPelaksanaKepengasuhanFacade getPembantuFacade() {
-        return pembantuFacade;
-    }
-
-    public KakakKepengasuhanFacade getKakakFacade() {
-        return kakakFacade;
+    public PelaksanaKepengasuhanFacade getPelaksanaFacade() {
+        return pelaksanaFacade;
     }
 
     public IslamicDateConverter getDateConverter() {

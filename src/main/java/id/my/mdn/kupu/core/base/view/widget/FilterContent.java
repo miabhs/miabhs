@@ -8,13 +8,5 @@ import java.io.Serializable;
  */
 public abstract class FilterContent implements Serializable {
     
-    private Filter context;
-
-    public void setContainer(Filter container) {
-        this.context = container;
-    }
-
-    protected final void notifyContext(Object content) {
-        context.onContentChanged(content);
-    }
+    
 }

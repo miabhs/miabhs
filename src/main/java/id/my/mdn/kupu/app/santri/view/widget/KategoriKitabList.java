@@ -7,15 +7,16 @@ package id.my.mdn.kupu.app.santri.view.widget;
 import id.my.mdn.kupu.app.santri.dao.KategoriKitabFacade;
 import id.my.mdn.kupu.app.santri.entity.KategoriKitab;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.CommonFilter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import java.util.List;
-import java.util.Map;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.view.widget.CommonFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +31,10 @@ public class KategoriKitabList extends AbstractMutablePagedValueList<KategoriKit
     
     @Inject
     private CommonFilter filterContent;
+
+    public KategoriKitabList() {
+        super(KategoriKitab.class);
+    }
 
     @PostConstruct
     public void init() {

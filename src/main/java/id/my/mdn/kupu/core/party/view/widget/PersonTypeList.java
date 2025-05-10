@@ -6,15 +6,16 @@
 package id.my.mdn.kupu.core.party.view.widget;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.party.dao.PersonTypeFacade;
 import id.my.mdn.kupu.core.party.entity.PersonType;
-import java.util.List;
-import java.util.Map;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -26,6 +27,10 @@ public class PersonTypeList extends AbstractMutablePagedValueList<PersonType> {
     
     @Inject
     private PersonTypeFacade dao;
+
+    public PersonTypeList() {
+        super(PersonType.class);
+    }
 
     @Override
     protected List<PersonType> getPagedFetchedItemsInternal(int first, int pageSize, Map<String, Object> parameters, List<FilterData> filters, List<SorterData> sorters, DefaultList<PersonType> defaultList, AbstractFacade.DefaultChecker defaultChecker) {

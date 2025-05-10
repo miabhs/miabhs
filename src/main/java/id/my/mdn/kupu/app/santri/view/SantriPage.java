@@ -4,6 +4,7 @@
  */
 package id.my.mdn.kupu.app.santri.view;
 
+import id.my.mdn.kupu.app.santri.dao.SantriFacade;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.app.santri.entity.StatusKesantrian;
 import id.my.mdn.kupu.app.santri.view.admin.SantriDetailPage;
@@ -18,10 +19,10 @@ import id.my.mdn.kupu.core.base.view.annotation.Editor;
 import id.my.mdn.kupu.core.security.service.SecurityService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.event.ActionEvent;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -38,6 +39,9 @@ public class SantriPage extends Page implements Serializable {
     @Inject
     private SecurityService securityService;
     
+    @Inject
+    private SantriFacade santriFacade;
+    
     @Override
     @PostConstruct
     public void init() {
@@ -45,7 +49,7 @@ public class SantriPage extends Page implements Serializable {
         dataView.getFilter()
                 .<SantriFilter>getContent()
                 .setStatusKesantrian(StatusKesantrian.ACTIVE);
-        dataView.getFilter().setFiltering(true);
+//        dataView.getFilter().setFiltering(true);
     }
     
     public void createLogin(ActionEvent evt) {
@@ -60,8 +64,8 @@ public class SantriPage extends Page implements Serializable {
     }
     
     public void removeLogin(ActionEvent evt) {
-        Santri santri = dataView.getSelection();
-        securityService.removeLogin(santri.getNis().toLowerCase());
+        Santri santri = dataView.getSelected();
+        securityService.removeLogin(santri.getNis());
     }
 
     @Creator(of = "dataView")
@@ -74,14 +78,18 @@ public class SantriPage extends Page implements Serializable {
     public void openDataEditor() {
         gotoChild(SantriDetailPage.class)
                 .addParam("santri")
-                .withValues(dataView.getSelections().get(0))
+                .withValues(dataView.getSelected())
                 .open();
     }
 
     @Deleter(of = "dataView")
     public void openDataDeleter() {
-        dataView.deleteSelections();
-    }    
+        dataView.deleteSelected();
+    }
+
+    public void generateNis(ActionEvent evt) {
+        santriFacade.generateNis(dataView.getSelections());
+    }
     
     public void gotoPengasuhan(ActionEvent evt) {
         

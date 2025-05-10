@@ -39,6 +39,10 @@ public final class K {
         public static final Boolean valueOf(String value) {
             return Boolean.valueOf(value);
         }
+        
+        public static final String toString(Boolean value) {
+            return value != null ? Boolean.toString(value) : "false"; 
+        }
     }
 
     public static final class KEnum {

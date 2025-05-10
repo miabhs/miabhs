@@ -28,8 +28,6 @@ public final class Filter implements IBookmarkable, Serializable {
 
     private String name = "filter";
 
-    private boolean filtering = false;
-
     private String filteringLabel = "filtering";
 
     private FilterContent content;
@@ -46,9 +44,6 @@ public final class Filter implements IBookmarkable, Serializable {
     public Filter(FilterContent content, FilterListener context) {
         this.content = content;
         this.context = context;
-        if (content != null) {
-            content.setContainer(this);
-        }
     }
 
     public Filter(FilterContent content) {
@@ -79,10 +74,6 @@ public final class Filter implements IBookmarkable, Serializable {
             }
 
             states.put(filterData.name, stateValue);
-        }
-
-        if (!states.isEmpty()) {
-            states.put(name, Arrays.asList(Boolean.toString(filtering)));
         }
 
         return states;
@@ -141,6 +132,11 @@ public final class Filter implements IBookmarkable, Serializable {
         }
 
         for (Field contentField : content.getClass().getDeclaredFields()) {
+            Bookmark bookmarkAnnotation = contentField.getAnnotation(Bookmark.class);
+            if (bookmarkAnnotation == null) {
+                continue;
+            }
+
             try {
                 contentField.setAccessible(true);
             } catch (IllegalArgumentException ex) {
@@ -149,12 +145,9 @@ public final class Filter implements IBookmarkable, Serializable {
 
             Object contentFieldValue = getContentFieldValue(contentField);
 
-            Bookmark bookmarkAnnotation = contentField.getAnnotation(Bookmark.class);
-            if (bookmarkAnnotation != null) {
-                boolean fieldIsNotNullable = !bookmarkAnnotation.nullable();
-                if (fieldIsNotNullable && contentFieldValue == null) {
-                    continue;
-                }
+            boolean fieldIsNullable = bookmarkAnnotation.nullable();
+            if ((!fieldIsNullable) && contentFieldValue == null) {
+                continue;
             }
 
             String contentFieldName = contentField.getName();
@@ -166,7 +159,7 @@ public final class Filter implements IBookmarkable, Serializable {
         return filters;
     }
 
-    private List<FilterData> getBookmarkedTerms() {
+    public List<FilterData> getBookmarkedTerms() {
 
         List<FilterData> filters = new ArrayList<>();
 
@@ -175,7 +168,12 @@ public final class Filter implements IBookmarkable, Serializable {
         }
 
         for (Field contentField : content.getClass().getDeclaredFields()) {
-            contentField.setAccessible(true);
+
+            Bookmark bookmarkAnnotation = contentField.getAnnotation(Bookmark.class);
+
+            if (bookmarkAnnotation == null) {
+                continue;
+            }
 
             Object contentFieldValue = getContentFieldValue(contentField);
 
@@ -183,10 +181,9 @@ public final class Filter implements IBookmarkable, Serializable {
                 continue;
             }
 
-            String contentFieldName = contentField.getName();
+            String bookmarkAnnotationName = bookmarkAnnotation.name();
 
-            Bookmark bookmarkAnnotation = contentField.getAnnotation(Bookmark.class);
-            String filterName = bookmarkAnnotation != null ? bookmarkAnnotation.name() : contentFieldName;
+            String filterName = bookmarkAnnotationName.isEmpty() ? contentField.getName() : bookmarkAnnotationName;
 
             filters.add(FilterData.by(filterName, contentFieldValue));
 
@@ -207,7 +204,9 @@ public final class Filter implements IBookmarkable, Serializable {
         if (content == null) {
             return;
         }
-        Stream.of(content.getClass().getDeclaredFields()).peek(field -> field.setAccessible(true))
+        Stream.of(content.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(Bookmark.class))
+                .peek(field -> field.setAccessible(true))
                 .forEach(field -> {
                     try {
                         field.set(content, null);
@@ -227,7 +226,6 @@ public final class Filter implements IBookmarkable, Serializable {
 
     public void doUnfilter() {
         clear();
-        setFiltering(false);
         notifyListener();
         if (context != null) {
             context.onFilter(null);
@@ -235,7 +233,6 @@ public final class Filter implements IBookmarkable, Serializable {
     }
 
     public void doFilter() {
-        setFiltering(true);
         notifyListener();
         if (context != null) {
             context.onFilter(null);
@@ -247,11 +244,8 @@ public final class Filter implements IBookmarkable, Serializable {
     }
 
     public boolean isFiltering() {
-        return filtering;
-    }
-
-    public void setFiltering(boolean filtering) {
-        this.filtering = filtering;
+        List<FilterData> contentValues = getContentValues();
+        return !(contentValues.isEmpty());
     }
 
     public String getFilteringLabel() {
@@ -268,9 +262,6 @@ public final class Filter implements IBookmarkable, Serializable {
 
     public void setContent(FilterContent content) {
         this.content = content;
-        if (content != null) {
-            content.setContainer(this);
-        }
     }
 
     public void onContentChanged(Object content) {

@@ -22,8 +22,8 @@ public abstract class AbstractMutablePagedValueList<E>
 
     private PageCaller deleter;
 
-    public AbstractMutablePagedValueList() {
-        super();
+    public AbstractMutablePagedValueList(Class<E> entityClass) {
+        super(entityClass);
     }
 
     public E getSelected() {
@@ -35,26 +35,30 @@ public abstract class AbstractMutablePagedValueList<E>
     }
 
     public void onCellEdit(CellEditEvent event) {
-        int index = event.getRowIndex();
-        E entity = getFetchedItems().get(index);
+        E entity = getSelected();
 
         if (entity != null) {
 
             String field = (String) event.getColumn().getExportValue();
             Object value = event.getNewValue();
             if (field != null) {
-                edit(update(entity, field, value));
+                update(entity, field, value);
             }
         }
     }
 
-    private E update(E entity, String field, Object newValue) {
+    protected void update(E entity, String field, Object newValue) {
         updateInternal(entity, field, newValue);
-        return entity;
+        edit(entity);
+        postUpdate(entity);
     }
 
     protected void updateInternal(E entity, String field, Object newValue) {
 
+    }
+    
+    protected void postUpdate(E entity) {
+        
     }
 
     protected E findEntity(String id) {

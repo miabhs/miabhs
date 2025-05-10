@@ -11,7 +11,7 @@ import id.my.mdn.kupu.core.security.model.ApplicationSecurityGroup;
 import id.my.mdn.kupu.core.security.model.ApplicationUser;
 import id.my.mdn.kupu.core.security.view.widget.ApplicationSecurityMapList;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;

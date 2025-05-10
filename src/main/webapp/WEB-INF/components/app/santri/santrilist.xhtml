@@ -15,7 +15,7 @@
                 <h:outputText value="#{data.nis}" />
             </p:column>
 
-            <p:column headerText="#{string['common.name.label']}">
+            <p:column headerText="#{string['common.name.label']}"  >
                 <h:outputText value="#{data.person.name}" class="white-space-normal" />
             </p:column>
 
@@ -37,6 +37,14 @@
 
                 <p:column headerText="#{string['santri.tahunMasuk.label']}">
                     <h:outputText value="#{data.tahunMasuk.name}" />
+                </p:column>
+
+                <p:column headerText="Jenis">
+                    <h:outputText value="#{data.jenisSantri.label}" />
+                </p:column>
+
+                <p:column headerText="Angkatan">
+                    <h:outputText value="#{data.angkatan}" />
                 </p:column>
 
                 <p:column headerText="#{string['santri.status.label']}">

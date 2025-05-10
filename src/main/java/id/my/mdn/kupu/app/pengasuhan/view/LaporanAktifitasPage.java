@@ -19,7 +19,7 @@ import id.my.mdn.kupu.core.reporting.service.ReportingJobQueue;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.event.ActionEvent;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -77,20 +77,20 @@ public class LaporanAktifitasPage extends ChildPage implements IFilterable, Seri
         if (filterContent.getKelompokPengasuhan() != null) {
             parameters.put("kelompok", filterContent.getKelompokPengasuhan().getParty().getName());
         }
-        if (filterContent.getStatus() != null) {
-            parameters.put("status", filterContent.getStatus().getName());
-        }
+//        if (filterContent.getStatus() != null) {
+//            parameters.put("status", filterContent.getStatus().getName());
+//        }
 
         Converter converter = ConverterUtil.findConverter(CDI.current(), "IslamicDateConverter");
 
-        if (converter != null) {
-            if (filterContent.getFromDate() != null) {
-                parameters.put("fromDate", converter.getAsString(null, null, filterContent.getFromDate()));
-            }
-            if (filterContent.getThruDate() != null) {
-                parameters.put("thruDate", converter.getAsString(null, null, filterContent.getThruDate()));
-            }
-        }
+//        if (converter != null) {
+//            if (filterContent.getFromDate() != null) {
+//                parameters.put("fromDate", converter.getAsString(null, null, filterContent.getFromDate()));
+//            }
+//            if (filterContent.getThruDate() != null) {
+//                parameters.put("thruDate", converter.getAsString(null, null, filterContent.getThruDate()));
+//            }
+//        }
 
         jobQueue.put(new ReportingJob(
                 listRangkumanAktifitas, parameters,

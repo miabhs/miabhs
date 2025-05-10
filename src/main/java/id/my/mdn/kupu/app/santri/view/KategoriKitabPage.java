@@ -11,11 +11,11 @@ import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
-import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -44,13 +44,13 @@ public class KategoriKitabPage extends Page implements Serializable {
     public void editor() {
         gotoChild(KategoriKitabEditorPage.class)
                 .addParam("entity")
-                .withValues(dataView.getSelection())
+                .withValues(dataView.getSelected())
                 .open();
     }
     
     @Deleter(of = "dataView")
     public void deleter() {
-        dataView.delete(dataView.getSelections());
+        dataView.deleteSelected();
     }
 
     public KategoriKitabList getDataView() {

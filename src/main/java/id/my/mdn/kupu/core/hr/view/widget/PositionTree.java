@@ -7,6 +7,7 @@ package id.my.mdn.kupu.core.hr.view.widget;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractMutableTree;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList.DefaultCount;
 import id.my.mdn.kupu.core.hr.dao.PositionFacade;
 import id.my.mdn.kupu.core.hr.entity.Position;
@@ -25,6 +26,10 @@ public class PositionTree extends AbstractMutableTree<Position> implements Seria
 
     @Inject
     private PositionFacade dao;
+
+    public PositionTree() {
+        super(Position.class);
+    }
 
     @Override
     protected List<Position> getFetchedItemsInternal(

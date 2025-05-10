@@ -5,130 +5,150 @@
       xmlns:ui="jakarta.faces.facelets"
       xmlns:p="http://primefaces.org/ui">
 
-    <f:view locale="id" >
-        <h:head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />            
-            <link rel="shortcut icon" type="image/x-icon" 
-                  href="#{resource['images/favicon.ico']}" />
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-            <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-            <title>#{config.getString('config.AppName')} | #{title}</title>
-            <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css" />
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />            
+        <link rel="shortcut icon" type="image/x-icon" 
+              href="#{resource['images/favicon.ico']}" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+        <title>#{config.getString('config.AppName')} | #{title}</title>
+        <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css" />
 
-            <ui:insert name="styles">
-                <style>
-                    .ui-datatable-scrollable-body {
-                        overflow-x: hidden;
-                    }
-                    .noheader th {
-                        display: none;
-                    }
-                </style>
+        <style>
+            .ui-datatable-scrollable-body {
+                overflow-x: hidden;
+            }
+            .overlay-filter .filter-field {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .inline-filter .filter-field {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        </style>
+
+        <ui:insert name="styles"/>
+
+        <h:outputScript>
+            <ui:insert name="vars" >
+                var content = "#{dataView.name}";
             </ui:insert>
-            <h:outputScript>
-                <ui:insert name="vars" >
-                    var content = "#{dataView.name}";
-                </ui:insert>
-                function addressBarUpdate(url) {
-                window.history.pushState(null, null, url);
-                }
-                function resizeContainer() {                              
-                if(!PrimeFaces.widgets[content] || PF(content).scrollBody == undefined) return; 
-                var container = $('#container');
-                var tableId = '#' + PF(content).id.replace(':', '\\:');
-                var tableHead = $(tableId + '_head')
-                var scrollHeight = container.height() - tableHead.height() - 4;
-                var scrollBody = PF(content).scrollBody;
-                scrollBody.css('max-height', scrollHeight + 'px');
+            function addressBarUpdate(url) {
+            window.history.pushState(null, null, url);
+            }
+            function resizeContainer() {                              
+            if(!PrimeFaces.widgets[content] || PF(content).scrollBody == undefined) return; 
+            var container = $('#container');
+            var tableId = '#' + PF(content).id.replace(':', '\\:');
+            var tableHead = $(tableId + '_head')
+            var scrollHeight = container.height() - tableHead.height() - 4;
+            var scrollBody = PF(content).scrollBody;
+            scrollBody.css('max-height', scrollHeight + 'px');
 
-                }
-            </h:outputScript>    
-            <h:outputScript name="locales/locale-#{theApp.localization}.js" library="primefaces" />
-            <ui:insert name="jscript" />
-        </h:head>
-        <h:body class="m-0">
+            }
+        </h:outputScript>    
+        <h:outputScript name="locales/locale-#{theApp.localization}.js" />
+        <ui:insert name="jscript" />
+    </h:head>
+    <h:body class="m-0">
 
-            <h:form>
-                <p:remoteCommand  name="updateAddress" action="#{viewPage.updateAddressBar}"
-                                  oncomplete="addressBarUpdate(args.url)" />
-            </h:form>
+        <h:form>
+            <p:remoteCommand  name="updateAddress" action="#{viewPage.updateAddressBar}"
+                              oncomplete="addressBarUpdate(args.url)" />
+        </h:form>
 
-            <h:form>
-                <p:remoteCommand  name="refreshContent" action="#{viewPage.updateAddressBar}"
-                                  oncomplete="addressBarUpdate(args.url);resizeContainer();" 
-                                  update="#{contentId} :tools-frm :pager-frm" />
-            </h:form>
-            
-            <ui:insert name="other-nonview" />
+        <h:form>
+            <p:remoteCommand  name="refreshCasing" 
+                              update=":crud-tools-frm :top-tools-frm :inline-filter-frm :overlay-filter-frm :pager-frm :tools-frm" />
+        </h:form>
 
-            <div class="flex flex-column justify-content-between align-items-stretch h-screen">
+        <h:form>
+            <p:remoteCommand  name="refreshContent" action="#{viewPage.updateAddressBar}"
+                              oncomplete="addressBarUpdate(args.url);resizeContainer();" 
+                              update="#{contentId} :crud-tools-frm :top-tools-frm :tools-frm :inline-filter-frm :overlay-filter-frm :pager-frm" />
+        </h:form>
 
-                <!-- Main Nav -->
-                <ui:insert name="navbar">
-                    <ui:include src="/WEB-INF/components/core/common/navbar.xhtml" />
-                </ui:insert>
+        <ui:insert name="other-nonview" />
 
-                <!-- Toolbar -->
-                <div class="#{notool ? 'hidden' : 'flex justify-content-between border-bottom-1 border-gray-300 align-items-center surface-200 gap-1 p-1'} ">
-                    <h:form id="tools-frm" class="flex flex-wrap gap-1 flex-grow-1">
-                        <div class="flex gap-2 flex-grow-1">
-                            <ui:insert name="tools" >
-                                <ui:insert name="crud-create">
-                                    <ui:include src="/WEB-INF/components/core/base/crud-create.xhtml" />
-                                </ui:insert>
-                                <ui:insert name="crud-update">
-                                    <ui:include src="/WEB-INF/components/core/base/crud-update.xhtml" />
-                                </ui:insert>
-                                <ui:insert name="crud-delete">
-                                    <ui:include src="/WEB-INF/components/core/base/crud-delete.xhtml" />
-                                </ui:insert>
-                            </ui:insert>
-                            <ui:insert name="other-tools" />
-                        </div>
-                    </h:form>
-                    <h:form>
-                        <ui:insert name="overlay-filter" />
-                    </h:form>
-                </div>
-                <div class="#{nofilter ? 'hidden' : ''}">
-                    <h:form id="filter-frm" class="flex flex-grow-1 flex-wrap justify-content-start border-bottom-1 border-gray-300 align-items-center surface-200 gap-2 p-1">
-                        <ui:insert name="filter"/>
-                    </h:form>
-                </div>         
+        <div class="flex flex-column justify-content-between align-items-stretch h-screen">
 
-                <!-- Content -->
-                <div id="container" class="flex-grow-1 flex flex-column overflow-hidden">                    
-                    <p:scrollPanel mode="native" class="flex flex-column flex-grow-1 p-0 m-0 border-0">
-                        <ui:insert name="content" />
-                    </p:scrollPanel>
-                </div>
-
-                <!-- Footer -->
-                <div id="footer" class="#{'flex flex-nowrap justify-content-between surface-200 border-top-1 border-gray-300 align-items-center gap-2 p-1'}">
-                    <h:form id="footer-tools-frm" class="flex-grow-1 flex">
-                        <ui:insert name="footer-tools" >
-                            <p:button icon="pi pi-info" class="ui-button-flat" />
-                        </ui:insert>
-                    </h:form>
-                    <h:form id="pager-frm" class="flex">
-                        <ui:insert name="pager">
-                            <ui:include src="/WEB-INF/components/core/base/pager.xhtml" >
-                                <ui:param name="pager" value="#{dataView.pager}" />
-                                <ui:param name="pagerListener" value="#{contentId}" />
+            <!-- Main Nav -->
+            <ui:insert name="navbar">
+                <ui:decorate template="/WEB-INF/components/core/common/navbar.xhtml" >
+                    <ui:param name="updateListener" value="#{updateListener}" />
+                    <ui:define name="sorter">  
+                        <h:form rendered="#{sorter ne null}">
+                            <ui:include src="/WEB-INF/components/core/base/sorter.xhtml" >
+                                <ui:param name="sorterCallback" value="refreshContent()" />
                             </ui:include>
-                        </ui:insert>
-                    </h:form>
-                </div>     
+                        </h:form>
+                    </ui:define>
+                    <ui:define name="overlayFilter">
+                        <h:form id="overlay-filter-frm" rendered="#{filterType eq 'overlay'}" class="flex align-items-center flex-grow-0 mr-2 overlay-filter">
+                            <ui:include src="/WEB-INF/components/core/base/overlay-filter.xhtml" >
+                                <ui:param name="filterCallback" value="refreshContent();#{filterCallback}" />
+                                <ui:param name="filterListener" value=":pager-frm #{filterListener}" />
+                            </ui:include>
+                        </h:form>
+                    </ui:define>
+                </ui:decorate>
+            </ui:insert>
 
+            <!-- Toolbar -->
+            <ui:insert name="toolbar">
+                <h:panelGroup layout="block" rendered="#{notool ne true}" 
+                              class="flex justify-content-between border-bottom-1 border-gray-300 align-items-center surface-200 gap-1 p-1">
+                    <h:form id="tools-frm">
+                        <ui:insert name="tools" />
+                    </h:form>
+                </h:panelGroup>
+            </ui:insert>
+
+            <ui:insert name="filter">
+                <h:panelGroup layout="block" rendered="#{filterType eq 'inline'}" class="inline">
+                    <h:form id="inline-filter-frm" class="inline-filter flex formgroup-inline align-items-center gap-4 p-1 border-bottom-1 border-gray-300 surface-200" >
+                        <ui:include src="/WEB-INF/components/core/base/inline-filter.xhtml" >
+                            <ui:param name="filterCallback" value="refreshContent();#{filterCallback}" />
+                            <ui:param name="filterListener" value=":pager-frm #{filterListener}" />
+                        </ui:include>
+                    </h:form>
+                </h:panelGroup>
+            </ui:insert>
+
+            <!-- Content -->
+            <div id="container" class="flex-grow-1 flex flex-column overflow-hidden">                    
+                <p:scrollPanel mode="native" class="flex flex-column flex-grow-1 p-0 m-0 border-0">
+                    <ui:insert name="content" />
+                </p:scrollPanel>
             </div>
 
-            <p:growl id="messages" skipDetailIfEqualsSummary="true"   />
-        </h:body>
-        <h:outputScript>
-            $(document).ready(resizeContainer);
-        </h:outputScript>
-    </f:view>
+            <!-- Footer -->
+            <div id="footer" class="#{'flex flex-nowrap justify-content-between surface-200 border-top-1 border-gray-300 align-items-center gap-2 p-1'}">
+                <h:form id="footer-tools-frm" class="flex-grow-1 flex">
+                    <ui:insert name="footer-tools" >
+                        <p:button icon="pi pi-info" class="ui-button-flat" />
+                    </ui:insert>
+                </h:form>
+                <h:form id="pager-frm" class="flex">
+                    <ui:insert name="pager">
+                        <ui:include src="/WEB-INF/components/core/base/pager.xhtml" >
+                            <ui:param name="pager" value="#{dataView.pager}" />
+                            <ui:param name="pagerCallback" value="refreshContent()" />
+                        </ui:include>
+                    </ui:insert>
+                </h:form>
+            </div>     
+
+        </div>
+
+        <p:growl id="messages" skipDetailIfEqualsSummary="true"   />
+    </h:body>
+    <h:outputScript>
+        $(document).ready(resizeContainer);
+    </h:outputScript>
 </html>
 

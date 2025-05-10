@@ -4,6 +4,7 @@
  */
 package id.my.mdn.kupu.app.santri.entity;
 
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -25,16 +27,20 @@ import java.util.Objects;
 public class TahunPembelajaran implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @TableGenerator(name = "Miabh_TahunPembelajaran", table = "KEYGEN", allocationSize = 1)
     @GeneratedValue(generator = "Miabh_TahunPembelajaran", strategy = GenerationType.TABLE)
     private Long id;
-    
+
     private String name;
-    
+
+    @Transient
+    private int angkatan;
+
+    @SorterField(order = SorterField.Order.DESC, sort = SorterField.Sort.AUTO, label = "From Date")
     private LocalDate fromDate;
-    
+
     private LocalDate thruDate;
 
     @OneToMany(mappedBy = "tahunPembelajaran")
@@ -67,6 +73,14 @@ public class TahunPembelajaran implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getAngkatan() {
+        return angkatan;
+    }
+
+    public void setAngkatan(int angkatan) {
+        this.angkatan = angkatan;
     }
 
     public LocalDate getFromDate() {
@@ -114,5 +128,5 @@ public class TahunPembelajaran implements Serializable {
         final TahunPembelajaran other = (TahunPembelajaran) obj;
         return Objects.equals(this.id, other.id);
     }
-    
+
 }

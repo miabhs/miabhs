@@ -1,0 +1,8 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+                xmlns:f="http://xmlns.jcp.org/jsf/core">        
+    <f:viewParam name="hp" value="#{filter.content.halaqohPengajaran}" converter="HalaqohPengajaranConverter" transient="true"  />     
+    <f:viewParam name="tp" value="#{filter.content.tahunPembelajaran}" converter="TahunPembelajaranConverter" transient="true" />    
+    <f:viewParam name="mp" value="#{filter.content.bulanPembelajaran}" converter="PeriodePembelajaranConverter" transient="true" />  
+    <f:viewParam name="pp" value="#{filter.content.periodePembelajaran}" converter="PeriodePembelajaranConverter" transient="true" />
+</ui:composition>
+

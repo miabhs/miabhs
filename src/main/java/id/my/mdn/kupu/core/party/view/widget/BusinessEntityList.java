@@ -4,11 +4,12 @@
  */
 package id.my.mdn.kupu.core.party.view.widget;
 
+import id.my.mdn.kupu.core.base.dao.AbstractFacade;
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.party.dao.BusinessEntityFacade;
 import id.my.mdn.kupu.core.party.entity.BusinessEntity;
-import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
-import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -23,6 +24,10 @@ public class BusinessEntityList extends AbstractValueList<BusinessEntity>{
     
     @Inject
     private BusinessEntityFacade dao;
+
+    public BusinessEntityList() {
+        super(BusinessEntity.class);
+    }
 
     @Override
     protected List<BusinessEntity> getFetchedItemsInternal(Map<String, Object> parameters, List<FilterData> filters, List<SorterData> sorters, DefaultList<BusinessEntity> defaultList, AbstractFacade.DefaultChecker defaultChecker) {

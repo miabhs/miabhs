@@ -58,7 +58,7 @@ public class ReportTemplate implements Serializable {
     private String uri;
 
     @Lob
-    @Column(columnDefinition = "CLOB NOT NULL")
+//    @Column(columnDefinition = "CLOB NOT NULL")
     private String sourceTemplate;
 
     @Lob     

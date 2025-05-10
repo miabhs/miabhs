@@ -6,6 +6,7 @@ package id.my.mdn.kupu.app.santri.dao;
 
 import id.my.mdn.kupu.app.santri.entity.TahunPembelajaran;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -14,6 +15,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Predicate;
+import java.time.LocalDate;
 
 /**
  *
@@ -43,6 +45,12 @@ public class TahunPembelajaranFacade extends AbstractFacade<TahunPembelajaran> {
         switch (filterName) {
             case "name":
                 return cb.like(from[0].get("name"), "%" + filterValue + "%");
+            case "date":
+                LocalDate date = (LocalDate) filterValue;
+                return cb.and(
+                        cb.lessThanOrEqualTo(from[0].get("fromDate"), date),
+                        cb.greaterThanOrEqualTo(from[0].get("thruDate"), date)
+                );
             default:
                 return null;
         }
@@ -57,6 +65,10 @@ public class TahunPembelajaranFacade extends AbstractFacade<TahunPembelajaran> {
             default:
                 return from[0].get("fromDate");
         }
+    }
+    
+    public TahunPembelajaran getCurrentTahunPembelajaran() {        
+        return findSingleByAttributes(FilterData.by("date", LocalDate.now()));
     }
 
 }

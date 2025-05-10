@@ -12,7 +12,7 @@ import id.my.mdn.kupu.core.base.view.widget.Filter;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
 import id.my.mdn.kupu.core.reporting.view.ReportingPage;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -54,17 +54,17 @@ public class LaporanKelompokPage extends ReportingPage implements Serializable {
 
         Map<String, Object> parameters = new HashMap<>();
 
-        if (filterContent.getFromDate() != null) {
-            parameters.put("fromDate", filterContent.getFromDate());
-        }
+//        if (filterContent.getFromDate() != null) {
+//            parameters.put("fromDate", filterContent.getFromDate());
+//        }
+//
+//        if (filterContent.getThruDate() != null) {
+//            parameters.put("thruDate", filterContent.getThruDate());
+//        }
 
-        if (filterContent.getThruDate() != null) {
-            parameters.put("thruDate", filterContent.getThruDate());
-        }
-
-        if (filterContent.getStatus() != null) {
-            parameters.put("status", filterContent.getStatus().getName());
-        }
+//        if (filterContent.getStatus() != null) {
+//            parameters.put("status", filterContent.getStatus().getName());
+//        }
 
         return new ReportingJob(
                 listKelompokPengasuhan, parameters,

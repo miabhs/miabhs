@@ -6,8 +6,9 @@ package id.my.mdn.kupu.core.security.view.widget;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
-import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.security.dao.GroupAccessControlFacade;
 import id.my.mdn.kupu.core.security.model.AccessControl;
 import id.my.mdn.kupu.core.security.model.ApplicationSecurityGroup;
@@ -27,6 +28,10 @@ public class GroupAccessControlList extends AbstractPagedValueList<AccessControl
     
     @Inject
     private GroupAccessControlFacade dao;
+
+    public GroupAccessControlList() {
+        super(AccessControl.class);
+    }
 
     @Override
     protected List<AccessControl> getPagedFetchedItemsInternal(int first, int pageSize, Map<String, Object> parameters, List<FilterData> filters, List<SorterData> sorters, DefaultList<AccessControl> defaultList, AbstractFacade.DefaultChecker defaultChecker) {

@@ -12,9 +12,9 @@
         <ui:param name="notool" value="true" />
         <ui:param name="nofilter" value="true"/>          
 
-        <f:viewParam name="entity" value="#{viewPage.entity}" converter="PeriodePembelajaranConverter" />
-        <f:viewParam name="parent" value="#{viewPage.parent}" converter="PeriodePembelajaranConverter" />
-        <f:viewParam name="tahunPembelajaran" value="#{viewPage.tahunPembelajaran}" converter="TahunPembelajaranConverter" />
+        <f:viewParam name="entity" value="#{viewPage.entity}" converter="PeriodePembelajaranConverter" transient="true" />
+        <f:viewParam name="parent" value="#{viewPage.parent}" converter="PeriodePembelajaranConverter" transient="true" />
+        <f:viewParam name="tahunPembelajaran" value="#{viewPage.tahunPembelajaran}" converter="TahunPembelajaranConverter" transient="true" />
 
         <f:viewAction action="#{viewPage.load}" />
     </f:metadata>
@@ -43,6 +43,15 @@
                             <p:inputText id="nama" value="#{viewPage.entity.name}"
                                          required="true" class="block w-full" />
                             <p:message for="nama" />
+                        </div>
+                        <div class="field ui-fluid">
+                            <p:outputLabel for="jenis" value="Jenis Periode" />
+                            <p:selectOneMenu id="jenis" value="#{viewPage.entity.jenisPeriode}"
+                                             converter="JenisPeriodePembelajaranConverter" >                        
+                                <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+                                <f:selectItems value="#{jenisPeriodePembelajaranList.fetchedItems}" var="item"
+                                               itemLabel="#{item.label}" itemValue="#{item}" />
+                            </p:selectOneMenu>                  
                         </div>
                         <div class="field ui-fluid">
                             <p:outputLabel for="awal" value="Awal" />

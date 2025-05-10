@@ -1,0 +1,51 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+
+    <div class="filter-field">
+        <p:outputLabel for="periode" value="Periode" />
+        <h:panelGroup id="periode" class="flex ui-inputgroup">
+            <p:datePicker id="from-date" value="#{filter.content.fromDate}"
+                          showTime="false"  size="7" locale="#{theApp.locale}"
+                          pattern="dd/MM/yyyy" placeholder="Awal" >
+            </p:datePicker>                
+            <h:panelGroup layout="block" styleClass="ui-inputgroup-addon" >
+                <p:outputLabel value="s.d" />
+            </h:panelGroup>
+            <p:datePicker id="thru-date" value="#{filter.content.thruDate}"
+                          showTime="false" size="7" locale="#{theApp.locale}"
+                          pattern="dd/MM/yyyy" placeholder="Akhir" >
+            </p:datePicker>
+        </h:panelGroup>
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel for="kelamin" value="Jenis" />
+        <p:selectOneMenu id="kelamin" value="#{filter.content.gender}"
+                         converter="GenderTypeConverter" >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{genderTypeList.fetchedItems}" var="item"
+                           itemLabel="#{item.label}" itemValue="#{item}" />
+            <p:ajax listener="#{filter.content.updateGenderFilter}" update="@form:kelompok" />
+        </p:selectOneMenu>                  
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel value="Kelompok" />
+        <p:selectOneMenu id="kelompok" value="#{filter.content.kelompokPengasuhan}" 
+                         converter="KelompokPengasuhanConverter"
+                         filter="true" filterMatchMode="contains"
+                         filterPlaceholder="Cari..."
+                         autoWidth="false"  >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{filter.content.kelompokPengasuhanChooser.fetchedItems}" 
+                           var="item" itemValue="#{item}" 
+                           itemLabel="#{item.organization.name}" />
+        </p:selectOneMenu>
+    </div>
+
+</ui:composition>
+

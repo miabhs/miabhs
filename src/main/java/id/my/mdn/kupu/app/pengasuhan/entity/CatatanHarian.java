@@ -12,6 +12,7 @@ public class CatatanHarian {
                                        LEFT JOIN MIABH_BENTUKAKTIFITAS AS BENTUKAKTIFITAS0
                                        ON AKTIFITAS0.BENTUKAKTIFITAS_ID = BENTUKAKTIFITAS0.ID
                                        WHERE AKTIFITAS0.SANTRI_ID = ? AND AKTIFITAS0.ACTIVITYDATE >= ? AND AKTIFITAS0.ACTIVITYDATE <= ?
+                                       AND AKTIFITAS0.BENTUKAKTIFITAS_ID IS NOT NULL
                                        """;
 
     public final LocalDate activityDate;

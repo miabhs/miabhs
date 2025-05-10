@@ -7,16 +7,16 @@ package id.my.mdn.kupu.app.santri.view;
 import id.my.mdn.kupu.app.santri.view.admin.UstadzDetailPage;
 import id.my.mdn.kupu.app.santri.view.admin.UstadzEditorPage;
 import id.my.mdn.kupu.app.santri.view.widget.UstadzList;
-import id.my.mdn.kupu.core.base.view.ChildPage;
+import id.my.mdn.kupu.core.base.view.Page;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
-import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -24,7 +24,7 @@ import jakarta.inject.Named;
  */
 @Named(value = "ustadzPage")
 @ViewScoped
-public class UstadzPage extends ChildPage implements Serializable {
+public class UstadzPage extends Page implements Serializable {
 
     @Inject
     @Bookmarked
@@ -39,8 +39,6 @@ public class UstadzPage extends ChildPage implements Serializable {
     @Creator(of = "dataView")
     public void openDataCreator() {
         gotoChild(UstadzEditorPage.class)
-                .addParam("partyClass")
-                .withValues("person")
                 .open();
     }
 
@@ -48,13 +46,13 @@ public class UstadzPage extends ChildPage implements Serializable {
     public void openDataEditor() {
         gotoChild(UstadzDetailPage.class)
                 .addParam("ustadz")
-                .withValues(dataView.getSelector().getSelection())
+                .withValues(dataView.getSelected())
                 .open();
     }
 
     @Deleter(of = "dataView")
     public void openDataDeleter() {
-        dataView.deleteSelections();
+        dataView.deleteSelected();
     }
 
     public UstadzList getDataView() {

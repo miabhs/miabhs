@@ -28,19 +28,19 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>14.0.0</version>
+            <version>15.0.0</version>
             <classifier>jakarta</classifier>
         </dependency>
         <dependency>
             <groupId>org.primefaces.extensions</groupId>
             <artifactId>primefaces-extensions</artifactId>
-            <version>14.0.0</version>
+            <version>15.0.0</version>
             <classifier>jakarta</classifier>
         </dependency>
         <dependency>
             <groupId>org.primefaces.extensions</groupId>
             <artifactId>resources-monacoeditor</artifactId>
-            <version>14.0.0</version>
+            <version>15.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
@@ -86,6 +86,11 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-jdt</artifactId>
             <version>7.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.omnifaces</groupId>
+            <artifactId>omnifaces</artifactId>
+            <version>4.6.1</version>
         </dependency>
     </dependencies>
     

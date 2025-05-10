@@ -6,7 +6,6 @@ package id.my.mdn.kupu.app.pengasuhan.view.widget;
 
 import id.my.mdn.kupu.app.pengasuhan.view.BentukAktifitasPage;
 import id.my.mdn.kupu.app.pengasuhan.view.HikmahKauniyahPage;
-import id.my.mdn.kupu.app.pengasuhan.view.LaporanKelompokPage;
 import id.my.mdn.kupu.app.pengasuhan.view.LaporanKelompokPekananPage;
 import id.my.mdn.kupu.app.pengasuhan.view.LaporanKepengasuhanEditorPage;
 import id.my.mdn.kupu.app.pengasuhan.view.LaporanKepengasuhanPage;
@@ -30,8 +29,6 @@ public class PengasuhanNavigator extends PageNavigator implements Serializable {
         switch(pageId) {
             case "HikmahKauniyah":
                 return HikmahKauniyahPage.class;
-            case "LaporanKelompok":
-                return LaporanKelompokPage.class;
             case "LaporanKelompokPekanan":
                 return LaporanKelompokPekananPage.class;
             case "LaporanSantri":

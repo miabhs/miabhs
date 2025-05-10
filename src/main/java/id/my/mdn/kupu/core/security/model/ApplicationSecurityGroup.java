@@ -28,6 +28,7 @@
 package id.my.mdn.kupu.core.security.model;
 
 import id.my.mdn.kupu.core.base.model.EntityBuilder;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
 import id.my.mdn.kupu.core.party.entity.Organization;
 import id.my.mdn.kupu.core.party.entity.PartyRole;
 import jakarta.persistence.CascadeType;
@@ -52,7 +53,7 @@ import static java.util.stream.Collectors.joining;
  */
 @Entity
 @Table(name = "SECURITY_APPLICATIONSECURITYGROUP")
-//@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"GROUPNAME", "MODULE_NAME"}))
+@SorterField(value = "id", sort = SorterField.Sort.AUTO, label = "ID")
 @SqlResultSetMappings({
     @SqlResultSetMapping(
             name = "ApplicationSecurityGroup",

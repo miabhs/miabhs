@@ -6,13 +6,11 @@
 package id.my.mdn.kupu.core.security.dao;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.util.QueryHelper;
 import id.my.mdn.kupu.core.base.util.QueryParameter;
-import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.security.model.AccessControl;
 import id.my.mdn.kupu.core.security.model.GroupAccessControl;
-import java.util.List;
-import java.util.stream.Collectors;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -24,6 +22,8 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -83,7 +83,7 @@ public class AccessControlFacade extends AbstractFacade<AccessControl> {
                 .setFirstResult(startPosition)
                 .setMaxResults(maxResult);
         
-        return q.getResultList().stream()
+        return q.getResultStream()
                 .map(arr -> {
                     AccessControl acl = (AccessControl) arr[0];
                     GroupAccessControl group = null;

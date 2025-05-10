@@ -14,10 +14,10 @@ import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import static id.my.mdn.kupu.core.base.view.widget.Selector.SINGLE;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.convert.Converter;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -39,7 +39,6 @@ public class SantriSingleChooserPage extends SingleChooserPage<Santri> implement
         dataView.getFilter()
                 .<SantriFilter>getContent()
                 .setStatusKesantrian(StatusKesantrian.ACTIVE);
-        dataView.getFilter().setFiltering(true);
     }
 
     @Override

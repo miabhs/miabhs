@@ -38,10 +38,10 @@ public class AbsensiHalaqoh implements Serializable {
                 + ((lastName != null && !lastName.isBlank()) ? " " + lastName : "");
 
         this.nis = nis;
-        this.tahunMasukName = tahunMasukName;
+        this.tahunMasukName = String.valueOf(tahunMasukFromDate.getYear());
         
         long days = DAYS.between(tahunMasukFromDate, LocalDate.now());
-        this.lamaBelajar =  ((int) (days / 365)) + (((int) (days % 365)) > 0 ? 1 : 0);
+        this.lamaBelajar =  ((int) (days / 365)) + (((int) (days % 365)) > 0 ? 0 : 0);
 
         this.bdas = parse(bdasMerah,bdasKuning);
         this.nbdas = parse(nbdasMerah, nbdasKuning);
@@ -60,7 +60,7 @@ public class AbsensiHalaqoh implements Serializable {
             p3.append(kuning).append("K");
         }
 
-        if (!p3.isEmpty()) {
+        if (p3.isEmpty()) {
             p3.append("H");
         }
 

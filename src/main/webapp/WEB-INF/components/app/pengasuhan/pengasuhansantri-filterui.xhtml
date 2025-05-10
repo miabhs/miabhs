@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+    
+    <div class="filter-field">
+        <p:outputLabel value="Kelompok" />
+        <p:selectOneMenu value="#{filter.content.kelompokPengasuhan}" 
+                         converter="KelompokPengasuhanConverter"
+                         filter="true" filterMatchMode="contains"
+                         filterPlaceholder="Cari..."
+                         autoWidth="false"  >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{kelompokPengasuhanSelectList.fetchedItems}" 
+                           var="item" itemValue="#{item}" 
+                           itemLabel="#{item.organization.name}" />
+            <p:ajax listener="#{filter.content.updateSantriFilter}" update="@form:santri-filter-selector @form:santri" />
+        </p:selectOneMenu>
+    </div>
+
+    <div class="filter-field">
+        <p:outputLabel for="santri" value="Santri" />
+        <span class="ui-input-icon-right">
+            <i class="pi pi-chevron-down" />
+            <p:inputText id="santri" value="#{filter.content.santri ne null ? filter.content.santri.name : 'Semua'}" 
+                         style="cursor: pointer;" 
+                         readonly="true" size="8"
+                         onclick="showSantriFilterSelector('#{component.clientId}', '#{component.clientId}')" />
+        </span>
+        <ui:decorate template="/WEB-INF/components/core/base/lazychooser.xhtml" >
+            <ui:param name="name" value="SantriFilterSelector" />
+            <ui:param name="widgetVar" value="santriFilterSelector" />
+            <ui:param name="id" value="santri-filter-selector" />
+            <ui:param name="chooser" value="#{filter.content.santriChooser}" />
+            <ui:define name="columns">
+                <p:column>
+                    <h:outputText value="#{data ne null ? data.name : ''}" />
+                </p:column>
+
+                <p:column>
+                    <h:outputText value="#{((data ne null) and (data.kelompokPengasuhan ne null)) ? data.kelompokPengasuhan.organization.name : ' '}" />
+                </p:column>
+            </ui:define>
+        </ui:decorate>
+    </div>
+
+</ui:composition>
+

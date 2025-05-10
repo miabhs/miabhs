@@ -1,0 +1,37 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="DetailCatatanAbsensiHalaqoh" language="java" columnCount="1" pageWidth="432" pageHeight="100" columnWidth="432" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="14d4be08-ec1f-43a0-ae81-763a166aa5a0">
+	<field name="bentukAktifitas" class="java.lang.String"/>
+	<field name="confirmed" class="java.lang.Boolean"/>
+	<field name="quantity" class="java.lang.Integer"/>
+	<detail>
+		<band height="17">
+			<element kind="frame" uuid="0a7ead7f-1daf-47ab-8a78-ec9db17f848b" x="0" y="0" width="432" height="17">
+				<element kind="frame" uuid="cef46845-1a0b-45f3-9d03-567156a995d1" stretchType="ContainerHeight" x="0" y="0" width="392" height="17">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+					<element kind="textField" uuid="01fe08fa-d93a-4bc9-ace5-e300265845b9" x="0" y="0" width="384" height="17" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" vTextAlign="Top">
+						<expression><![CDATA[$F{bentukAktifitas}]]></expression>
+					</element>
+					<box leftPadding="4" rightPadding="4">
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="67284951-ad64-4283-b7e6-53d9829d1e24" stretchType="ContainerHeight" x="392" y="0" width="20" height="17">
+					<element kind="textField" uuid="4e2dba17-e8e4-44ce-8ba5-0721180bd003" x="0" y="0" width="20" height="17" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Top">
+						<expression><![CDATA[$F{quantity}]]></expression>
+					</element>
+					<box>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="abf01b40-52a6-4e0a-8727-6d11cc164619" stretchType="ContainerHeight" x="412" y="0" width="20" height="17">
+					<element kind="textField" uuid="74c21397-6977-467f-8913-b836c6cc552a" x="0" y="0" width="20" height="17" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Top">
+						<expression><![CDATA[$F{confirmed}]]></expression>
+					</element>
+				</element>
+				<box>
+					<bottomPen lineWidth="0.75"/>
+				</box>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

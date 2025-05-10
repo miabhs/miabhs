@@ -66,7 +66,7 @@ public class ReportFiller {
 
     public void fillAsPdf(InputStream templateInputStream, Map<String, Object> parameters,
             ReportDataSource dataSource, OutputStream outputStream) throws ReportFillingException {
-
+        
         try {
             parameters.put(JRParameter.REPORT_LOCALE, new Locale("in", "ID"));
             JasperRunManager.runReportToPdfStream(templateInputStream, outputStream, 

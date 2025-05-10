@@ -5,11 +5,13 @@
 package id.my.mdn.kupu.app.santri.entity;
 
 import id.my.mdn.kupu.core.base.model.EntityBuilder;
+import id.my.mdn.kupu.core.party.entity.GenderType;
 import id.my.mdn.kupu.core.party.entity.Organization;
 import id.my.mdn.kupu.core.party.entity.PartyRole;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import java.util.ArrayList;
 
 /**
@@ -41,26 +43,24 @@ public class KelompokPengasuhan extends PartyRole {
         }
 
     }
-    
-    @Transient
-    private Pengasuhan pengasuhan;
-
-    public Pengasuhan getPengasuhan() {
-        return pengasuhan;
-    }
 
     public KelompokPengasuhan() {
-    }
-
-    public KelompokPengasuhan(KelompokPengasuhan kelompokPengasuhan, Pengasuhan pengasuhan) {
-        this.setId(kelompokPengasuhan.getId());
-        this.setParty(kelompokPengasuhan.getParty());
-        this.pengasuhan = pengasuhan;
     }
 
     public KelompokPengasuhan(Long id, Organization organization) {
         setId(id);
         setOrganization(organization);
+    }
+    
+    @Enumerated(EnumType.STRING)
+    private GenderType gender;
+
+    public GenderType getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
     }
     
     final public void setOrganization(Organization organization) {

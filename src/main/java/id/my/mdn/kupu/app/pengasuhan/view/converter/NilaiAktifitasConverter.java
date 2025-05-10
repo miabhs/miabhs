@@ -5,6 +5,7 @@
 package id.my.mdn.kupu.app.pengasuhan.view.converter;
 
 import id.my.mdn.kupu.app.pengasuhan.entity.NilaiAktifitas;
+import id.my.mdn.kupu.core.common.util.K.KEnum;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -21,7 +22,7 @@ public class NilaiAktifitasConverter implements Converter<NilaiAktifitas> {
 
     @Override
     public NilaiAktifitas getAsObject(FacesContext context, UIComponent component, String value) {
-        return NilaiAktifitas.valueOf(value);
+        return KEnum.valueOf(NilaiAktifitas.class, value);
     }
 
     @Override

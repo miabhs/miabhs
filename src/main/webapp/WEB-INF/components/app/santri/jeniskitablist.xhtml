@@ -11,7 +11,15 @@
         <ui:param name="height" value="#{height}" />
 
         <ui:define name="columns">
+            
+            <p:column headerText="Kode">
+                <h:outputText value="#{data.kode}" />
+            </p:column>
 
+            <p:column headerText="Judul">
+                <h:outputText class="block text-xl font-bold white-space-normal" style="font-family: ScheherazadeNew; direction: rtl" value="#{data.judul}" />
+            </p:column>
+            
             <p:column headerText="Jenis">
                 <h:outputText value="#{data.jenisPengajaran.nama}" />
             </p:column>
@@ -19,11 +27,8 @@
             <p:column headerText="Kategori">
                 <h:outputText value="#{data.kategoriKitab.name}" />
             </p:column>
-
-            <p:column headerText="Judul">
-                <h:outputText class="block text-xl font-bold white-space-normal" style="font-family: ScheherazadeNew; direction: rtl" value="#{data.judul}" />
-            </p:column>
-
+            
+            <ui:remove>
             <p:column headerText="Penulis">
                 <h:outputText value="#{data.penulis}" />
             </p:column>
@@ -35,7 +40,7 @@
             <p:column headerText="Deskripsi">
                 <h:outputText value="#{data.description}" />
             </p:column>
-
+            </ui:remove>
         </ui:define>
 
     </ui:decorate>

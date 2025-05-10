@@ -8,7 +8,7 @@ import id.my.mdn.kupu.app.pengasuhan.dao.BentukAktifitasFacade;
 import id.my.mdn.kupu.app.pengasuhan.entity.BentukAktifitas;
 import id.my.mdn.kupu.app.pengasuhan.entity.JenisAktifitas;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.annotation.PostConstruct;

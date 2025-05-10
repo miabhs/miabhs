@@ -11,27 +11,20 @@
         <ui:param name="viewPage" value="#{ustadzSingleChooserPage}" />
         <ui:include src="/WEB-INF/components/core/base/meta/chooser-page.xhtml" />
         
-        <ui:param name="dataView" value="#{viewPage.dataView}" />        
-        <ui:param name="pager" value="#{dataView.pager}" />
+        <ui:param name="dataView" value="#{viewPage.dataView}" /> 
+        <ui:param name="contentId" value=":data-frm:#{dataView.name}" />
+               
         <ui:param name="filter" value="#{dataView.filter}" />
-        <ui:param name="contentId" value=":data-frm:#{dataView.name}" /> 
+        <ui:param name="filterType" value="overlay" />
+        <ui:param name="filterUi" value="/WEB-INF/components/core/common/common-filterui.xhtml" />
+        <ui:include src="/WEB-INF/components/core/common/meta/common-filterui.xhtml" />
+        
+        <ui:param name="pager" value="#{dataView.pager}" /> 
         <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
         
-        <ui:param name="nofilter" value="true"/>  
-        
-        <f:viewParam name="s" value="#{dataView.selection}" converter="UstadzConverter" />      
-        
-        <ui:include src="/WEB-INF/components/core/base/meta/filterui.xhtml" />
+        <f:viewParam name="s" value="#{dataView.selectionInternal}" converter="UstadzConverter" transient="true" />
         
     </f:metadata>
-
-    <ui:define name="overlay-filter">
-        <ui:include src="/WEB-INF/components/core/base/filter.xhtml" >
-            <ui:param name="name" value="filterUstadz" />
-            <ui:param name="filterUi" value="/WEB-INF/components/core/base/filterui.xhtml" />
-            <ui:param name="filterContent" value="/WEB-INF/components/core/base/filtercontent.xhtml" />
-        </ui:include>
-    </ui:define>
 
     <ui:define name="content">        
         <h:form id="data-frm">            

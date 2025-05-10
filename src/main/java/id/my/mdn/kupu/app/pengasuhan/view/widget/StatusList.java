@@ -6,13 +6,16 @@ package id.my.mdn.kupu.app.pengasuhan.view.widget;
 
 import id.my.mdn.kupu.app.pengasuhan.entity.Status;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Named;
 
 /**
  *
@@ -21,6 +24,10 @@ import jakarta.inject.Named;
 @Named(value = "statusList")
 @RequestScoped
 public class StatusList extends AbstractValueList<Status> {
+
+    public StatusList() {
+        super(Status.class);
+    }
 
     @Override
     protected List<Status> getFetchedItemsInternal(Map<String, Object> parameters, List<FilterData> filters, List<SorterData> sorters, DefaultList<Status> defaultList, AbstractFacade.DefaultChecker defaultChecker) {

@@ -1,0 +1,14 @@
+<ui:composition xmlns:ui="jakarta.faces.facelets" 
+                xmlns:f="jakarta.faces.core">
+    
+    <f:viewParam name="fd" value="#{filter.content.fromDate}" converter="LocalDateConverter" transient="true" />
+    <f:viewParam name="td" value="#{filter.content.thruDate}" converter="LocalDateConverter" transient="true" /> 
+    <f:viewParam name="gd" value="#{filter.content.gender}" converter="GenderTypeConverter" transient="true" />
+    <f:viewParam name="sn" value="#{filter.content.santri}" converter="SantriConverter" transient="true" /> 
+    <f:viewParam name="kp" value="#{filter.content.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" transient="true" /> 
+    <f:viewParam name="bs" value="#{filter.content.bentukAktifitas}" converter="BentukAktifitasConverter" transient="true" />
+    <f:viewParam name="js" value="#{filter.content.jenisAktifitas}" converter="JenisAktifitasConverter" transient="true" />
+    <f:viewParam name="na" value="#{filter.content.nilaiAktifitas}" converter="NilaiAktifitasConverter" transient="true"  />
+
+</ui:composition>
+

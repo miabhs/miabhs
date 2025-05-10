@@ -4,12 +4,16 @@
  */
 package id.my.mdn.kupu.core.hr.entity;
 
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Order;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Sort;
 import id.my.mdn.kupu.core.party.entity.BusinessEntity;
 import id.my.mdn.kupu.core.party.entity.PartyRelationship;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 
 /**
  *
@@ -47,6 +51,11 @@ public class Employment extends PartyRelationship {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    @Override @SorterField(value = "fromDate", order = Order.DESC, sort = Sort.AUTO, label = "From")
+    public LocalDate getFromDate() {
+        return super.getFromDate();
     }
 
 }

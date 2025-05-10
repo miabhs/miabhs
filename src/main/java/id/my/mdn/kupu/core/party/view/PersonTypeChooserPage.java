@@ -11,7 +11,7 @@ import id.my.mdn.kupu.core.base.view.converter.SelectionsConverter;
 import id.my.mdn.kupu.core.party.entity.PersonType;
 import id.my.mdn.kupu.core.party.view.converter.PersonTypeListConverter;
 import id.my.mdn.kupu.core.party.view.widget.PersonTypeList;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;

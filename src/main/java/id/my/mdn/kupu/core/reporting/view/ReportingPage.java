@@ -5,10 +5,13 @@
 package id.my.mdn.kupu.core.reporting.view;
 
 import id.my.mdn.kupu.core.base.view.Page;
+import id.my.mdn.kupu.core.base.view.widget.Filter;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
 import id.my.mdn.kupu.core.reporting.service.ReportingJobQueue;
 import jakarta.faces.event.ActionEvent;
 import jakarta.inject.Inject;
+import java.util.List;
+import java.util.Map;
 import org.primefaces.PrimeFaces;
 
 /**
@@ -19,6 +22,27 @@ public abstract class ReportingPage extends Page {
 
     @Inject
     private ReportingJobQueue jobQueue;
+
+    protected final Filter filter;
+
+    @Override
+    public Map<String, List<String>> getStates() {
+        Map<String, List<String>> states = super.getStates();
+        states.putAll(filter.getStates());
+        return states;
+    }
+
+    public ReportingPage() {
+        filter = new Filter(this::onFilter);
+    }
+
+    public void onFilter(Object obj) {
+        prepareReport(null);
+    }
+
+    public Filter getFilter() {
+        return filter;
+    }
 
     protected boolean isReady() {
         return true;

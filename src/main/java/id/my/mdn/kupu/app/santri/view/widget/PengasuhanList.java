@@ -4,17 +4,19 @@
  */
 package id.my.mdn.kupu.app.santri.view.widget;
 
+import id.my.mdn.kupu.app.pengasuhan.view.widget.PengasuhanSantriFilter;
 import id.my.mdn.kupu.app.santri.dao.PengasuhanFacade;
 import id.my.mdn.kupu.app.santri.entity.Pengasuhan;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import java.util.List;
-import java.util.Map;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -29,6 +31,10 @@ public class PengasuhanList extends AbstractMutablePagedValueList<Pengasuhan> {
 
     @Inject
     private PengasuhanSantriFilter filterContent;
+
+    public PengasuhanList() {
+        super(Pengasuhan.class);
+    }
 
     @PostConstruct
     public void init() {        
@@ -61,7 +67,7 @@ public class PengasuhanList extends AbstractMutablePagedValueList<Pengasuhan> {
     }
     
     public void setupKoordinator() {
-        dao.makePengasuhanAsDefaultKorrdinator(selector.getSelection());
+        dao.makePengasuhanAsDefaultKorrdinator(getSelected());
         invalidate();
     }
 

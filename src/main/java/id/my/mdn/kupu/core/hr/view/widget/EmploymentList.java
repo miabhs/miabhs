@@ -7,6 +7,7 @@ package id.my.mdn.kupu.core.hr.view.widget;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.hr.dao.EmploymentFacade;
 import id.my.mdn.kupu.core.hr.entity.Employment;
 import jakarta.annotation.PostConstruct;
@@ -30,10 +31,12 @@ public class EmploymentList extends AbstractMutablePagedValueList<Employment> {
     @Inject
     private EmploymentFilter filterContent;
 
+    public EmploymentList() {
+        super(Employment.class);
+    }
+
     @PostConstruct
-    public void init() {  
-        getSorters().add(SorterData.by("fromDate", SorterData.DESC));
-        
+    public void init() {          
         getFilter().setContent(filterContent);
     }
 

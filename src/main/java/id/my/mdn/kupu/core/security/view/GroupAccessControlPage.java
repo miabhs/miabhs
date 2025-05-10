@@ -10,7 +10,7 @@ import id.my.mdn.kupu.core.security.model.AccessControl;
 import id.my.mdn.kupu.core.security.model.ApplicationSecurityGroup;
 import id.my.mdn.kupu.core.security.view.widget.GroupAccessControlList;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;

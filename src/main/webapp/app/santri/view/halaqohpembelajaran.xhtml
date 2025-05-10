@@ -1,0 +1,422 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/templates/explorer.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="jakarta.tags.core">
+
+    <f:metadata>
+        <ui:param name="title" value="Halaqoh Pembelajaran" />
+
+        <ui:param name="viewPage" value="#{halaqohPembelajaranPage}" />
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
+
+        <ui:param name="masterTitle" value="Halaqoh" />
+        <ui:param name="masterDataView" value="#{viewPage.masterDataView}" />
+        <ui:param name="masterContentId" value=":master-frm:#{masterDataView.name}" />
+        <ui:param name="master_notool" value="true" />        
+        <ui:param name="masterFilter" value="#{masterDataView.filter}" />
+        <ui:param name="masterFilterType" value="overlay" />
+        <ui:param name="masterFilterUi" value="/WEB-INF/components/core/common/common-filterui.xhtml" />
+        <ui:include src="/WEB-INF/components/core/common/meta/common-filterui.xhtml" />
+        <ui:param name="masterPager" value="#{masterDataView.pager}" />
+        <f:viewParam name="mpz" value="#{masterPager.pageSize}" converter="LongConverter" transient="true" />
+        <f:viewParam name="mpo" value="#{masterPager.offset}" converter="LongConverter" transient="true" /> 
+        <f:viewParam name="ms" value="#{masterDataView.selectionInternal}" converter="HalaqohPengajaranConverter" transient="true" />
+
+        <ui:param name="detailTitle" value="Santri" />
+        <ui:param name="detailDataView" value="#{viewPage.detailDataView}" />
+        <ui:param name="detailContentId" value=":detail-frm:#{detailDataView.name}" />
+        <ui:param name ="detail_notool" value="true" />
+        <ui:param name="detailFilter" value="#{detailDataView.filter}" />
+        <ui:param name="detailFilterType" value="overlay" />     
+        <ui:param name="detailFilterUi" value="/WEB-INF/components/app/pengajaran/pengajaran-filterui.xhtml" />        
+        <ui:include src="/WEB-INF/components/app/pengajaran/meta/pengajaran-filterui.xhtml" >
+            <ui:param name="filter" value="#{detailFilter}" />
+        </ui:include> 
+        <ui:param name="detailPager" value="#{detailDataView.pager}" />
+        <f:viewParam name="dpz" value="#{detailPager.pageSize}" converter="LongConverter" transient="true" />
+        <f:viewParam name="dpo" value="#{detailPager.offset}" converter="LongConverter" transient="true" /> 
+        <f:viewParam name="ds" value="#{detailDataView.selectionInternal}" converter="RangkumanPengajaranConverter" transient="true" />
+
+    </f:metadata> 
+
+    <ui:define name="module-menu">
+        <ui:include src="/WEB-INF/components/app/santri/module-menu.xhtml" />
+    </ui:define>
+
+    <ui:define name="detail-top-tools">
+        <p:commandButton icon="pi pi-print" immediate="true"
+                         actionListener="#{viewPage.printAbsensiHalaqoh}"
+                         disabled="#{masterDataView.selected eq null}" 
+                         class="ui-button-flat" />
+    </ui:define>
+
+    <ui:define name="master">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap');
+
+            .amiri-regular {
+                font-family: "Amiri", serif;
+                font-weight: 400;
+                font-style: normal;
+            }
+
+            .amiri-bold {
+                font-family: "Amiri", serif;
+                font-weight: 700;
+                font-style: normal;
+            }
+
+            .amiri-regular-italic {
+                font-family: "Amiri", serif;
+                font-weight: 400;
+                font-style: italic;
+            }
+
+            .amiri-bold-italic {
+                font-family: "Amiri", serif;
+                font-weight: 700;
+                font-style: italic;
+            }
+        </style>
+
+        <h:form id="master-frm"  class="block flex-grow-1 align-self-stretch" >
+            <ui:decorate template="/WEB-INF/components/core/base/table.xhtml" >
+                <ui:param name="dataView" value="#{masterDataView}" />
+                <ui:param name="selectCallback" value="refreshMasterCasing();refreshDetailCasing();refreshDetail()" />
+                <ui:param name="tableStyle" value="noheader" />
+
+                <ui:define name="columns">
+                    <p:column>
+                        <div class="flex flex-column gap-2">
+                            <h:outputText value="#{data.name}" class="block text-base font-bold" />
+                            <h:outputText value="#{data.jenisKitabJudul}" class="block text-base font-bold amiri-bold text-lg" />
+                            <h:outputText value="#{data.kelompokWaktu}" class="block text-base" />
+                            <h:outputText value="#{data.gender.label}" class="block text-base" />
+                            <h:outputText value="#{data.pengampuName}" class="block text-base font-italic" />
+                        </div>
+                    </p:column>
+                </ui:define>
+
+                <ui:define name="context-menu">
+                    <p:menuitem action="#{viewPage.changePengampu}" immediate="true"
+                                icon="pi pi-user" value="Ganti Pengampu" />
+                    <p:menuitem action="#{viewPage.addSantri}" immediate="true"
+                                icon="pi pi-users" value="Tambah Santri" />
+                </ui:define>
+
+            </ui:decorate>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="other-detail-tools">
+        <p:commandButton icon="pi pi-print" immediate="true"
+                         actionListener="#{viewPage.printAbsensiHalaqoh}"
+                         disabled="#{masterDataView.selected eq null}" 
+                         class="ui-button-flat" />
+    </ui:define>
+
+    <ui:define name="detail">
+        <h:form id="detail-frm" class="block flex-grow-1 align-self-stretch" >
+
+            <ui:decorate template="/WEB-INF/components/core/base/table.xhtml" >
+                <ui:param name="dataView" value="#{detailDataView}" />
+                <ui:param name="selectCallback" value="refreshDetailCasing()" />
+                <ui:param name="updateCallback" value="refreshDetail()" />
+
+                <ui:define name="columns">
+
+                    <p:columnGroup type="header">
+                        <p:row>
+                            <p:column  headerText="#{string['common.name.label']}" rowspan="3" width="15%" styleClass="text-center" />
+                            <p:column headerText="Kode Kitab" rowspan="3" width="2%" styleClass="white-space-normal text-center" />
+                            <p:column headerText="NSHT" rowspan="3" width="2%" styleClass="white-space-normal text-center" />
+                            <c:forEach items="#{viewPage.listPelaksanaanHalaqoh}" var="ph" >
+                                <p:column colspan="2" styleClass="text-center" >
+                                    <f:facet name="header">
+                                        <h:outputText value="#{ph.pengajaranDate}">
+                                            <f:convertDateTime type="localDate" pattern="dd-MM-yy" />
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                            </c:forEach>
+                        </p:row>
+                        <p:row>  
+                            <c:forEach items="#{viewPage.listPelaksanaanHalaqoh}" var="ph" >                          
+                                <p:column colspan="2" styleClass="text-center">
+                                    <f:facet name="header">
+                                        <p:commandButton icon="pi pi-info" immediate="true" 
+                                                         actionListener="#{viewPage.onEditInfoHalaqoh}"
+                                                         update="info-dlg" 
+                                                         oncomplete="PF('dlgInfo').show('#{component.clientId}')"
+                                                         class="#{ph.customTime ? 'ui-button-warning' : 'ui-button-secondary'}" >
+                                            <f:attribute name="pelaksanaanHalaqoh" value="#{ph}" />
+                                        </p:commandButton>
+                                    </f:facet>
+                                </p:column>
+                            </c:forEach>
+                        </p:row>
+                        <p:row>
+                            <c:forEach items="#{viewPage.listPelaksanaanHalaqoh}" var="date" >
+                                <p:column headerText="K" styleClass="text-center" />
+                                <p:column headerText="S" styleClass="text-center" />
+                            </c:forEach>
+                        </p:row>
+                    </p:columnGroup>
+
+                    <p:column width="20%">
+                        <h:outputText value="#{data.santriName}" class="white-space-normal block text-base font-bold" />
+                    </p:column>
+
+                    <p:column width="2%">
+                        <h:outputText value="#{data.kitabKode}" class="text-center" />
+                    </p:column>
+
+                    <p:column styleClass="text-center" width="2%">
+                        <p:selectBooleanCheckbox value="#{data.nasehat}" immediate="true" valueChangeListener="#{viewPage.updateNasehat}">
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d1}" />
+                            <p:ajax />
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+
+                    <p:column styleClass="text-center" >
+                        <p:commandLink value="#{data.k1.abbr}" immediate="true" 
+                                       actionListener="#{viewPage.editPresensi}"
+                                       update="presensi-dlg"
+                                       oncomplete="PF('dlgPresensi').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d1}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center">
+                        <p:commandLink value="#{data.s1}" immediate="true" 
+                                       actionListener="#{viewPage.editSetoran}"
+                                       update="setoran-dlg"
+                                       oncomplete="PF('dlgSetoran').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d1}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center" >
+                        <p:commandLink value="#{data.k2.abbr}" immediate="true" 
+                                       actionListener="#{viewPage.editPresensi}"
+                                       update="presensi-dlg"
+                                       oncomplete="PF('dlgPresensi').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d2}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center">
+                        <p:commandLink value="#{data.s2}" immediate="true" 
+                                       actionListener="#{viewPage.editSetoran}"
+                                       update="setoran-dlg"
+                                       oncomplete="PF('dlgSetoran').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d2}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center" >
+                        <p:commandLink value="#{data.k3.abbr}" immediate="true" 
+                                       actionListener="#{viewPage.editPresensi}"
+                                       update="presensi-dlg"
+                                       oncomplete="PF('dlgPresensi').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d3}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center">
+                        <p:commandLink value="#{data.s3}" immediate="true" 
+                                       actionListener="#{viewPage.editSetoran}"
+                                       update="setoran-dlg"
+                                       oncomplete="PF('dlgSetoran').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d3}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center" >
+                        <p:commandLink value="#{data.k4.abbr}" immediate="true" 
+                                       actionListener="#{viewPage.editPresensi}"
+                                       update="presensi-dlg"
+                                       oncomplete="PF('dlgPresensi').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d4}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center">
+                        <p:commandLink value="#{data.s4}" immediate="true" 
+                                       actionListener="#{viewPage.editSetoran}"
+                                       update="setoran-dlg"
+                                       oncomplete="PF('dlgSetoran').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d4}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center" >
+                        <p:commandLink value="#{data.k5.abbr}" immediate="true" 
+                                       actionListener="#{viewPage.editPresensi}"
+                                       update="presensi-dlg"
+                                       oncomplete="PF('dlgPresensi').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d5}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center">
+                        <p:commandLink value="#{data.s5}" immediate="true" 
+                                       actionListener="#{viewPage.editSetoran}"
+                                       update="setoran-dlg"
+                                       oncomplete="PF('dlgSetoran').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d5}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center" >
+                        <p:commandLink value="#{data.k6.abbr}" immediate="true" 
+                                       actionListener="#{viewPage.editPresensi}"
+                                       update="presensi-dlg"
+                                       oncomplete="PF('dlgPresensi').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d6}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                    <p:column styleClass="text-center">
+                        <p:commandLink value="#{data.s6}" immediate="true" 
+                                       actionListener="#{viewPage.editSetoran}"
+                                       update="setoran-dlg"
+                                       oncomplete="PF('dlgSetoran').show('#{component.clientId}')" >
+                            <f:attribute name="pengajaran" value="#{data}" />
+                            <f:attribute name="pengajaranDate" value="#{data.d6}" />
+                            <f:attribute name="cId" value="#{component.clientId}" />
+                        </p:commandLink>
+                    </p:column>
+
+                </ui:define>
+
+            </ui:decorate>
+
+        </h:form>
+
+        <p:overlayPanel id="info-dlg" widgetVar="dlgInfo" onHide="resetInfo()"
+                        my="left top" at="left bottom" styleClass="w-3"
+                        dynamic="true" dismissable="false" showCloseIcon="true"  >
+            <h:form id="dlg-info" >
+                <p:remoteCommand name="resetInfo" actionListener="#{viewPage.resetInfo}" update="custom-time custom-from custom-thru" />
+                <div class="field-checkbox">
+                    <p:selectBooleanCheckbox id="custom-time" value="#{viewPage.pelaksanaanHalaqoh.customTime}" >
+                        <p:ajax listener="#{viewPage.onCustomizeTime}" update="custom-from custom-thru" />
+                    </p:selectBooleanCheckbox>
+                    <p:outputLabel for="custom-time" value="Jam Tidak sesuai " />
+                </div>
+                <div class="field ui-fluid">
+                    <p:outputLabel for="custom-from" value="Mulai" />
+                    <p:datePicker id="custom-from" value="#{viewPage.pelaksanaanHalaqoh.beginTime}" 
+                                  disabled="#{not viewPage.pelaksanaanHalaqoh.customTime}" timeOnly="true"
+                                  showTime="true" showIcon="true" 
+                                  readonlyInput="true" />
+                </div>
+                <div class="field ui-fluid">
+                    <p:outputLabel for="custom-thru" value="Selesai" />
+                    <p:datePicker id="custom-thru" value="#{viewPage.pelaksanaanHalaqoh.endTime}" 
+                                  disabled="#{not viewPage.pelaksanaanHalaqoh.customTime}"
+                                  showTime="true" showIcon="true" timeOnly="true"
+                                  readonlyInput="true" />
+                </div>
+                <p:commandButton icon="pi pi-save" class="ui-button-flat"
+                                 actionListener="#{viewPage.onSaveInfoHalaqoh}"
+                                 oncomplete="PF('dlgInfo').hide()"
+                                 update="#{detailContentId}" />
+            </h:form>
+        </p:overlayPanel>
+
+        <p:overlayPanel id="setoran-dlg" widgetVar="dlgSetoran" my="left top" at="left bottom" styleClass="w-20rem" dynamic="true" dismissable="true"  >
+            <h:form id="setoran-frm">
+                <div class="flex flex-column border-1 surface-border gap-2">
+                    <div>
+                        <p:dataTable value="#{viewPage.setoranSantri.pencapaian.setoranPembelajaran}" var="ahp"
+                                     showGridlines="true" styleClass="noheader" >
+                            <p:column>
+                                <h:outputText value="#{ahp.name}" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu value="#{ahp.hasil.marker}" >
+                                    <f:selectItem itemValue="" itemLabel="N/A" />
+                                    <f:selectItems value="#{viewPage.getAtributOptions(ahp.name)}" var="v"
+                                                   itemValue="#{v.marker}" />
+                                    <p:ajax />
+                                </p:selectOneMenu>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                    <div class="flex align-items-center border-bottom-1 surface-border gap-2 px-3 pt-1 pb-3 gap-3">
+                        <div>
+                            <p:outputLabel for="nilai" value="Nilai" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <p:selectOneMenu id="nilai" value="#{viewPage.setoranSantri.pencapaian.setoran}" styleClass="w-full"
+                                             converter="NilaiSetoranConverter" > 
+                                <f:selectItems value="#{nilaiSetoranList.fetchedItems}" var="item"
+                                               itemLabel="#{item.name()} - #{item.label}" itemValue="#{item}" />
+                                <p:ajax />
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="flex justify-content-end pb-2 px-2">
+                        <p:commandButton icon="pi pi-save"
+                                         actionListener="#{viewPage.updateSetoran}"
+                                         update="#{viewPage.cId}"
+                                         oncomplete="PF('dlgSetoran').hide()" />
+                    </div>
+                </div>
+            </h:form>
+        </p:overlayPanel>
+
+        <p:overlayPanel id="presensi-dlg" widgetVar="dlgPresensi" my="left top" at="left bottom" styleClass="w-20rem" dynamic="true" dismissable="true"  >
+            <h:form id="presensi-frm">
+                <div class="flex flex-column border-1 surface-border gap-2">
+                    <div>
+                        <p:dataTable value="#{presensiList.fetchedItems}" var="k"
+                                     selectionMode="single" rowKey="#{k}"
+                                     selection="#{viewPage.presensiSantri.presensi}" 
+                                     styleClass="noheader" >
+                            <p:column>
+                                <h:outputText value="#{k.abbr} - #{k.label}" />
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                    <div class="flex justify-content-end pb-2 px-2">
+                        <p:commandButton icon="pi pi-save"
+                                         actionListener="#{viewPage.updatePresensi}"
+                                         update="#{viewPage.cId}"
+                                         oncomplete="PF('dlgPresensi').hide()" />
+                    </div>
+                </div>
+            </h:form>
+        </p:overlayPanel>
+
+    </ui:define>
+
+</ui:composition>

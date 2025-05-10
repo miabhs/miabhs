@@ -4,10 +4,11 @@
  */
 package id.my.mdn.kupu.app.pengasuhan.entity;
 
-import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
-import id.my.mdn.kupu.core.party.entity.Organization;
-import id.my.mdn.kupu.core.party.entity.Person;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Order;
+import id.my.mdn.kupu.core.base.view.annotation.SorterFields;
+import id.my.mdn.kupu.core.party.entity.GenderType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ColumnResult;
 import jakarta.persistence.ConstructorResult;
@@ -19,6 +20,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.SqlResultSetMapping;
 import jakarta.persistence.SqlResultSetMappings;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,20 +42,24 @@ import java.util.UUID;
                             @ColumnResult(name = "ID", type = String.class),
                             @ColumnResult(name = "CONTENT", type = String.class),
                             @ColumnResult(name = "EVENT_DATE", type = LocalDate.class),
+                            @ColumnResult(name = "CREATED", type = LocalDateTime.class),
 
                             @ColumnResult(name = "SANTRI_ID", type = Long.class),
                             @ColumnResult(name = "PARTY_ID", type = Long.class),
-                            @ColumnResult(name = "FIRSTNAME", type = String.class),
-                            @ColumnResult(name = "LASTNAME", type = String.class),
+                            @ColumnResult(name = "SANTRI_NAME", type = String.class),
+                            @ColumnResult(name = "SANTRI_GENDER", type = String.class),
 
-                            @ColumnResult(name = "KELOMPOKPENGASUHANID", type = Long.class),
-                            @ColumnResult(name = "KELOMPOKPENGASUHANORGANIZATIONID", type = Long.class),
-                            @ColumnResult(name = "KELOMPOKPENGASUHANORGANIZATIONNAME", type = String.class),
-                            @ColumnResult(name = "CREATED", type = LocalDateTime.class)
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_ID", type = Long.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_NAME", type = String.class)
                         }
                 )
             }
     )
+})
+@SorterFields({
+    @SorterField(value = "santriName", label = "Name", sort = SorterField.Sort.MANUAL),
+    @SorterField(value = "date", order = Order.DESC, sort = SorterField.Sort.MANUAL, label = "Tanggal"),
+    @SorterField(value = "created", order = Order.DESC, label = "Waktu Input")
 })
 public class HikmahKauniyah implements Serializable {
 
@@ -73,14 +79,28 @@ public class HikmahKauniyah implements Serializable {
 
     private LocalDateTime created;
 
+    @Transient
+    private String santriName;
+
+    @Transient
+    private GenderType santriGender;
+
+    @Transient
+    private String kelompokPengasuhanName;
+
     public HikmahKauniyah() {
         this.date = LocalDate.now();
+
+        if (santri != null) {
+            santriName = santri.getPerson().getName();
+            kelompokPengasuhanName = santri.getKelompokPengasuhan().getOrganization().getName();
+        }
     }
 
-    public HikmahKauniyah(String id, String content, LocalDate date,
-            Long santriId, Long personId, String firstName, String lastName,
-            Long kelompokPengasuhanId, Long kelompokPengasuhanOrganizationId,
-            String kelompokPengasuhanOrganizationName, LocalDateTime created
+    public HikmahKauniyah(String id, String content, LocalDate date, LocalDateTime created,
+            Long santriId, Long personId, String santriName, String santriGender,
+            Long kelompokPengasuhanId, //Long kelompokPengasuhanOrganizationId,
+            String kelompokPengasuhanOrganizationName
     ) {
 
         this.id = id;
@@ -90,29 +110,17 @@ public class HikmahKauniyah implements Serializable {
 
         // Santri
         if (santriId != null) {
+            Santri santri = new Santri();
+            santri.setId(santriId);
+            this.santri = santri;
 
-            this.santri = new Santri();
-            this.santri.setId(santriId);
+            this.santriName = santriName;
 
-            Person person = new Person();
-            person.setId(personId);
-            person.setFirstName(firstName);
-            person.setLastName(lastName);
+            if (santriGender != null) {
+                this.santriGender = GenderType.valueOf(santriGender);
+            }
 
-            this.santri.setPerson(person);
-
-        }
-
-        if (kelompokPengasuhanId != null) {
-
-            // Kelompok Pengasuhan
-            KelompokPengasuhan kelompokPengasuhan = new KelompokPengasuhan();
-            kelompokPengasuhan.setId(kelompokPengasuhanId);
-            Organization organization = new Organization();
-            organization.setId(kelompokPengasuhanOrganizationId);
-            organization.setName(kelompokPengasuhanOrganizationName);
-            kelompokPengasuhan.setOrganization(organization);
-            this.santri.setKelompokPengasuhan(kelompokPengasuhan);
+            this.kelompokPengasuhanName = kelompokPengasuhanOrganizationName;
 
         }
 
@@ -164,6 +172,30 @@ public class HikmahKauniyah implements Serializable {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
+    }
+
+    public String getSantriName() {
+        return santriName;
+    }
+
+    public void setSantriName(String santriName) {
+        this.santriName = santriName;
+    }
+
+    public GenderType getSantriGender() {
+        return santriGender;
+    }
+
+    public void setSantriGender(GenderType santriGender) {
+        this.santriGender = santriGender;
+    }
+
+    public String getKelompokPengasuhanName() {
+        return kelompokPengasuhanName;
+    }
+
+    public void setKelompokPengasuhanName(String kelompokPengasuhanName) {
+        this.kelompokPengasuhanName = kelompokPengasuhanName;
     }
 
     @Override

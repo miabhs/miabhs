@@ -29,7 +29,11 @@ public abstract class PartyRelationshipFacade<T extends PartyRelationship> exten
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         switch(filterName) {
             case "fromRole":
-                return cb.equal(from[0].get("fromRole"), filterValue);
+                if (filterValue != null) {
+                    return cb.equal(from[0].get("fromRole"), filterValue);
+                } else {
+                    return cb.isNull(from[0].get("fromRole"));
+                }
             case "fromRoleId":
                 return cb.equal(from[0].get("fromRole").get("id"), filterValue);
             case "toRole":
@@ -37,13 +41,16 @@ public abstract class PartyRelationshipFacade<T extends PartyRelationship> exten
             case "toRoleId":
                 return cb.equal(from[0].get("toRole").get("id"), filterValue);
             case "ongoing":
-                return cb.isNull(from[0].get("thruDate"));
+                return cb.or(
+                        cb.isNull(from[0].get("thruDate")),
+                        cb.greaterThanOrEqualTo(from[0].<LocalDate>get("thruDate"), LocalDate.now())
+                );
             case "ondate":
                 return cb.and(
                         cb.lessThanOrEqualTo(from[0].get("id").<LocalDate>get("fromDate"), (LocalDate) filterValue),                        
                         cb.or(
-                                cb.greaterThanOrEqualTo(from[0].<LocalDate>get("thruDate"), (LocalDate) filterValue),
-                                cb.isNull(from[0].get("thruDate"))
+                                cb.isNull(from[0].get("thruDate")),
+                                cb.greaterThanOrEqualTo(from[0].<LocalDate>get("thruDate"), (LocalDate) filterValue)
                         )
                 );
             default:

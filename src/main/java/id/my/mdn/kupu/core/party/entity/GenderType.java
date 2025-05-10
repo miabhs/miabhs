@@ -35,8 +35,18 @@ import id.my.mdn.kupu.core.base.util.PageUtil;
  * @author Medinacom <hq.medinacom at gmail.com>
  */
 public enum GenderType {
-    MALE,
-    FEMALE;
+        MALE("1"),
+        FEMALE("2");
+        
+        private final String kode;
+        
+        private GenderType(String kode) {
+            this.kode = kode;
+        }
+
+        public String getKode() {
+            return kode;
+        }
     
     public String getLabel() {
         switch(this) {

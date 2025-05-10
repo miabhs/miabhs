@@ -9,6 +9,9 @@ import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -29,6 +32,10 @@ public class SantriAltList extends AbstractValueList<Santri> {
 
     @Inject
     private SantriFilter filterContent;
+
+    public SantriAltList() {
+        super(Santri.class);
+    }
 
     @PostConstruct
     public void init() {                

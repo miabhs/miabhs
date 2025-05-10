@@ -1,8 +1,10 @@
 
 package id.my.mdn.kupu.core.base.view.widget;
 
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -12,39 +14,21 @@ import java.util.List;
  */
 public interface IValueList<E> extends Serializable {
 
-//    @FunctionalInterface
-//    public static interface OnItemsFetchedListener<E> {
-//
-//        public void onFetched(E item);
-//    }
-
-    public static final class SorterData {
-
-        public static final String ASC = "ASC";
-        public static final String DESC = "DESC";
-
-        public final String field;
-        public final String order;
-        
-        public static SorterData by(String field, String order) {
-            return new SorterData(field, order);
-        }
-        
-        public static SorterData by(String field) {
-            return new SorterData(field);
-        }
-
-        public SorterData(String field, String order) {
-            this.field = field;
-            this.order = order;
-        }
-
-        public SorterData(String field) {
-            this(field, ASC);
-        }
-
+    @FunctionalInterface
+    public static interface Parameters {
+        Map<String, Object> get();
     }
 
+    @FunctionalInterface
+    public static interface Filters {
+        List<FilterData> get();
+    }
+
+    @FunctionalInterface
+    public static interface Sorters {
+        List<SorterData> get();
+    }
+    
     public abstract List<E> getFetchedItems();
 
 }

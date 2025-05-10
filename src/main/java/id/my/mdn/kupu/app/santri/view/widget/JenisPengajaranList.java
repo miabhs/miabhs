@@ -7,9 +7,10 @@ package id.my.mdn.kupu.app.santri.view.widget;
 import id.my.mdn.kupu.app.santri.dao.JenisPengajaranFacade;
 import id.my.mdn.kupu.app.santri.entity.JenisPengajaran;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.CommonFilter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.view.widget.CommonFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -30,6 +31,10 @@ public class JenisPengajaranList extends AbstractMutablePagedValueList<JenisPeng
     
     @Inject
     private CommonFilter filterContent;
+
+    public JenisPengajaranList() {
+        super(JenisPengajaran.class);
+    }
 
     @PostConstruct
     public void init() {

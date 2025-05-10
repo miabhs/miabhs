@@ -6,21 +6,21 @@ package id.my.mdn.kupu.app.pengasuhan.view.widget;
 
 import id.my.mdn.kupu.app.pengasuhan.dao.HikmahKauniyahFacade;
 import id.my.mdn.kupu.app.pengasuhan.entity.HikmahKauniyah;
-import id.my.mdn.kupu.app.pengasuhan.service.PengasuhanService;
-import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
+import id.my.mdn.kupu.app.santri.view.widget.SantriLazyChooser;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import static id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData.DESC;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.util.Do;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
-import jakarta.faces.event.ValueChangeEvent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -37,12 +37,33 @@ public class HikmahKauniyahList extends AbstractMutablePagedValueList<HikmahKaun
     private AktifitasHarianFilter filterContent;
 
     @Inject
-    private PengasuhanService pengasuhanService;
+    private SantriLazyChooser santriChooser;
+
+    public HikmahKauniyahList() {
+        super(HikmahKauniyah.class);
+        setParameters(this::parameters);
+    }
 
     @PostConstruct
     public void init() {
         filter.setContent(filterContent);
-        listSorterData.add(new SorterData("created", DESC));
+        santriChooser.setListener(this::onSelectSantri);
+    }
+    
+    private Map<String, Object> parameters() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("fromDate", filterContent.getFromDate());
+        parameters.put("thruDate", filterContent.getThruDate());
+        
+        return parameters;
+    }
+
+    public void addBlank() {
+        dao.createBlank(filterContent.getFromDate());
+    }
+
+    public void onSelectSantri(Santri santri) {
+        update(getSelected(), "santri", santri);
     }
 
     @Override
@@ -70,69 +91,43 @@ public class HikmahKauniyahList extends AbstractMutablePagedValueList<HikmahKaun
         dao.remove(entity);
     }
 
-    public AktifitasHarianFilter getFilterContent() {
-        return filterContent;
-    }
-
-    @Override
-    protected HikmahKauniyah findEntity(String id) {
-        return dao.find(id);
-    }
-
     @Override
     protected void updateInternal(HikmahKauniyah entity, String field, Object newValue) {
         switch (field) {
-            case "date":
+            case "date" -> { 
                 entity.setDate((LocalDate) newValue);
-                break;
-            case "santri":
-                entity.setSantri((Santri) newValue);
-                break;
-            case "content":
-                entity.setContent((String) newValue);
-                break;
-            default:
-                break;
+            }
+            case "santri" -> {
+                Santri santri = (Santri) newValue;
+                entity.setSantri(santri);
+                if (santri != null) {
+                    entity.setSantriName(santri.getPerson().getName());
+                    entity.setKelompokPengasuhanName(santri.getKelompokPengasuhan().getOrganization().getName());
+                }
+            }
+            case "content" -> entity.setContent((String) newValue);
+            default -> 
+                Do.nothing();
         }
     }
 
-    public void onChangeSantri(ValueChangeEvent evt) {
-        Santri santri = (Santri) evt.getNewValue();
-        KelompokPengasuhan kelompokPengasuhan = pengasuhanService.getKelompokPengasuhan(santri.getId(), LocalDate.now());
-
-        santri.setKelompokPengasuhan(kelompokPengasuhan);
-    }
-
 //    @Override
-//    public void onCellEdit(CellEditEvent event) {
-//        int index = event.getRowIndex();
-//        HikmahKauniyah hikmahKauniyah = getFetchedItems().get(index);
-//        Object obj = event.getNewValue();
-//        String field = event.getColumn().getExportValue();
-//
-//        switch (field) {
-//            case "date":
-//                hikmahKauniyah.setDate((LocalDate) obj);
-//                dao.edit(hikmahKauniyah);
-//                break;
-//            default:
-//                break;
-//        }
+//    public String[] getCreatePermission() {
+//        return new String[]{"create_hikmah_kauniyah"};
 //    }
 
-    @Override
-    public String[] getCreatePermission() {
-        return new String[]{"create_hikmah_kauniyah"};
-    }
+//    @Override
+//    public String[] getUpdatePermission() {
+//        return new String[]{"update_hikmah_kauniyah"};
+//    }
 
-    @Override
-    public String[] getUpdatePermission() {
-        return new String[]{"update_hikmah_kauniyah"};
-    }
+//    @Override
+//    public String[] getDeletePermission() {
+//        return new String[]{"delete_hikmah_kauniyah"};
+//    }
 
-    @Override
-    public String[] getDeletePermission() {
-        return new String[]{"delete_hikmah_kauniyah"};
+    public SantriLazyChooser getSantriChooser() {
+        return santriChooser;
     }
 
 }

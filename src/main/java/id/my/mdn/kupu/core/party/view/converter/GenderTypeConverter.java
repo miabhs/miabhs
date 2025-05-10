@@ -5,6 +5,7 @@
  */
 package id.my.mdn.kupu.core.party.view.converter;
 
+import id.my.mdn.kupu.core.common.util.K.KEnum;
 import id.my.mdn.kupu.core.party.entity.GenderType;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -22,7 +23,7 @@ public class GenderTypeConverter implements Converter<GenderType>{
 
     @Override
     public GenderType getAsObject(FacesContext context, UIComponent component, String value) {
-        return GenderType.valueOf(value);
+        return KEnum.valueOf(GenderType.class, value);
     }
 
     @Override

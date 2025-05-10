@@ -7,14 +7,14 @@ package id.my.mdn.kupu.app.pengasuhan.view.widget;
 import id.my.mdn.kupu.app.pengasuhan.dao.BentukAktifitasFacade;
 import id.my.mdn.kupu.app.pengasuhan.entity.BentukAktifitas;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.Filter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.Filter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.primefaces.model.FilterMeta;
@@ -35,6 +35,10 @@ public class BentukAktifitasList extends AbstractMutablePagedValueList<BentukAkt
     @Inject
     private BentukAktifitasFilter filterContent;
 
+    public BentukAktifitasList() {
+        super(BentukAktifitas.class);
+    }
+
     @PostConstruct
     public void init() {
         filter.setContent(filterContent);
@@ -48,11 +52,6 @@ public class BentukAktifitasList extends AbstractMutablePagedValueList<BentukAkt
     @Override
     protected long getItemsCountInternal(Map<String, Object> parameters, List<FilterData> filters, DefaultCount defaultCount, AbstractFacade.DefaultChecker defaultChecker) {
         return dao.countAll(parameters, filters);
-    }
-
-    @Override
-    public List<SorterData> getSorters() {
-        return Arrays.asList(new SorterData("kode"), new SorterData("created"));
     }
 
     @Override
@@ -113,17 +112,20 @@ public class BentukAktifitasList extends AbstractMutablePagedValueList<BentukAkt
 
     @Override
     public String[] getCreatePermission() {
-        return new String[]{"create_bentuk_aktifitas"};
+//        return new String[]{"create_bentuk_aktifitas"};
+        return new String[]{};
     }
 
     @Override
     public String[] getUpdatePermission() {
-        return new String[]{"update_bentuk_aktifitas"};
+//        return new String[]{"update_bentuk_aktifitas"};
+        return new String[]{};
     }
 
     @Override
     public String[] getDeletePermission() {
-        return new String[]{"delete_bentuk_aktifitas"};
+//        return new String[]{"delete_bentuk_aktifitas"};
+        return new String[]{};
     }
 
 }

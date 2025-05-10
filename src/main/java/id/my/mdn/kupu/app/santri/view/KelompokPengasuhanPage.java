@@ -7,16 +7,16 @@ package id.my.mdn.kupu.app.santri.view;
 import id.my.mdn.kupu.app.santri.view.admin.KelompokPengasuhanDetailPage;
 import id.my.mdn.kupu.app.santri.view.admin.KelompokPengasuhanEditorPage;
 import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanList;
-import id.my.mdn.kupu.core.base.view.ChildPage;
+import id.my.mdn.kupu.core.base.view.Page;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -24,7 +24,7 @@ import java.io.Serializable;
  */
 @Named(value = "kelompokPengasuhanPage")
 @ViewScoped
-public class KelompokPengasuhanPage extends ChildPage implements Serializable {
+public class KelompokPengasuhanPage extends Page implements Serializable {
 
     @Inject
     @Bookmarked
@@ -46,13 +46,13 @@ public class KelompokPengasuhanPage extends ChildPage implements Serializable {
     public void openDataEditor() {
         gotoChild(KelompokPengasuhanDetailPage.class)
                 .addParam("kp")
-                .withValues(dataView.getSelections().get(0))
+                .withValues(dataView.getSelected())
                 .open();
     }
 
     @Deleter(of = "dataView")
     public void openDataDeleter() {
-        dataView.deleteSelections();;
+        dataView.deleteSelected();;
     }
 
     public KelompokPengasuhanList getDataView() {

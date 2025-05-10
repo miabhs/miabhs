@@ -112,11 +112,6 @@ public class Person extends Party {
     public static Builder builder() {
         return new Builder();
     }
-
-    @Column(nullable = false)
-    private String firstName;
-
-    private String lastName;
     
     @Column(columnDefinition = "DATE")
     private LocalDate dateOfBirth;
@@ -139,26 +134,10 @@ public class Person extends Party {
 
     public Person(Long partyId, String firstName, String lastName, GenderType gender, LocalDate dateOfBirth) {
         setId(partyId);
-        this.firstName = firstName;
-        this.lastName = lastName;
+        setFirstName(firstName);
+        setLastName(lastName);
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;        
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public LocalDate getDateOfBirth() {
@@ -211,6 +190,8 @@ public class Person extends Party {
 
     @Override
     public String getName() {
+        String firstName = getFirstName();
+        String lastName = getLastName();
         return ((prefixTitle != null && !prefixTitle.isBlank()) ? (prefixTitle + ".") : "") 
                 + ((firstName != null && !firstName.isBlank()) ? " " + firstName : "") 
                 + ((lastName != null && !lastName.isBlank()) ? " " + lastName : "") 

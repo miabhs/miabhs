@@ -7,8 +7,7 @@ package id.my.mdn.kupu.app.santri.dao;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.core.party.dao.AbstractPartyRoleFacade;
 import id.my.mdn.kupu.core.party.dao.PartyRoleTypeFacade;
-import id.my.mdn.kupu.core.party.entity.Organization;
-import id.my.mdn.kupu.core.party.entity.Party;
+import id.my.mdn.kupu.core.party.entity.GenderType;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -50,9 +49,14 @@ public class KelompokPengasuhanFacade extends AbstractPartyRoleFacade<KelompokPe
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         switch (filterName) {
             case "name":
-                return cb.equal(cb.treat(from[0].<Party>get("party"), Organization.class).get("name"), filterValue);
+                return cb.like(
+                        cb.upper(from[0].get("party").get("firstName")), 
+                        ("%" + filterValue + "%").toUpperCase());
             case "kelompokPengasuhan":
                 return cb.equal(from[0], filterValue);
+            case "gender":
+                GenderType gender = (GenderType) filterValue;
+                return cb.equal(from[0].get("gender"), gender);
             default:
                 return null;
         }

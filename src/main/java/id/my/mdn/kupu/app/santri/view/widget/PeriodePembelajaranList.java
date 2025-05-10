@@ -7,15 +7,18 @@ package id.my.mdn.kupu.app.santri.view.widget;
 import id.my.mdn.kupu.app.santri.dao.PeriodePembelajaranFacade;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
-import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
-import id.my.mdn.kupu.core.base.view.widget.CommonFilter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import java.util.List;
-import java.util.Map;
+import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.view.widget.CommonFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +33,10 @@ public class PeriodePembelajaranList extends AbstractValueList<PeriodePembelajar
     
     @Inject
     private CommonFilter filterContent;
+
+    public PeriodePembelajaranList() {
+        super(PeriodePembelajaran.class);
+    }
 
     @PostConstruct
     public void init() {        

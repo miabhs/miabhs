@@ -1,0 +1,26 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="KPPAbsensiHalaqoh" language="java" columnCount="1" pageWidth="390" pageHeight="100" orientation="Landscape" columnWidth="390" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="14d4be08-ec1f-43a0-ae81-763a166aa5a0">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<field name="kppNum" class="java.lang.Integer"/>
+	<field name="name" class="java.lang.String"/>
+	<detail>
+		<band height="18">
+			<element kind="textField" uuid="4d86eb68-fa2d-4e88-ad4e-b88619cbad13" x="0" y="0" width="18" height="18" fontName="Roboto" fontSize="9.0" textAdjust="StretchHeight" hTextAlign="Left" vTextAlign="Top">
+				<expression><![CDATA[$F{kppNum}]]></expression>
+				<box topPadding="4" leftPadding="4"/>
+			</element>
+			<element kind="textField" uuid="b83ab08e-8ca7-4e43-b457-62a37dc5fa8e" x="18" y="0" width="372" height="18" fontName="Roboto" fontSize="9.0" textAdjust="StretchHeight" hTextAlign="Left" vTextAlign="Top">
+				<expression><![CDATA[$F{name}]]></expression>
+				<box topPadding="4" leftPadding="0"/>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

@@ -4,22 +4,21 @@
  */
 package id.my.mdn.kupu.app.pengasuhan.view;
 
+import id.my.mdn.kupu.app.pengasuhan.view.widget.PengasuhanSantriFilter;
 import id.my.mdn.kupu.app.santri.dao.SantriFacade;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.entity.Santri;
-import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanAltList;
 import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranFilter;
 import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranTree;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.widget.Selector;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
-import id.my.mdn.kupu.core.reporting.view.ReportingPage;
+import id.my.mdn.kupu.core.reporting.view.ReportingChildPage;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.event.ValueChangeEvent;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -32,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -39,18 +39,14 @@ import java.util.Map;
  */
 @Named(value = "laporanKepengasuhanPage")
 @ViewScoped
-public class LaporanKepengasuhanPage extends ReportingPage implements Serializable {
+public class LaporanKepengasuhanPage extends ReportingChildPage implements Serializable {
 
     @Inject
     @Bookmarked
     private PeriodePembelajaranTree periodePembelajaranTree;
 
     @Inject
-    @Bookmarked
-    private KelompokPengasuhanAltList kelompokPengasuhanList;
-    
-    @Bookmarked(name = "sn")
-    private Santri santri;
+    private PengasuhanSantriFilter filterContent;
     
     @Inject
     private SantriFacade santriFacade;
@@ -59,23 +55,24 @@ public class LaporanKepengasuhanPage extends ReportingPage implements Serializab
     @Override
     public void init() {
         super.init();
-
+        filter.setContent(filterContent);
         periodePembelajaranTreeInit();
-
-        kelompokPengasuhanList.setSelectionMode(() -> Selector.SINGLE);
-        kelompokPengasuhanList.getSelector().setSelectionsLabel("kp"); 
     }
     
     @Override
     protected boolean isReady() {        
-        PeriodePembelajaran periode = periodePembelajaranTree.getSelection();
-        return periode != null;
+       PeriodePembelajaran periode = periodePembelajaranTree.getSelection();
+       return periode != null;
     }
 
     private void periodePembelajaranTreeInit() {
         periodePembelajaranTree.setSelectionMode(() -> Selector.SINGLE);
         periodePembelajaranTree.setName("periodePembelajaranTbl");
         periodePembelajaranTree.setSelectionsLabel("ps");
+        periodePembelajaranTree.getFilter().setName("periodeFilter");
+
+        periodePembelajaranTree.setDefaultChecker(
+                () -> periodePembelajaranTree.getFilter().<PeriodePembelajaranFilter>getContent().getTahunPembelajaran() == null);
     }
 
     public void doFilter(AjaxBehaviorEvent evt) {
@@ -104,16 +101,19 @@ public class LaporanKepengasuhanPage extends ReportingPage implements Serializab
         parameters.put("issuedHijri", hijrahDateString);
         
         List<FilterData> filters = new ArrayList<>();
-        KelompokPengasuhan kelompokPengasuhan = kelompokPengasuhanList.getSelection();
+        KelompokPengasuhan kelompokPengasuhan = filterContent.getKelompokPengasuhan();
         if(kelompokPengasuhan != null) {
-            filters.add(FilterData.by("kelompokPengasuhan", kelompokPengasuhanList.getSelection()));
+            filters.add(FilterData.by("kelompokPengasuhan", kelompokPengasuhan));
         }
         
+        Santri santri = filterContent.getSantri();
         if(santri != null) {
             filters.add(FilterData.by("santri", santri));
         }
 
         List<Santri> listSantri = santriFacade.findAll(filters);
+        
+        System.out.println("PRIPER RIPOT: " + parameters.get("periodePembelajaran"));
 
         return new ReportingJob(listSantri, parameters,
                 "RaporKepengasuhan",
@@ -125,18 +125,6 @@ public class LaporanKepengasuhanPage extends ReportingPage implements Serializab
 
     public PeriodePembelajaranTree getPeriodePembelajaranTree() {
         return periodePembelajaranTree;
-    }
-
-    public KelompokPengasuhanAltList getKelompokPengasuhanList() {
-        return kelompokPengasuhanList;
-    }
-
-    public Santri getSantri() {
-        return santri;
-    }
-
-    public void setSantri(Santri santri) {
-        this.santri = santri;
     }
 
 }

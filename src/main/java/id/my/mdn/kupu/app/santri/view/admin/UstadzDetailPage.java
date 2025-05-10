@@ -13,7 +13,7 @@ import id.my.mdn.kupu.core.party.view.PersonDetailPage;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 

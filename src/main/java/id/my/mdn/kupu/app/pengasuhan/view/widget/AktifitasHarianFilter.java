@@ -7,16 +7,28 @@ package id.my.mdn.kupu.app.pengasuhan.view.widget;
 import id.my.mdn.kupu.app.pengasuhan.entity.BentukAktifitas;
 import id.my.mdn.kupu.app.pengasuhan.entity.JenisAktifitas;
 import id.my.mdn.kupu.app.pengasuhan.entity.NilaiAktifitas;
-import id.my.mdn.kupu.app.pengasuhan.entity.Status;
+import id.my.mdn.kupu.app.santri.dao.PeriodePembelajaranFacade;
+import id.my.mdn.kupu.app.santri.entity.JenisPeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
+import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.entity.Santri;
-import id.my.mdn.kupu.app.santri.entity.StatusKesantrian;
+import id.my.mdn.kupu.app.santri.view.widget.BentukAktifitasLazyChooser;
+import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanSelectList;
+import id.my.mdn.kupu.app.santri.view.widget.SantriLazyChooser;
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmark;
 import id.my.mdn.kupu.core.base.view.widget.FilterContent;
-import java.io.Serializable;
-import java.time.LocalDate;
+import id.my.mdn.kupu.core.party.entity.GenderType;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -25,36 +37,166 @@ import jakarta.inject.Named;
 @Named(value = "aktifitasHarianFilter")
 @Dependent
 public class AktifitasHarianFilter extends FilterContent implements Serializable {
-    
-    @Bookmark(name = "nm")
-    private String name;
-    
+
+    @Bookmark(name = "fd")
+    private LocalDate fromDate;
+
+    @Bookmark(name = "td")
+    private LocalDate thruDate;
+
+    @Bookmark(name = "gd")
+    private GenderType gender;
+
     @Bookmark(name = "kp")
     private KelompokPengasuhan kelompokPengasuhan;
 
-    @Bookmark(name = "fd")
-    private LocalDate fromDate = LocalDate.now();
-    
-    @Bookmark(name = "td")
-    private LocalDate thruDate = LocalDate.now();;
-    
-    @Bookmark(name = "st")
-    private Status status;   
-    
     @Bookmark(name = "sn")
-    private Santri santri;   
-    
+    private Santri santri;
+
     @Bookmark(name = "bs")
-    private BentukAktifitas bentukAktifitas;   
-    
+    private BentukAktifitas bentukAktifitas;
+
     @Bookmark(name = "js")
-    private JenisAktifitas jenisAktifitas; 
-    
+    private JenisAktifitas jenisAktifitas;
+
     @Bookmark(name = "na")
     private NilaiAktifitas nilaiAktifitas;
-    
-    @Bookmark(name = "sk")
-    private StatusKesantrian statusKesantrian;
+
+    @Inject
+    private KelompokPengasuhanSelectList kelompokPengasuhanChooser;
+
+    @Inject
+    private SantriLazyChooser santriChooser;
+
+    @Inject
+    private BentukAktifitasLazyChooser bentukAktifitasChooser;
+
+    @Inject
+    private PeriodePembelajaranFacade periodeFacade;
+
+    @PostConstruct
+    public void init() {
+
+        kelompokPengasuhanChooser.setFilters(() -> {
+            if (gender == null) {
+                return List.of();
+            }
+            return List.of(FilterData.by("gender", gender));
+        });
+
+        santriChooser.setListener(this::onSelectSantri);
+        santriChooser.getList().getFilter().setStaticFilter(
+                santriChooser.getList()
+                        .getFilter().staticFilter.plus(this::santriFilter)
+        );
+
+        bentukAktifitasChooser.setListener(this::onSelectBentukAktifitas);
+        bentukAktifitasChooser.getList().getFilter().setStaticFilter(
+                bentukAktifitasChooser.getList()
+                        .getFilter().staticFilter.plus(this::bentukAktifitasFilter)
+        );
+        
+        loadDefaultIfNeeded();
+
+    }
+
+    private void loadDefaultIfNeeded() {
+
+        if (fromDate == null || thruDate == null || thruDate.isBefore(fromDate)) {
+
+            LocalDate now = LocalDate.now();
+
+            PeriodePembelajaran currentPeriodePembelajaran = periodeFacade.getPeriodePembelajaranMin(
+                    now, JenisPeriodePembelajaran.PEKANAN
+            );
+
+            if (currentPeriodePembelajaran != null) {
+                fromDate = currentPeriodePembelajaran.getFromDate();
+                thruDate = currentPeriodePembelajaran.getThruDate();
+            } else {
+                DayOfWeek dayOfWeek = now.getDayOfWeek();
+                fromDate = now.minusDays(dayOfWeek.getValue() - 1);
+                thruDate = now.plusDays(7 - dayOfWeek.getValue());
+            }
+        }
+        
+    }
+
+    public SantriLazyChooser getSantriChooser() {
+        return santriChooser;
+    }
+
+    public BentukAktifitasLazyChooser getBentukAktifitasChooser() {
+        return bentukAktifitasChooser;
+    }
+
+    public void onSelectSantri(Santri santri) {
+        this.santri = santri;
+    }
+
+    public void onSelectBentukAktifitas(BentukAktifitas bentukAktifitas) {
+        this.bentukAktifitas = bentukAktifitas;
+    }
+
+    public List<FilterData> santriFilter() {
+        List<FilterData> filterSantri = new ArrayList<>();
+
+        if (kelompokPengasuhan != null) {
+            filterSantri.add(FilterData.by("kelompokPengasuhan", kelompokPengasuhan));
+        }
+
+        if (gender != null) {
+            filterSantri.add(FilterData.by("gender", gender));
+        }
+
+        return filterSantri;
+    }
+
+    private List<FilterData> bentukAktifitasFilter() {
+        if (jenisAktifitas == null) {
+            return null;
+        }
+        return List.of(FilterData.by("jenis", jenisAktifitas));
+    }
+
+    public void updateGenderFilter(AjaxBehaviorEvent evt) {
+        kelompokPengasuhan = null;
+        santri = null;
+    }
+
+    public void updateKelompokFilter(AjaxBehaviorEvent evt) {
+        santri = null;
+    }
+
+    public void updateBentukAktifitasFilter(AjaxBehaviorEvent evt) {
+        bentukAktifitas = null;
+    }
+
+    public LocalDate getFromDate() {
+        loadDefaultIfNeeded();
+        return fromDate;
+    }
+
+    public void setFromDate(LocalDate fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public LocalDate getThruDate() {
+        loadDefaultIfNeeded();
+        return thruDate;
+    }
+
+    public void setThruDate(LocalDate thruDate) {
+        this.thruDate = thruDate;
+    }
+
+    public GenderType getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
+    }
 
     public Santri getSantri() {
         return santri;
@@ -64,44 +206,12 @@ public class AktifitasHarianFilter extends FilterContent implements Serializable
         this.santri = santri;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public KelompokPengasuhan getKelompokPengasuhan() {
         return kelompokPengasuhan;
     }
 
     public void setKelompokPengasuhan(KelompokPengasuhan kelompokPengasuhan) {
         this.kelompokPengasuhan = kelompokPengasuhan;
-    }
-
-    public LocalDate getFromDate() {
-        return fromDate;
-    }
-
-    public void setFromDate(LocalDate fromDate) {
-        this.fromDate = fromDate;
-    }
-
-    public LocalDate getThruDate() {
-        return thruDate;
-    }
-
-    public void setThruDate(LocalDate thruDate) {
-        this.thruDate = thruDate;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     public JenisAktifitas getJenisAktifitas() {
@@ -128,12 +238,8 @@ public class AktifitasHarianFilter extends FilterContent implements Serializable
         this.bentukAktifitas = bentukAktifitas;
     }
 
-    public StatusKesantrian getStatusKesantrian() {
-        return statusKesantrian;
+    public KelompokPengasuhanSelectList getKelompokPengasuhanChooser() {
+        return kelompokPengasuhanChooser;
     }
 
-    public void setStatusKesantrian(StatusKesantrian statusKesantrian) {
-        this.statusKesantrian = statusKesantrian;
-    }
-    
 }

@@ -6,6 +6,11 @@ package id.my.mdn.kupu.app.pengasuhan.entity;
 
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Order;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Sort;
+import id.my.mdn.kupu.core.base.view.annotation.SorterFields;
+import id.my.mdn.kupu.core.party.entity.GenderType;
 import id.my.mdn.kupu.core.party.entity.Organization;
 import id.my.mdn.kupu.core.party.entity.Person;
 import jakarta.persistence.ColumnResult;
@@ -19,6 +24,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.SqlResultSetMapping;
 import jakarta.persistence.SqlResultSetMappings;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,24 +46,23 @@ import java.util.UUID;
                         targetClass = Aktifitas.class,
                         columns = {
                             @ColumnResult(name = "ID", type = String.class),
-                            @ColumnResult(name = "ACTIVITYDATE", type = LocalDate.class),
                             @ColumnResult(name = "CREATED", type = LocalDateTime.class),
+                            @ColumnResult(name = "ACTIVITYDATE", type = LocalDate.class),
+
+                            @ColumnResult(name = "SANTRI_ID", type = Long.class),
+                            @ColumnResult(name = "SANTRI_NAME", type = String.class),
+                            @ColumnResult(name = "SANTRI_GENDER", type = String.class),
+
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_NAME", type = String.class),
+
+                            @ColumnResult(name = "BENTUKAKTIFITAS_ID", type = String.class),
+                            @ColumnResult(name = "BENTUKAKTIFITAS_BENTUK", type = String.class),
+                            @ColumnResult(name = "BENTUKAKTIFITAS_JENIS", type = String.class),
+                            @ColumnResult(name = "BENTUKAKTIFITAS_NILAI", type = String.class),
+
                             @ColumnResult(name = "NOTES", type = String.class),
-                            @ColumnResult(name = "CONFIRMED", type = Boolean.class),
-
-                            @ColumnResult(name = "SANTRIID", type = Long.class),
-                            @ColumnResult(name = "PERSONID", type = Long.class),
-                            @ColumnResult(name = "FIRSTNAME", type = String.class),
-                            @ColumnResult(name = "LASTNAME", type = String.class),
-
-                            @ColumnResult(name = "KELOMPOKPENGASUHANID", type = Long.class),
-                            @ColumnResult(name = "KELOMPOKPENGASUHANORGANIZATIONID", type = Long.class),
-                            @ColumnResult(name = "KELOMPOKPENGASUHANORGANIZATIONNAME", type = String.class),
-
-                            @ColumnResult(name = "BENTUKAKTIFITASID", type = String.class),
-                            @ColumnResult(name = "BENTUK", type = String.class),
-                            @ColumnResult(name = "JENIS", type = String.class),
-                            @ColumnResult(name = "NILAI", type = String.class)}
+                            @ColumnResult(name = "CONFIRMED", type = Boolean.class)
+                        }
                 )
             }
     ),
@@ -90,7 +95,10 @@ import java.util.UUID;
                             @ColumnResult(name = "lastname", type = String.class),
                             @ColumnResult(name = "santri_id", type = Long.class),
                             @ColumnResult(name = "nis", type = String.class),
+                            @ColumnResult(name = "tahunMasukFromDate", type = LocalDate.class),
+                            @ColumnResult(name = "kelompokPengasuhanId", type = Long.class),
                             @ColumnResult(name = "kelompokPengasuhanPartyName", type = String.class),
+                            @ColumnResult(name = "koordinator", type = Boolean.class),
                             @ColumnResult(name = "label", type = String.class),
                             @ColumnResult(name = "fromDate", type = LocalDate.class),
                             @ColumnResult(name = "thruDate", type = LocalDate.class),
@@ -115,7 +123,33 @@ import java.util.UUID;
                             @ColumnResult(name = "jenis", type = String.class)}
                 )
             }
+    ),
+
+    @SqlResultSetMapping(
+            name = "RangkumanAktifitas",
+            classes = {
+                @ConstructorResult(
+                        targetClass = RangkumanAktifitas.class,
+                        columns = {
+                            @ColumnResult(name = "PARTYID", type = Long.class),
+                            @ColumnResult(name = "SANTRIID", type = Long.class),
+                            @ColumnResult(name = "FROMROLEID", type = Long.class),
+                            @ColumnResult(name = "NAMA", type = String.class),
+                            @ColumnResult(name = "JUMLAHDATA", type = Integer.class),
+                            @ColumnResult(name = "JUMLAHKUNING", type = Integer.class),
+                            @ColumnResult(name = "JUMLAHMERAH", type = Integer.class),
+                            @ColumnResult(name = "NAMAKELOMPOK", type = String.class),
+                            @ColumnResult(name = "TAHUNMASUK", type = LocalDate.class),
+                            @ColumnResult(name = "KOORDINATOR", type = Boolean.class)
+                        }
+                )
+            }
     )
+})
+@SorterFields({
+    @SorterField(value = "santriName", label = "Name", sort = Sort.MANUAL),
+    @SorterField(value = "activityDate", order = Order.DESC, sort = Sort.MANUAL, label = "Tanggal Aktifitas"),
+    @SorterField(value = "created", order = Order.DESC, label = "Waktu Input")
 })
 public class Aktifitas implements Serializable {
 
@@ -123,15 +157,16 @@ public class Aktifitas implements Serializable {
 
     @Id
     private String id;
+    
+    private LocalDate activityDate;
 
     @ManyToOne
     private Santri santri;
 
-    private LocalDate activityDate;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private BentukAktifitas bentukAktifitas;
 
+    
     private LocalDateTime created;
 
     private boolean confirmed;
@@ -139,7 +174,57 @@ public class Aktifitas implements Serializable {
     @Lob
     private String notes;
 
+    @Transient 
+    private String santriName;
+
+    @Transient
+    private GenderType santriGender;
+
+    @Transient
+    private String kelompokPengasuhanName;
+
+    @Transient
+    private String bentukAktifitasBentuk;
+
+    @Transient
+    private JenisAktifitas bentukAktifitasJenis;
+
+    @Transient
+    private NilaiAktifitas bentukAktifitasNilai;
+
     public Aktifitas() {
+    }
+
+    public Aktifitas(String id, LocalDateTime created, LocalDate activityDate,
+            Long santriId, String santriName, String santriGender, String kelompokPengasuhanName,
+            String bentukAktifitasId, String bentukAktifitasBentuk, String bentukAktifitasJenis, String bentukAktifitasNilai,
+            String notes, Boolean confirmed) {
+
+        this.id = id;
+        this.created = created;
+        this.activityDate = activityDate;
+
+        Santri s = new Santri();
+        s.setId(santriId);
+        this.santri = s;
+
+        this.santriName = santriName;
+
+        if (santriGender != null) {
+            this.santriGender = GenderType.valueOf(santriGender);
+        }
+
+        this.kelompokPengasuhanName = kelompokPengasuhanName;
+
+        BentukAktifitas btk = new BentukAktifitas();
+        btk.setId(bentukAktifitasId);
+        this.bentukAktifitas = btk;
+        this.bentukAktifitasBentuk = bentukAktifitasBentuk;
+        this.bentukAktifitasJenis = bentukAktifitasJenis != null ? JenisAktifitas.valueOf(bentukAktifitasJenis) : null;
+        this.bentukAktifitasNilai = bentukAktifitasNilai != null ? NilaiAktifitas.valueOf(bentukAktifitasNilai) : null;
+
+        this.notes = notes;
+        this.confirmed = confirmed;
     }
 
     public Aktifitas(
@@ -296,6 +381,50 @@ public class Aktifitas implements Serializable {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getSantriName() {
+        return santriName;
+    }
+
+    public void setSantriName(String santriName) {
+        this.santriName = santriName;
+    }
+
+    public String getKelompokPengasuhanName() {
+        return kelompokPengasuhanName;
+    }
+
+    public void setKelompokPengasuhanName(String kelompokPengasuhanName) {
+        this.kelompokPengasuhanName = kelompokPengasuhanName;
+    }
+
+    public void setBentukAktifitasBentuk(String bentukAktifitasBentuk) {
+        this.bentukAktifitasBentuk = bentukAktifitasBentuk;
+    }
+
+    public void setBentukAktifitasJenis(JenisAktifitas bentukAktifitasJenis) {
+        this.bentukAktifitasJenis = bentukAktifitasJenis;
+    }
+
+    public void setBentukAktifitasNilai(NilaiAktifitas bentukAktifitasNilai) {
+        this.bentukAktifitasNilai = bentukAktifitasNilai;
+    }
+
+    public String getBentukAktifitasBentuk() {
+        return bentukAktifitasBentuk;
+    }
+
+    public JenisAktifitas getBentukAktifitasJenis() {
+        return bentukAktifitasJenis;
+    }
+
+    public NilaiAktifitas getBentukAktifitasNilai() {
+        return bentukAktifitasNilai;
+    }
+
+    public GenderType getSantriGender() {
+        return santriGender;
     }
 
 }

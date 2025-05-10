@@ -5,6 +5,7 @@
 package id.my.mdn.kupu.app.santri.view.converter;
 
 import id.my.mdn.kupu.app.santri.entity.StatusKesantrian;
+import id.my.mdn.kupu.core.common.util.K.KEnum;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
@@ -20,14 +21,12 @@ public class StatusKesantrianConverter implements Converter<StatusKesantrian> {
 
     @Override
     public StatusKesantrian getAsObject(FacesContext context, UIComponent component, String value) {
-        StatusKesantrian valueOf = (value != null ? StatusKesantrian.valueOf(value) : null);
-        return valueOf;
+        return KEnum.valueOf(StatusKesantrian.class, value);
     }
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, StatusKesantrian value) {
-        String name = value != null ? value.toString() : null;
-        return name;
+        return value != null ? value.toString() : null;
     }
     
 }

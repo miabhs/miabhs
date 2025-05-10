@@ -8,17 +8,4 @@
                      onclick="PF('#{dataView.name}deleteDlg').show()"
                      class="ui-button-flat" />
 
-    <p:dialog header="Konfirmasi" widgetVar="#{dataView.name}deleteDlg" 
-              modal="true" closable="true" dynamic="true">
-        <p>Data akan dihapus !</p>
-        <f:facet name="footer">
-            <p:commandButton type="button" value="Batal" 
-                             onclick="PF('#{dataView.name}deleteDlg').hide()" />
-            <p:commandButton value="Lanjut" 
-                             actionListener="#{dataView.onDelete}"
-                             oncomplete="PF('#{dataView.name}deleteDlg').hide();refreshContent()" 
-                             update="#{updateListener} :messages" />
-        </f:facet>
-    </p:dialog>
-
 </ui:composition>

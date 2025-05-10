@@ -25,17 +25,18 @@ package id.my.mdn.kupu.app.santri.view.widget;
 
 import id.my.mdn.kupu.app.santri.dao.PeriodePembelajaranFacade;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
-import id.my.mdn.kupu.core.base.dao.AbstractFacade;
+import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractMutableTree;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList.DefaultCount;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -51,6 +52,10 @@ public class PeriodePembelajaranTree extends AbstractMutableTree<PeriodePembelaj
     @Inject
     private PeriodePembelajaranFilter filterContent;
 
+    public PeriodePembelajaranTree() {
+        super(PeriodePembelajaran.class);
+    }
+
     @PostConstruct
     public void init() {
         filter.setContent(filterContent);
@@ -61,8 +66,9 @@ public class PeriodePembelajaranTree extends AbstractMutableTree<PeriodePembelaj
             Map<String, Object> parameters,
             List<FilterData> filters, List<SorterData> sorters,
             DefaultList<PeriodePembelajaran> defaultReturn,
-            AbstractFacade.DefaultChecker defaultChecker) {
-        return dao.findAll(parameters, filters, sorters);
+            DefaultChecker defaultChecker) {
+        System.err.printf("SELEKTRI FET: %s", filters.stream().map(f -> f.name + "->" + f.value).collect(Collectors.joining(", ")));
+        return dao.findAll(0, 0, parameters, filters, sorters, List.of(), defaultChecker);
     }
 
     @Override
@@ -70,13 +76,8 @@ public class PeriodePembelajaranTree extends AbstractMutableTree<PeriodePembelaj
             Map<String, Object> parameters,
             List<FilterData> filters,
             DefaultCount defaultCount,
-            AbstractFacade.DefaultChecker defaultChecker) {
-        return dao.countAll(parameters, filters);
-    }
-
-    @Override
-    public List<SorterData> getSorters() {
-        return Arrays.asList(new SorterData("id.fromDate"));
+            DefaultChecker defaultChecker) {
+        return dao.countAll(parameters, filters, 0L, defaultChecker);
     }
 
     @Override
@@ -100,17 +101,20 @@ public class PeriodePembelajaranTree extends AbstractMutableTree<PeriodePembelaj
 
     @Override
     public String[] getCreatePermission() {
-        return new String[]{"create_periode_pembelajaran"};
+//        return new String[]{"create_periode_pembelajaran"};
+        return new String[]{};
     }
 
     @Override
     public String[] getUpdatePermission() {
-        return new String[]{"update_periode_pembelajaran"};
+//        return new String[]{"update_periode_pembelajaran"};
+        return new String[]{};
     }
 
     @Override
     public String[] getDeletePermission() {
-        return new String[]{"delete_periode_pembelajaran"};
+//        return new String[]{"delete_periode_pembelajaran"};
+        return new String[]{};
     }
 
 }

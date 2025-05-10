@@ -8,14 +8,15 @@ import id.my.mdn.kupu.app.pengasuhan.entity.HikmahKauniyah;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.core.base.dao.AbstractSqlFacade;
-import id.my.mdn.kupu.core.base.util.Constants;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.party.entity.GenderType;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 /**
  *
@@ -26,62 +27,124 @@ public class HikmahKauniyahFacade extends AbstractSqlFacade<HikmahKauniyah> {
 
     private static final String FINDALL
             = """
-            SELECT HK0.ID, HK0.CONTENT, HK0.EVENT_DATE,
-            HK0.SANTRI_ID, SANTRI5.PARTY_ID, SANTRI5.FIRSTNAME, SANTRI5.LASTNAME,
-            SANTRI5.KELOMPOKPENGASUHANID, SANTRI5.KELOMPOKPENGASUHANORGANIZATIONID,
-            SANTRI5.KELOMPOKPENGASUHANORGANIZATIONNAME, HK0.CREATED
-            FROM MIABH_HIKMAHKAUNIYAH AS HK0
-            LEFT JOIN (SELECT SANTRI4.ID, SANTRI4.PARTY_ID, SANTRI4.FIRSTNAME, SANTRI4.LASTNAME,
-            SANTRI4.KOORDINATOR, KELOMPOKPENGASUHAN2.ID AS KELOMPOKPENGASUHANID,
-            KELOMPOKPENGASUHAN2.PARTY_ID AS KELOMPOKPENGASUHANORGANIZATIONID,
-            KELOMPOKPENGASUHAN2.NAME AS KELOMPOKPENGASUHANORGANIZATIONNAME
-            FROM (SELECT SANTRI3.ID, SANTRI3.PARTY_ID, SANTRI3.FIRSTNAME, SANTRI3.LASTNAME,
-            PENGASUHAN2.KOORDINATOR, PENGASUHAN2.FROMROLE_ID
-                 FROM (SELECT SANTRI2.ID, SANTRI2.PARTY_ID, SANTRI2.FIRSTNAME,
-                       SANTRI2.LASTNAME
-                       FROM (SELECT SANTRI1.ID, SANTRI1.PARTY_ID,
-                             PERSON1.FIRSTNAME, PERSON1.LASTNAME
-                             FROM (SELECT SANTRI0.ID, PARTYROLE0.PARTY_ID
-                                   FROM MIABH_SANTRI AS SANTRI0
-                                   JOIN PARTY_PARTYROLE AS PARTYROLE0
-                                   ON SANTRI0.ID = PARTYROLE0.ID
-                                   WHERE PARTYROLE0.FROMDATE <=  CURRENT_DATE
-                                   AND (PARTYROLE0.THRUDATE IS NULL OR PARTYROLE0.THRUDATE >= CURRENT_DATE)
-                            ) AS SANTRI1
-                            JOIN PARTY_PERSON AS PERSON1
-                            ON SANTRI1.PARTY_ID = PERSON1.ID
-                       ) AS SANTRI2
-                       JOIN MIABH_STATUSSANTRI AS STATUSSANTRI0
-                       ON SANTRI2.ID = STATUSSANTRI0.SANTRI_ID
-                       WHERE STATUSSANTRI0.FROMDATE <=  CURRENT_DATE
-                       AND (STATUSSANTRI0.THRUDATE IS NULL OR STATUSSANTRI0.THRUDATE >= CURRENT_DATE)
-                       AND STATUSSANTRI0.STATUS = 'ACTIVE'
-                ) AS SANTRI3
-                    JOIN (SELECT PENGASUHAN1.FROMROLE_ID, PENGASUHAN1.TOROLE_ID,
-                          PENGASUHAN1.FROMDATE, PARTYRELATIONSHIP1.THRUDATE, PENGASUHAN1.KOORDINATOR
-                          FROM MIABH_PENGASUHAN AS PENGASUHAN1
-                          JOIN PARTY_PARTYRELATIONSHIP AS PARTYRELATIONSHIP1
-                          ON PENGASUHAN1.PARTYRELATIONSHIPTYPE_ID = PARTYRELATIONSHIP1.PARTYRELATIONSHIPTYPE_ID
-                          AND PENGASUHAN1.FROMROLE_ID = PARTYRELATIONSHIP1.FROMROLE_ID
-                          AND PENGASUHAN1.TOROLE_ID = PARTYRELATIONSHIP1.TOROLE_ID
-                          AND PENGASUHAN1.FROMDATE = PARTYRELATIONSHIP1.FROMDATE
-                    ) AS PENGASUHAN2
-                    ON SANTRI3.ID = PENGASUHAN2.TOROLE_ID
-                    WHERE PENGASUHAN2.FROMDATE <=  CURRENT_DATE
-                    AND (PENGASUHAN2.THRUDATE IS NULL OR PENGASUHAN2.THRUDATE >= CURRENT_DATE)
-            ) AS SANTRI4
-            JOIN (SELECT KELOMPOKPENGASUHAN1.ID, KELOMPOKPENGASUHAN1.PARTY_ID, ORGANIZATION0.NAME
-                    FROM (SELECT KELOMPOKPENGASUHAN0.ID, PARTYROLE0.PARTY_ID
-                            FROM MIABH_KELOMPOKPENGASUHAN AS KELOMPOKPENGASUHAN0
-                            JOIN PARTY_PARTYROLE AS PARTYROLE0
-                            ON KELOMPOKPENGASUHAN0.ID = PARTYROLE0.ID
-                    ) AS KELOMPOKPENGASUHAN1
-                    JOIN PARTY_ORGANIZATION AS ORGANIZATION0
-                    ON KELOMPOKPENGASUHAN1.PARTY_ID = ORGANIZATION0.ID
-            ) AS KELOMPOKPENGASUHAN2
-            ON SANTRI4.FROMROLE_ID = KELOMPOKPENGASUHAN2.ID
-            ) AS SANTRI5 ON HK0.SANTRI_ID = SANTRI5.ID
+            SELECT HK6.ID, HK6.CONTENT, HK6.EVENT_DATE, HK6.CREATED,
+                   HK6.SANTRI_ID, HK6.PARTY_ID, HK6.SANTRI_NAME, HK6.SANTRI_GENDER, 
+                   HK6.KELOMPOKPENGASUHAN_ID, P.FIRSTNAME AS KELOMPOKPENGASUHAN_NAME
+            FROM (    
+                SELECT HK5.ID, HK5.CONTENT, HK5.EVENT_DATE, HK5.CREATED,
+                       HK5.SANTRI_ID, HK5.PARTY_ID, HK5.SANTRI_NAME, HK5.SANTRI_GENDER, 
+                       HK5.KELOMPOKPENGASUHAN_ID, ROL.PARTY_ID AS KELOMPOKPENGASUHAN_ORG_ID
+                FROM (    
+                    SELECT HK4.ID, HK4.CONTENT, HK4.EVENT_DATE, HK4.CREATED,
+                           HK4.SANTRI_ID, HK4.PARTY_ID, HK4.SANTRI_NAME, HK4.SANTRI_GENDER, 
+                           HK4.KELOMPOKPENGASUHAN_ID
+                    FROM (
+                        SELECT HK3.ID, HK3.CONTENT, HK3.EVENT_DATE, HK3.CREATED,
+                               HK3.SANTRI_ID, HK3.PARTY_ID, HK3.SANTRI_NAME, HK3.SANTRI_GENDER, 
+                               PS0.KELOMPOKPENGASUHAN_ID
+                        FROM (
+                            SELECT HK2.ID, HK2.CONTENT, HK2.EVENT_DATE, HK2.CREATED,
+                                   HK2.SANTRI_ID, HK2.PARTY_ID, P.SANTRI_NAME, P.SANTRI_GENDER
+                            FROM (    
+                                SELECT HK1.ID, HK1.CONTENT, HK1.EVENT_DATE, HK1.CREATED,
+                                       HK1.SANTRI_ID, HK1.PARTY_ID
+                                FROM (
+                                    SELECT HK0.ID, HK0.CONTENT, HK0.EVENT_DATE, HK0.CREATED,
+                                           HK0.SANTRI_ID, PR0.PARTY_ID
+                                    FROM (
+                                        SELECT HK.ID, HK.CONTENT, HK.EVENT_DATE, HK.SANTRI_ID, HK.CREATED
+                                        FROM MIABH_HIKMAHKAUNIYAH AS HK
+                                        WHERE HK.EVENT_DATE >= ? AND HK.EVENT_DATE <= ?
+                                    ) AS HK0
+                                    LEFT JOIN PARTY_PARTYROLE AS PR0
+                                    ON HK0.SANTRI_ID = PR0.ID
+                                ) AS HK1
+                            ) AS HK2
+                            LEFT JOIN (
+                                SELECT PN.ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS SANTRI_NAME, PN.GENDER AS SANTRI_GENDER
+                                FROM PARTY_PERSON AS PN
+                                JOIN PARTY_PARTY AS PY
+                                ON PN.ID = PY.ID
+                            ) AS P
+                            ON HK2.PARTY_ID = P.ID
+                        ) AS HK3
+                        LEFT JOIN (
+                            SELECT PS.FROMROLE_ID AS KELOMPOKPENGASUHAN_ID, PS.TOROLE_ID
+                            FROM MIABH_PENGASUHAN AS PS
+                            JOIN (
+                                SELECT RELX.FROMROLE_ID, RELX.TOROLE_ID, RELX.FROMDATE
+                                FROM PARTY_PARTYRELATIONSHIP AS RELX
+                                WHERE RELX.FROMDATE <= ? AND (RELX.THRUDATE IS NULL OR RELX.THRUDATE >= ?)
+                                AND RELX.PARTYRELATIONSHIPTYPE_ID = 'Pengasuhan'
+                            ) AS REL
+                            ON PS.FROMROLE_ID = REL.FROMROLE_ID AND PS.TOROLE_ID = REL.TOROLE_ID AND PS.FROMDATE = REL.FROMDATE
+                        ) AS PS0
+                        ON HK3.SANTRI_ID = PS0.TOROLE_ID
+                    ) AS HK4
+                ) AS HK5
+                LEFT JOIN PARTY_PARTYROLE AS ROL
+                ON HK5.KELOMPOKPENGASUHAN_ID = ROL.ID
+            ) AS HK6
+            LEFT JOIN PARTY_PARTY AS P
+            ON HK6.KELOMPOKPENGASUHAN_ORG_ID = P.ID
             """;
+
+    private static final String FIND
+            = """
+              SELECT HK6.ID, HK6.CONTENT, HK6.EVENT_DATE, HK6.CREATED,
+                     HK6.SANTRI_ID, HK6.PARTY_ID, HK6.SANTRI_NAME, HK6.SANTRI_GENDER, 
+                     HK6.KELOMPOKPENGASUHAN_ID, P.FIRSTNAME AS KELOMPOKPENGASUHAN_NAME
+              FROM (    
+                  SELECT HK5.ID, HK5.CONTENT, HK5.EVENT_DATE, HK5.CREATED,
+                         HK5.SANTRI_ID, HK5.PARTY_ID, HK5.SANTRI_NAME, HK5.SANTRI_GENDER,
+                         HK5.KELOMPOKPENGASUHAN_ID, ROL.PARTY_ID AS KELOMPOKPENGASUHAN_ORG_ID
+                  FROM (    
+                      SELECT HK4.ID, HK4.CONTENT, HK4.EVENT_DATE, HK4.CREATED,
+                             HK4.SANTRI_ID, HK4.PARTY_ID, HK4.SANTRI_NAME, HK4.SANTRI_GENDER, 
+                             HK4.KELOMPOKPENGASUHAN_ID
+                      FROM (
+                          SELECT HK3.ID, HK3.CONTENT, HK3.EVENT_DATE, HK3.CREATED,
+                                 HK3.SANTRI_ID, HK3.PARTY_ID, HK3.SANTRI_NAME, HK3.SANTRI_GENDER,
+                                 (
+                                  SELECT RELX.FROMROLE_ID
+                                  FROM PARTY_PARTYRELATIONSHIP AS RELX
+                                  WHERE RELX.FROMDATE <= HK3.EVENT_DATE AND (RELX.THRUDATE IS NULL OR RELX.THRUDATE >= HK3.EVENT_DATE)
+                                  AND RELX.PARTYRELATIONSHIPTYPE_ID = 'Pengasuhan' AND RELX.TOROLE_ID = HK3.SANTRI_ID
+                                 ) AS KELOMPOKPENGASUHAN_ID
+                          FROM (
+                              SELECT HK2.ID, HK2.CONTENT, HK2.EVENT_DATE, HK2.CREATED,
+                                     HK2.SANTRI_ID, HK2.PARTY_ID,  P.SANTRI_NAME, P.SANTRI_GENDER
+                              FROM (    
+                                  SELECT HK1.ID, HK1.CONTENT, HK1.EVENT_DATE, HK1.CREATED,
+                                         HK1.SANTRI_ID, HK1.PARTY_ID
+                                  FROM (
+                                      SELECT HK0.ID, HK0.CONTENT, HK0.EVENT_DATE, HK0.CREATED,
+                                             HK0.SANTRI_ID, PR0.PARTY_ID
+                                      FROM (
+                                          SELECT HK.ID, HK.CONTENT, HK.EVENT_DATE, HK.SANTRI_ID, HK.CREATED
+                                          FROM MIABH_HIKMAHKAUNIYAH AS HK
+                                          WHERE HK.ID = ?
+                                      ) AS HK0
+                                      LEFT JOIN PARTY_PARTYROLE AS PR0
+                                      ON HK0.SANTRI_ID = PR0.ID
+                                  ) AS HK1
+                              ) AS HK2
+                              LEFT JOIN (
+                                SELECT PN.ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS SANTRI_NAME, PN.GENDER AS SANTRI_GENDER
+                                FROM PARTY_PERSON AS PN
+                                JOIN PARTY_PARTY AS PY
+                                ON PN.ID = PY.ID
+                              ) AS P
+                              ON HK2.PARTY_ID = P.ID
+                          ) AS HK3
+                      ) AS HK4
+                  ) AS HK5
+                  LEFT JOIN PARTY_PARTYROLE AS ROL
+                  ON HK5.KELOMPOKPENGASUHAN_ID = ROL.ID
+              ) AS HK6
+              LEFT JOIN PARTY_PARTY AS P
+              ON HK6.KELOMPOKPENGASUHAN_ORG_ID = P.ID
+              """;
 
     @Inject
     private EntityManager em;
@@ -101,30 +164,42 @@ public class HikmahKauniyahFacade extends AbstractSqlFacade<HikmahKauniyah> {
     }
 
     @Override
+    protected String getFindQuery() {
+        return FIND;
+    }
+
+    @Override
+    protected void setParameters(Query q, Map<String, Object> parameters) {
+        q.setParameter(1, parameters.get("fromDate"));
+        q.setParameter(2, parameters.get("thruDate"));
+        q.setParameter(3, parameters.get("fromDate"));
+        q.setParameter(4, parameters.get("fromDate"));
+    }
+
+    @Override
     protected String applyFilter(FilterData filterData) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         switch (filterData.name) {
             case "id":
-                return "HK0.ID = '" + filterData.value + "'";
+                return "HK6.ID = '" + filterData.value + "'";
+            case "santriName":
+                String nameQuery = filterData.value != null ? (String) filterData.value : "";
+                if (nameQuery.equals("")) {
+                    return null;
+                }
+                return "(UPPER(SANTRI_NAME) LIKE '%" + nameQuery.toUpperCase() + "%')";
+            case "gender":
+                GenderType gender = (GenderType) filterData.value;
+                return "(SANTRI_GENDER = '" + gender.name() + "' OR SANTRI_GENDER IS NULL)";
             case "santri":
                 Santri santri = (Santri) filterData.value;
-                return "HK0.SANTRI_ID = " + santri.getId();
+                return "HK6.SANTRI_ID = " + santri.getId();
             case "santriId":
                 Long santriId = (Long) filterData.value;
-                return "HK0.SANTRI_ID = " + santriId;
+                return "HK6.SANTRI_ID = " + santriId;
             case "kelompokPengasuhan":
                 KelompokPengasuhan kelompokPengasuhan = (KelompokPengasuhan) filterData.value;
-                return "SANTRI5.KELOMPOKPENGASUHANID = " + kelompokPengasuhan.getId();
-            case "fromDate":
-                LocalDate fromDate = (LocalDate) filterData.value;
-                return "HK0.EVENT_DATE >= '"
-                        + DateTimeFormatter.ofPattern(Constants.KEYFORMAT_LOCALDATE_DEFAULT)
-                                .format(fromDate) + "'";
-            case "thruDate":
-                LocalDate thruDate = (LocalDate) filterData.value;
-                return "HK0.EVENT_DATE <= '"
-                        + DateTimeFormatter.ofPattern(Constants.KEYFORMAT_LOCALDATE_DEFAULT)
-                                .format(thruDate) + "'";
+                return "HK6.KELOMPOKPENGASUHAN_ID = " + kelompokPengasuhan.getId();
             default:
                 return null;
         }
@@ -134,27 +209,20 @@ public class HikmahKauniyahFacade extends AbstractSqlFacade<HikmahKauniyah> {
     protected String translateOrderField(String fieldName) {
         switch (fieldName) {
             case "date":
-                return "HK0.EVENT_DATE";
-            case "name":
-                return "SANTRI5.FIRSTNAME";
+                return "EVENT_DATE";
+            case "santriName":
+                return "SANTRI_NAME";
             case "created":
-                return "HK0.CREATED";
+                return "CREATED";
             default:
                 return super.translateOrderField(fieldName);
         }
     }
+    
+    public void createBlank(LocalDate date) {        
+        HikmahKauniyah entity = new HikmahKauniyah();
+        entity.setDate(date);
+        create(entity);
+    }
 
-//    @Override
-//    public void edit(HikmahKauniyah entity) {
-//        HikmahKauniyah existingEntity = getEntityManager().find(HikmahKauniyah.class, entity.getId());
-//        existingEntity.setDate(entity.getDate());
-//        if (entity.getSantri() != null) {
-//            existingEntity.setSantri(
-//                    getEntityManager().find(Santri.class, entity.getSantri().getId())
-//            );
-//
-//        }
-//        existingEntity.setContent(entity.getContent());
-//        getEntityManager().merge(existingEntity);
-//    }
 }

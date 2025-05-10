@@ -7,15 +7,14 @@ package id.my.mdn.kupu.app.santri.view.widget;
 import id.my.mdn.kupu.app.santri.dao.StatusSantriFacade;
 import id.my.mdn.kupu.app.santri.entity.StatusSantri;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import static id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData.DESC;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -28,9 +27,8 @@ public class StatusSantriList extends AbstractMutablePagedValueList<StatusSantri
     @Inject
     private StatusSantriFacade dao;
 
-    @Override
-    public List<SorterData> getSorters() {
-        return Arrays.asList(new SorterData("fromDate", DESC));
+    public StatusSantriList() {
+        super(StatusSantri.class);
     }
 
     @Override

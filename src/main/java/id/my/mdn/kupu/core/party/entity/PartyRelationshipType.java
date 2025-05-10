@@ -21,6 +21,7 @@ public class PartyRelationshipType implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
+    @Column(columnDefinition = "VARCHAR(255)")
     private String id;
     
     @Column(unique = true)

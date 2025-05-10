@@ -6,6 +6,7 @@ package id.my.mdn.kupu.core.base.view.widget;
 
 import id.my.mdn.kupu.core.base.model.HierarchicalEntity;
 import static id.my.mdn.kupu.core.base.view.widget.Selector.SINGLE;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,15 +14,19 @@ import java.util.List;
  * @author aphasan
  * @param <E>
  */
-public abstract class AbstractMutableTree<E extends HierarchicalEntity<E>> 
-        extends AbstractValueTree<E> 
-        implements ICreate<E>, IEdit<E>, IDelete<E> {    
-    
+public abstract class AbstractMutableTree<E extends HierarchicalEntity<E>>
+        extends AbstractValueTree<E>
+        implements ICreate<E>, IEdit<E>, IDelete<E> {
+
     private PageCaller creator;
-     
+
     private PageCaller editor;
-     
+
     private PageCaller deleter;
+
+    public AbstractMutableTree(Class<E> entityClass) {
+        super(entityClass);
+    }
 
     @Override
     public PageCaller getCreator() {
@@ -60,7 +65,7 @@ public abstract class AbstractMutableTree<E extends HierarchicalEntity<E>>
         if (getSelectionMode().equals(Selector.SINGLE)) {
             return getSelection();
         } else {
-            return getSelections() != null ? getSelections().getLast() : null;
+            return (getSelections() != null &&  !getSelections().isEmpty()) ? getSelections().getLast() : null;
         }
     }
 
@@ -77,12 +82,21 @@ public abstract class AbstractMutableTree<E extends HierarchicalEntity<E>>
     @Override
     public void delete(E entity) {
         deleteInternal(entity);
-        invalidate();
+        if (cached) {
+            invalidate();
+        }
     }
-    
+
     public void deleteSelections() {
-        selector.getSelections().stream().forEach(e -> delete(e));
-        selector.setSelections(null);        
+        final List<E> parents = new ArrayList<>();
+        selector.getSelections().stream().forEach(e -> {
+            E parent = e.getParent();
+            delete(e);
+            if (parent != null) {
+                parents.add(parent);
+            }
+        });
+        selector.setSelections(parents);
     }
 
     public void deleteSelected() {
@@ -94,9 +108,9 @@ public abstract class AbstractMutableTree<E extends HierarchicalEntity<E>>
     }
 
     public void deleteSelection() {
+        E parent = selector.getSelection().getParent();
         delete(selector.getSelection());
-        selector.setSelection(null);
-
+        selector.setSelection(parent);
     }
 
     public String[] getCreatePermission() {
@@ -110,6 +124,6 @@ public abstract class AbstractMutableTree<E extends HierarchicalEntity<E>>
     public String[] getDeletePermission() {
         return new String[]{};
     }
-    
-    protected abstract void deleteInternal(E entity) ;
+
+    protected abstract void deleteInternal(E entity);
 }

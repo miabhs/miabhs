@@ -8,7 +8,7 @@ import id.my.mdn.kupu.core.base.util.Result;
 import id.my.mdn.kupu.core.base.view.FormPage;
 import id.my.mdn.kupu.core.reporting.dao.ReportTemplateFacade;
 import id.my.mdn.kupu.core.reporting.model.ReportTemplate;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 

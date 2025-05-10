@@ -37,8 +37,8 @@ public class Application extends AbstractApplication {
     }
     
     public String getLocalization() {
-        return getLocale().toString()
-                .replace("in_id", "in");
+        return getLocale().toString();
+//                .replace("in_id", "in");
     }
     
 }

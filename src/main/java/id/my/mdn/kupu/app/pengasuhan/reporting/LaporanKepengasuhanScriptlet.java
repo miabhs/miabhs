@@ -12,7 +12,9 @@ import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.sf.jasperreports.engine.JRDefaultScriptlet;
 import net.sf.jasperreports.engine.JRScriptletException;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -35,7 +37,7 @@ public class LaporanKepengasuhanScriptlet extends JRDefaultScriptlet {
 
     @Override
     public void beforeDetailEval() throws JRScriptletException {
-        
+
         Long santriId = (Long) getFieldValue("santriId");
         LocalDate fromDate = (LocalDate) getFieldValue("fromDate");
         LocalDate thruDate = (LocalDate) getFieldValue("thruDate");
@@ -44,29 +46,32 @@ public class LaporanKepengasuhanScriptlet extends JRDefaultScriptlet {
                 santriId,
                 LocalDate.parse(fromDate.toString()),
                 LocalDate.parse(thruDate.toString()));
-        
-        List<RangkumanKepengasuhanDetail> bdas= new ArrayList<>();
-        List<RangkumanKepengasuhanDetail> nonBdas= new ArrayList<>();
-        
-        for(RangkumanKepengasuhanDetail c : catatanKepengasuhan) {
-            if(c.getJenis().equals("NON_BDAS")) {
+
+        List<RangkumanKepengasuhanDetail> bdas = new ArrayList<>();
+        List<RangkumanKepengasuhanDetail> nonBdas = new ArrayList<>();
+
+        for (RangkumanKepengasuhanDetail c : catatanKepengasuhan) {
+            if (c.getJenis().equals("NON_BDAS")) {
                 nonBdas.add(c);
             } else {
                 bdas.add(c);
             }
         }
-        
+
         setVariableValue("catatanBDAS", new JRBeanCollectionDataSource(bdas));
         setVariableValue("catatanNonBDAS", new JRBeanCollectionDataSource(nonBdas));
-        
+
         LaporanKepengasuhanScriptletHelper helper = findHelper();
-        
-        List<HikmahKauniyah> listHikmah = helper.getHikmahKauniyahFacade().findAll(
-                FilterData.by("santriId", santriId),
-                FilterData.by("fromDate", fromDate),
-                FilterData.by("thruDate", thruDate)
-        );
-        
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("fromDate", fromDate);
+        parameters.put("thruDate", thruDate);
+
+        List<FilterData> filters = List.of(FilterData.by("santriId", santriId));
+
+        List<HikmahKauniyah> listHikmah = helper.getHikmahKauniyahFacade()
+                .findAll(parameters, filters);
+
         setVariableValue("listHikmah", listHikmah);
     }
 }

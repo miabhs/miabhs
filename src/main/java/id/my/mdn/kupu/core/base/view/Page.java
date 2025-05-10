@@ -1,7 +1,6 @@
 package id.my.mdn.kupu.core.base.view;
 
 import id.my.mdn.kupu.core.base.util.AnnotationProcessor;
-import id.my.mdn.kupu.core.base.util.LogUtil;
 import id.my.mdn.kupu.core.base.util.RequestUtil;
 import id.my.mdn.kupu.core.base.util.RequestedView;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
@@ -201,10 +200,10 @@ public abstract class Page implements IBookmarkable {
     }
 
     public void updateAddressBar() {
-        LogUtil.log("{0}.updateAddressBar",
-                getClass().getCanonicalName());
+        System.err.println("SELEX APDET ADRES PRE: " + contextSupplier.get().getViewUrl().toString());
         updateUrl();
         PrimeFaces.current().ajax().addCallbackParam("url", contextSupplier.get().getViewUrl().toString());
+        System.err.println("SELEX APDET ADRES POS: " + contextSupplier.get().getViewUrl().toString());
     }
     
     public void updateUrl(Object obj) {

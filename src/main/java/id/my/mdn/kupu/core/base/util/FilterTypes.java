@@ -4,13 +4,14 @@
  */
 package id.my.mdn.kupu.core.base.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Arief Prihasanto <aphasan57 at gmail.com>
  */
-public final class FilterTypes {    
+public final class FilterTypes {
 
     @FunctionalInterface
     public static interface FilterListener {
@@ -22,6 +23,21 @@ public final class FilterTypes {
     public static interface StaticFilter {
 
         List<FilterData> get();
+
+        default StaticFilter plus(final StaticFilter other) {
+            if (other == null) {
+                return this;
+            }
+            return () -> {
+                List<FilterData> combinedFilter = new ArrayList<>();
+                combinedFilter.addAll(this.get());
+                List<FilterData> otherFilterData = other.get();
+                if (otherFilterData != null) {
+                    combinedFilter.addAll(otherFilterData);
+                }
+                return combinedFilter;
+            };
+        }
     }
 
     public static final class FilterData {

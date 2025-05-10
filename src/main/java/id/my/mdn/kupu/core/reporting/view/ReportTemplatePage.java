@@ -11,13 +11,12 @@ import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
-import id.my.mdn.kupu.core.base.view.annotation.OnInit;
-import id.my.mdn.kupu.core.base.view.annotation.OnReload;
-import java.io.Serializable;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.event.ActionEvent;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -33,14 +32,10 @@ public class ReportTemplatePage extends ChildPage implements Serializable {
     @Bookmarked    
     private ReportTemplateList dataView;
     
-    @OnInit
+    @PostConstruct
+    @Override
     public void init() {
 //        dataView.init();
-    }
-    
-    @OnReload
-    public void reload() {
-//        dataView.reload();
     }
 
     @Override

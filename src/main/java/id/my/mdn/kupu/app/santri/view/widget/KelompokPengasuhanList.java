@@ -7,15 +7,16 @@ package id.my.mdn.kupu.app.santri.view.widget;
 import id.my.mdn.kupu.app.santri.dao.KelompokPengasuhanFacade;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.CommonFilter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import java.util.List;
-import java.util.Map;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.view.widget.CommonFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +31,10 @@ public class KelompokPengasuhanList extends AbstractMutablePagedValueList<Kelomp
 
     @Inject
     private CommonFilter filterContent;
+
+    public KelompokPengasuhanList() {
+        super(KelompokPengasuhan.class);
+    }
 
     @PostConstruct
     public void init() {
@@ -63,17 +68,20 @@ public class KelompokPengasuhanList extends AbstractMutablePagedValueList<Kelomp
 
     @Override
     public String[] getCreatePermission() {
-        return new String[]{"create_kelompok_pengasuhan"};
+//        return new String[]{"create_kelompok_pengasuhan"};
+        return new String[]{};
     }
 
     @Override
     public String[] getUpdatePermission() {
-        return new String[]{"update_kelompok_pengasuhan"};
+//        return new String[]{"update_kelompok_pengasuhan"};
+        return new String[]{};
     }
 
     @Override
     public String[] getDeletePermission() {
-        return new String[]{"delete_kelompok_pengasuhan"};
+//        return new String[]{"delete_kelompok_pengasuhan"};
+        return new String[]{};
     }
 
 }

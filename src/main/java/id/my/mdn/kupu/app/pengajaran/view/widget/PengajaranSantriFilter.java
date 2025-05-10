@@ -4,14 +4,18 @@
  */
 package id.my.mdn.kupu.app.pengajaran.view.widget;
 
-import id.my.mdn.kupu.app.santri.entity.JenisKitab;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
+import id.my.mdn.kupu.app.santri.view.widget.SantriLazyChooser;
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmark;
 import id.my.mdn.kupu.core.base.view.widget.FilterContent;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.inject.Inject;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.List;
 
 /**
  *
@@ -22,18 +26,34 @@ public class PengajaranSantriFilter extends FilterContent implements Serializabl
     
     @Bookmark(name = "kp")
     private KelompokPengasuhan kelompokPengasuhan;
-
-    @Bookmark(name = "fd")
-    private LocalDate fromDate = LocalDate.now();
-    
-    @Bookmark(name = "td")
-    private LocalDate thruDate = LocalDate.now();
     
     @Bookmark(name = "sn")
-    private Santri santri;   
+    private Santri santri; 
+
+    @Inject
+    private SantriLazyChooser santriChooser;
+
+    @PostConstruct
+    public void init() {
+        santriChooser.setListener(this::onSelectSantri);
+        santriChooser.getList().getFilter().setStaticFilter(                
+               santriChooser.getList()
+                       .getFilter().staticFilter.plus(this::santriFilter)
+        );
+    }
+
+    public void onSelectSantri(Santri santri) {
+        this.santri = santri;
+    }
+
+    private List<FilterData> santriFilter() {
+        if(kelompokPengasuhan == null) return null;
+        return List.of(FilterData.by("kelompokPengasuhan", kelompokPengasuhan));
+    }
     
-    @Bookmark(name = "kb")
-    private JenisKitab jenisKitab; 
+    public void updateSantriFilter(AjaxBehaviorEvent evt) {
+        santri = null;
+    }
 
     public Santri getSantri() {
         return santri;
@@ -51,28 +71,8 @@ public class PengajaranSantriFilter extends FilterContent implements Serializabl
         this.kelompokPengasuhan = kelompokPengasuhan;
     }
 
-    public LocalDate getFromDate() {
-        return fromDate;
-    }
-
-    public void setFromDate(LocalDate fromDate) {
-        this.fromDate = fromDate;
-    }
-
-    public LocalDate getThruDate() {
-        return thruDate;
-    }
-
-    public void setThruDate(LocalDate thruDate) {
-        this.thruDate = thruDate;
-    }
-
-    public JenisKitab getJenisKitab() {
-        return jenisKitab;
-    }
-
-    public void setJenisKitab(JenisKitab jenisKitab) {
-        this.jenisKitab = jenisKitab;
+    public SantriLazyChooser getSantriChooser() {
+        return santriChooser;
     }
     
 }

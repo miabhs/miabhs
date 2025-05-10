@@ -9,6 +9,9 @@ import id.my.mdn.kupu.core.accounting.entity.AccountingPeriod;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -25,6 +28,10 @@ public class AccountingPeriodList extends AbstractValueList<AccountingPeriod> {
     
     @Inject
     private AccountingPeriodFacade dao;
+
+    public AccountingPeriodList() {
+        super(AccountingPeriod.class);
+    }
 
     @Override
     protected List<AccountingPeriod> getFetchedItemsInternal(

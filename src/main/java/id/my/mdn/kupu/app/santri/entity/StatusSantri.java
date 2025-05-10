@@ -4,6 +4,9 @@
  */
 package id.my.mdn.kupu.app.santri.entity;
 
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Order;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Sort;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,6 +24,7 @@ import java.time.LocalDate;
  */
 @Entity
 @Table(name = "MIABH_STATUSSANTRI")
+@SorterField(value = "fromDate", order = Order.DESC, sort = Sort.AUTO, label = "From")
 public class StatusSantri implements Serializable {
 
     private static final long serialVersionUID = 1L;

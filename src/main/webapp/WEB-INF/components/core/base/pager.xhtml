@@ -5,41 +5,45 @@
     xmlns:p="http://primefaces.org/ui"
     xmlns:f="jakarta.faces.core">
 
-    <h:panelGroup layout="block" class="flex align-items-center" rendered="#{rendered ne null ? rendered : true}">
-        <p:outputLabel value="Data: #{pager.itemsCount}" />
-        <p:spacer width="8" />
-        <p:selectOneMenu value="#{pager.pageSize}" converter="LongConverter" > 
-            <f:selectItems value="#{pager.pageSizeOptions}" var="size" 
-                           itemValue="#{size}" />
-            <p:ajax listener="#{pager.onPaging}" oncomplete="refreshContent()" />
-        </p:selectOneMenu>
+    <h:panelGroup layout="block" class="flex align-items-center flex-no-wrap" rendered="#{rendered ne null ? rendered : true}">
+        <div class="flex flex-no-wrap">
+            <p:outputLabel value="Data:" />
+            <p:outputLabel value="#{pager.itemsCount}" />
+        </div>
+        <h:panelGroup layout="block" rendered="#{pager.itemsCount gt pager.pageSize}">
+            <p:spacer width="8" />
+            <p:commandButton actionListener="#{pager.first}"
+                             disabled="#{pager.atStart}"
+                             update="#{pagerListener} @form" 
+                             oncomplete="#{pagerCallback}" 
+                             icon="pi pi-angle-double-left" class="ui-button-flat" />
 
-        <p:commandButton actionListener="#{pager.first}"
-                         disabled="#{pager.atStart}"
-                         oncomplete="refreshContent()"
-                         icon="pi pi-angle-double-left" class="ui-button-flat" />
+            <p:commandButton  actionListener="#{pager.previous}"
+                              disabled="#{pager.atStart}"
+                              update="#{pagerListener} @form" 
+                              oncomplete="#{pagerCallback}" 
+                              icon="pi pi-angle-left" class="ui-button-flat" />
 
-        <p:commandButton  actionListener="#{pager.previous}"
-                          disabled="#{pager.atStart}"
-                          oncomplete="refreshContent()" 
-                          icon="pi pi-angle-left" class="ui-button-flat" />
+            <p:selectOneMenu value="#{pager.offset}" converter="LongConverter" > 
+                <f:selectItems value="#{pager.pageOptions}" var="page" 
+                               itemValue="#{page}" />
+                <p:ajax listener="#{pager.onPaging}"
+                        update="#{pagerListener} @form"
+                        oncomplete="#{pagerCallback}"    />
+            </p:selectOneMenu>
 
-        <p:selectOneMenu value="#{pager.offset}" converter="LongConverter" > 
-            <f:selectItems value="#{pager.pageOptions}" var="page" 
-                           itemValue="#{page}" />
-            <p:ajax listener="#{pager.onPaging}"
-                    oncomplete="refreshContent()"  />
-        </p:selectOneMenu>
+            <p:commandButton actionListener="#{pager.next}" 
+                             disabled="#{pager.atEnd}"
+                             update="#{pagerListener} @form"
+                             oncomplete="#{pagerCallback}"  
+                             icon="pi pi-angle-right" class="ui-button-flat"/>
 
-        <p:commandButton actionListener="#{pager.next}" 
-                         disabled="#{pager.atEnd}"
-                         oncomplete="refreshContent()" 
-                         icon="pi pi-angle-right" class="ui-button-flat"/>
-
-        <p:commandButton actionListener="#{pager.last}"
-                         disabled="#{pager.atEnd}"
-                         oncomplete="refreshContent()"
-                         icon="pi pi-angle-double-right" class="ui-button-flat"/>
+            <p:commandButton actionListener="#{pager.last}"
+                             disabled="#{pager.atEnd}"
+                             update="#{pagerListener} @form" 
+                             oncomplete="#{pagerCallback}" 
+                             icon="pi pi-angle-double-right" class="ui-button-flat"/>
+        </h:panelGroup>
     </h:panelGroup>
 
 </ui:composition>

@@ -6,20 +6,21 @@ package id.my.mdn.kupu.app.pengasuhan.view.widget;
 
 import id.my.mdn.kupu.app.pengasuhan.dao.AktifitasFacade;
 import id.my.mdn.kupu.app.pengasuhan.entity.Aktifitas;
-import id.my.mdn.kupu.app.pengasuhan.service.PengasuhanService;
-import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
+import id.my.mdn.kupu.app.pengasuhan.entity.BentukAktifitas;
 import id.my.mdn.kupu.app.santri.entity.Santri;
+import id.my.mdn.kupu.app.santri.view.widget.BentukAktifitasLazyChooser;
+import id.my.mdn.kupu.app.santri.view.widget.SantriLazyChooser;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import static id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData.DESC;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.util.Do;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
-import jakarta.faces.event.ValueChangeEvent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +38,48 @@ public class AltAktifitasList extends AbstractMutablePagedValueList<Aktifitas> {
     @Inject
     private AktifitasHarianFilter filterContent;
 
+    @Inject
+    private SantriLazyChooser santriChooser;
+
+    @Inject
+    private BentukAktifitasLazyChooser bentukAktifitasChooser;
+
+    public AltAktifitasList() {
+        super(Aktifitas.class);
+    }
+
     @PostConstruct
-    public void init() {
+    private void init() {
         filter.setContent(filterContent);
+        setParameters(this::parameters);
+        
+        santriChooser.setListener(this::onSelectSantri);
+        santriChooser.getList().getFilter().setStaticFilter(
+                santriChooser.getList()
+                        .getFilter().staticFilter.plus(filterContent::santriFilter)
+        );
+
+        bentukAktifitasChooser.setListener(this::onSelectBentukAktifitas);
+    }
+
+    private Map<String, Object> parameters() {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("fromDate", filterContent.getFromDate());
+        parameters.put("thruDate", filterContent.getThruDate());
+
+        return parameters;
+    }
+
+    public void addBlank() {
+        dao.createBlank(filterContent.getFromDate());
+    }
+
+    public void onSelectSantri(Santri santri) {
+        update(getSelected(), "santri", santri);
+    }
+
+    public void onSelectBentukAktifitas(BentukAktifitas bentukAktifitas) {
+        update(getSelected(), "bentukAktifitas", bentukAktifitas);
     }
 
     @Override
@@ -49,39 +89,45 @@ public class AltAktifitasList extends AbstractMutablePagedValueList<Aktifitas> {
 
     @Override
     protected long getItemsCountInternal(Map<String, Object> parameters, List<FilterData> filters, DefaultCount defaultCount, AbstractFacade.DefaultChecker defaultChecker) {
-        
+
         Long countAll = dao.countAll(parameters, filters);
         return countAll;
     }
 
     @Override
-    public List<SorterData> getSorters() {
-        return Arrays.asList(new SorterData("activityDate", DESC), new SorterData("created", DESC));
-    }
-
-    @Override
-    protected void updateInternal(Aktifitas entity, String field, Object newValue) {        
+    protected void updateInternal(Aktifitas entity, String field, Object newValue) {
 
         switch (field) {
-            case "activityDate":
+            case "santri" -> {
+                Santri santri = (Santri) newValue;
+                entity.setSantri(santri);
+                if (santri != null) {
+                    entity.setSantriName(santri.getPerson().getName());
+                    entity.setKelompokPengasuhanName(santri.getKelompokPengasuhan().getOrganization().getName());
+                }
+            }
+            case "bentukAktifitas" -> {
+                BentukAktifitas bentukAktifitas = (BentukAktifitas) newValue;
+                entity.setBentukAktifitas(bentukAktifitas);
+                if (bentukAktifitas != null) {
+                    entity.setBentukAktifitasBentuk(bentukAktifitas.getBentuk());
+                    entity.setBentukAktifitasJenis(bentukAktifitas.getJenis());
+                    entity.setBentukAktifitasNilai(bentukAktifitas.getNilai());
+                }
+            }
+            case "activityDate" -> {
                 entity.setActivityDate((LocalDate) newValue);
-                break;
-            case "notes":
+            }
+            case "notes" ->
                 entity.setNotes((String) newValue);
-                break;
-            default:
-                break;
+            default ->
+                Do.nothing();
         }
-    }
 
-    @Inject
-    private PengasuhanService pengasuhanService;
+        entity.setConfirmed(
+                entity.getSantri() != null && entity.getBentukAktifitas() != null
+        );
 
-    public void onChangeSantri(ValueChangeEvent evt) {
-        Santri santri = (Santri) evt.getNewValue();
-        KelompokPengasuhan kelompokPengasuhan = pengasuhanService.getKelompokPengasuhan(santri.getId(), LocalDate.now());
-
-        santri.setKelompokPengasuhan(kelompokPengasuhan);
     }
 
     @Override
@@ -99,22 +145,28 @@ public class AltAktifitasList extends AbstractMutablePagedValueList<Aktifitas> {
         dao.remove(entity);
     }
 
-    @Override
-    public String[] getCreatePermission() {
-        return new String[]{"create_aktifitas"};
-    }
-
-    @Override
-    public String[] getUpdatePermission() {
-        return new String[]{"update_aktifitas"};
-    }
-
-    @Override
-    public String[] getDeletePermission() {
-        return new String[]{"delete_aktifitas"};
-    }
-
+//    @Override
+//    public String[] getCreatePermission() {
+//        return new String[]{"create_aktifitas"};
+//    }
+//    @Override
+//    public String[] getUpdatePermission() {
+//        return new String[]{"update_aktifitas"};
+//    }
+//    @Override
+//    public String[] getDeletePermission() {
+//        return new String[]{"delete_aktifitas"};
+//    }
     public String[] getConfirmPermission() {
-        return new String[]{"konfirmasi_aktifitas"};
+//        return new String[]{"konfirmasi_aktifitas"};
+        return new String[]{};
+    }
+
+    public SantriLazyChooser getSantriChooser() {
+        return santriChooser;
+    }
+
+    public BentukAktifitasLazyChooser getBentukAktifitasChooser() {
+        return bentukAktifitasChooser;
     }
 }

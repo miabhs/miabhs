@@ -1,5 +1,29 @@
-<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
 <jasperReport name="RangkumanAktifitas" language="java" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="525" leftMargin="40" rightMargin="30" topMargin="30" bottomMargin="30" uuid="fb5265c6-9ea6-44dd-8bdd-4d4710939899">
+	<style name="StatusPokok" mode="Opaque" forecolor="#FFFFFF">
+		<conditionalStyle backcolor="#00FF00">
+			<conditionExpression><![CDATA[$F{bdas}.equals("HIJAU")]]></conditionExpression>
+		</conditionalStyle>
+		<conditionalStyle backcolor="#FFFF00">
+			<conditionExpression><![CDATA[$F{bdas}.equals("KUNING")]]></conditionExpression>
+		</conditionalStyle>
+		<conditionalStyle backcolor="#FF0000">
+			<conditionExpression><![CDATA[$F{bdas}.equals("MERAH")]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<style name="StatusTambahan" mode="Opaque" forecolor="#FFFFFF">
+		<conditionalStyle backcolor="#00FF00">
+			<conditionExpression><![CDATA[$F{nonBdas} == null || $F{nonBdas}.equals("HIJAU")]]></conditionExpression>
+		</conditionalStyle>
+		<conditionalStyle backcolor="#FFFF00">
+			<conditionExpression><![CDATA[$F{nonBdas}.equals("KUNING")]]></conditionExpression>
+		</conditionalStyle>
+		<conditionalStyle backcolor="#FF0000">
+			<conditionExpression><![CDATA[$F{nonBdas}.equals("MERAH")]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<style name="StatusLabel" mode="Transparent" forecolor="#000000"/>
+	<style name="DefaultStyle" default="true" fontName="Roboto" fontSize="9.0"/>
 	<scriptlet name="LaporanAktifitasScriptlet" class="id.my.mdn.kupu.app.pengasuhan.reporting.LaporanAktifitasScriptlet"/>
 	<parameter name="fromDate" class="java.time.LocalDate"/>
 	<parameter name="thruDate" class="java.time.LocalDate"/>
@@ -9,10 +33,22 @@
 	<parameter name="PembinaKepengasuhan" class="net.sf.jasperreports.engine.JasperReport"/>
 	<parameter name="KakakKepengasuhan" class="net.sf.jasperreports.engine.JasperReport"/>
 	<parameter name="AktifitasSantri" class="net.sf.jasperreports.engine.JasperReport"/>
-	<field name="id" class="java.lang.Long">
-		<description><![CDATA[id]]></description>
-	</field>
-	<field name="organization.name" class="java.lang.String"/>
+	<field name="santriId" class="java.lang.Long"/>
+	<field name="nis" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="kelompokPengasuhanId" class="java.lang.Long"/>
+	<field name="kelompokPengasuhanPartyName" class="java.lang.String"/>
+	<field name="label" class="java.lang.String"/>
+	<field name="thruDate" class="java.time.LocalDate"/>
+	<field name="fromDate" class="java.time.LocalDate"/>
+	<field name="bdasMerah" class="java.lang.Integer"/>
+	<field name="bdasKuning" class="java.lang.Integer"/>
+	<field name="bdas" class="java.lang.String"/>
+	<field name="nonBdasMerah" class="java.lang.Integer"/>
+	<field name="nonBdasKuning" class="java.lang.Integer"/>
+	<field name="nonBdas" class="java.lang.String"/>
+	<field name="koordinator" class="java.lang.Boolean"/>
+	<field name="lamaBelajar" class="java.lang.Integer"/>
 	<variable name="listPembantu" resetType="None" incrementType="Group" calculation="System" incrementGroup="KelompokPengasuhan" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
 		<expression><![CDATA[$V{listPembantu}]]></expression>
 	</variable>
@@ -25,9 +61,6 @@
 	<variable name="listAktifitas" resetType="None" incrementType="Group" calculation="System" incrementGroup="KelompokPengasuhan" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
 		<expression><![CDATA[$V{listAktifitas}]]></expression>
 	</variable>
-	<variable name="listSantri" resetType="None" incrementType="Group" calculation="System" incrementGroup="KelompokPengasuhan" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
-		<expression><![CDATA[$V{listSantri}]]></expression>
-	</variable>
 	<variable name="fromDate" resetType="None" calculation="System" class="java.lang.String">
 		<expression><![CDATA[$V{fromDate}]]></expression>
 	</variable>
@@ -35,7 +68,7 @@
 		<expression><![CDATA[$V{thruDate}]]></expression>
 	</variable>
 	<group name="KelompokPengasuhan" keepTogether="true" startNewPage="true" resetPageNumber="true" reprintHeaderOnEachPage="true">
-		<expression><![CDATA[$F{id}]]></expression>
+		<expression><![CDATA[$F{kelompokPengasuhanId}]]></expression>
 		<groupHeader>
 			<band height="62" splitType="Prevent">
 				<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
@@ -59,7 +92,7 @@
 			<band height="30">
 				<element kind="frame" uuid="3778b469-4976-4dc0-9cae-deeb94dfc9f8" mode="Opaque" x="0" y="0" width="525" height="30" backcolor="#E6E6E6" printWhenGroupChanges="KelompokPengasuhan">
 					<element kind="textField" uuid="48e15a67-59e0-44b8-ab4c-3543d1b7dee4" mode="Transparent" x="0" y="1" width="525" height="28" printWhenGroupChanges="KelompokPengasuhan" fontSize="16.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-						<expression><![CDATA[$F{organization.name}]]></expression>
+						<expression><![CDATA[$F{kelompokPengasuhanPartyName}]]></expression>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</element>
@@ -84,7 +117,7 @@
 							</element>
 							<element kind="subreport" uuid="33800545-4b84-4acd-ab1a-4ea8ed0f7e22" positionType="Float" x="200" y="0" width="325" height="20">
 								<dataSourceExpression><![CDATA[$V{listPembina}]]></dataSourceExpression>
-								<expression><![CDATA[$P{PembinaKepengasuhan}]]></expression>
+								<expression><![CDATA[$P{PembantuPelaksanaKepengasuhan}]]></expression>
 							</element>
 						</element>
 						<element kind="frame" uuid="00ad0cac-c749-4bca-bd58-398012046b47" positionType="Float" x="0" y="20" width="525" height="20">
@@ -108,13 +141,80 @@
 							</element>
 							<element kind="subreport" uuid="b3a9b292-43fa-4b38-97b2-fb0c7ad32208" positionType="Float" x="199" y="0" width="326" height="20">
 								<dataSourceExpression><![CDATA[$V{listKakak}]]></dataSourceExpression>
-								<expression><![CDATA[$P{KakakKepengasuhan}]]></expression>
+								<expression><![CDATA[$P{PembantuPelaksanaKepengasuhan}]]></expression>
 							</element>
 						</element>
 					</element>
 					<box>
 						<leftPen lineWidth="0.75"/>
 						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+			</band>
+			<band height="23">
+				<element kind="frame" uuid="786e91ac-0cde-4a29-9867-593dbb217892" positionType="FixRelativeToBottom" mode="Opaque" x="0" y="0" width="525" height="23" backcolor="#E8E8E8">
+					<property name="ShowOutOfBoundContent" value="true"/>
+					<element kind="frame" uuid="16b02812-9539-4add-b756-33e33f6b051f" x="0" y="0" width="30" height="23">
+						<element kind="staticText" uuid="b96aaab4-b8a6-48de-bf87-8741cb966daf" x="0" y="0" width="30" height="23" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[No.]]></text>
+							<box padding="4">
+								<rightPen lineWidth="0.0"/>
+							</box>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="4062ee6d-6232-41c3-a41e-fc21b63a877f" x="30" y="0" width="262" height="23">
+						<element kind="staticText" uuid="f0eeb4ad-e8e7-49be-a56e-dc4d86ef0b07" x="0" y="0" width="262" height="23" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Santri]]></text>
+							<box padding="4">
+								<rightPen lineWidth="0.0"/>
+							</box>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="c0502498-f470-4d9a-8c13-f670ed07e086" x="293" y="0" width="30" height="23">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<element kind="staticText" uuid="2fb3d075-e706-4d9e-92de-2a2d09fe6903" x="0" y="0" width="30" height="23" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Thn]]></text>
+							<box padding="0">
+								<rightPen lineWidth="0.0"/>
+							</box>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="dd2216a9-ab0d-431d-8ccc-139103723c34" x="324" y="0" width="100" height="23">
+						<element kind="staticText" uuid="d2c0bbd4-cffb-46d7-859e-21217f393e8e" mode="Transparent" x="0" y="0" width="100" height="23" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[BDAS]]></text>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<box padding="0">
+								<rightPen lineWidth="0.0"/>
+							</box>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="2a186c03-fbd1-4eaa-bbd2-ccef646a21f6" x="425" y="0" width="100" height="23">
+						<element kind="staticText" uuid="2badc189-0371-4e69-872e-828901c4c54f" x="0" y="0" width="100" height="23" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[NON BDAS]]></text>
+							<property name="com.jaspersoft.studio.unit.x" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<box padding="0">
+								<rightPen lineWidth="0.0"/>
+							</box>
+						</element>
+					</element>
+					<box>
+						<topPen lineWidth="0.75"/>
+						<leftPen lineWidth="0.75"/>
+						<bottomPen lineWidth="0.75"/>
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
@@ -131,16 +231,87 @@
 	</group>
 	<detail>
 		<band height="24">
-			<element kind="subreport" uuid="12ac662e-9238-4a69-92f3-dc0f3de15115" x="0" y="0" width="525" height="24">
-				<dataSourceExpression><![CDATA[$V{listSantri}]]></dataSourceExpression>
-				<expression><![CDATA[$P{AktifitasSantri}]]></expression>
-				<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				<parameter name="fromDate">
-					<expression><![CDATA[$P{fromDate}]]></expression>
-				</parameter>
-				<parameter name="thruDate">
-					<expression><![CDATA[$P{thruDate}]]></expression>
-				</parameter>
+			<element kind="frame" uuid="221022a0-d006-4949-928d-f8594515d36b" x="0" y="0" width="525" height="24" removeLineWhenBlank="true">
+				<property name="ShowOutOfBoundContent" value="false"/>
+				<element kind="frame" uuid="566c823e-9df5-46a7-9919-1a56a01570d5" x="0" y="0" width="30" height="24">
+					<element kind="textField" uuid="9983e297-00ff-4c52-bf2a-b54ecdf6b211" stretchType="ContainerHeight" x="0" y="0" width="30" height="24" fontSize="11.0" hTextAlign="Center" vTextAlign="Middle">
+						<paragraph rightIndent="0"/>
+						<expression><![CDATA[$V{REPORT_COUNT}]]></expression>
+						<box padding="4">
+							<pen lineWidth="1.0"/>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</element>
+					<box>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="300370e8-58ed-4be7-b446-1538ecfb1be3" x="30" y="0" width="262" height="24">
+					<element kind="textField" uuid="34c482cd-df01-4a11-a443-34fecc06d60e" x="0" y="0" width="262" height="24" fontSize="11.0" hTextAlign="Left" vTextAlign="Middle">
+						<expression><![CDATA[$F{name} +  ($F{koordinator} ? " (Koordinator)" : "" )]]></expression>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="4">
+							<pen lineWidth="1.0"/>
+							<topPen lineWidth="0.0"/>
+							<leftPen lineWidth="0.0"/>
+							<bottomPen lineWidth="0.0"/>
+							<rightPen lineWidth="0.0"/>
+						</box>
+					</element>
+					<box>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="a2521b3a-b2c0-4562-b81a-b00a4a988631" x="293" y="0" width="30" height="24">
+					<element kind="textField" uuid="dbf1430e-3df0-4b02-a2b3-c9aa9dc6af94" stretchType="ContainerHeight" x="0" y="0" width="30" height="24" fontSize="11.0" hTextAlign="Center" vTextAlign="Middle">
+						<paragraph rightIndent="0"/>
+						<expression><![CDATA[$F{lamaBelajar}]]></expression>
+						<box padding="4">
+							<pen lineWidth="1.0"/>
+							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</element>
+					<box>
+						<rightPen lineWidth="0.75"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="df42dbfa-15e1-4804-b53c-0c0738bc757e" x="324" y="0" width="100" height="24" style="StatusPokok">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<element kind="textField" uuid="27c876eb-54a4-4644-844a-c54f6307fd87" x="0" y="0" width="100" height="24" fontSize="11.0" hTextAlign="Center" vTextAlign="Middle" style="StatusLabel">
+						<expression><![CDATA[$F{bdas}]]></expression>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</element>
+					<box style="StatusPokok">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.75" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+				</element>
+				<element kind="frame" uuid="605762f0-dcf9-4384-a62e-e63db2ae4a5c" x="425" y="0" width="100" height="24" style="StatusTambahan">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<element kind="textField" uuid="5fb6bd04-2c54-42c0-bbbe-d0baa4a498be" x="0" y="0" width="100" height="24" fontSize="11.0" hTextAlign="Center" vTextAlign="Middle" style="StatusLabel">
+						<expression><![CDATA[$F{nonBdas}]]></expression>
+					</element>
+					<box style="StatusTambahan">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+				</element>
+				<box>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
 			</element>
 		</band>
 	</detail>

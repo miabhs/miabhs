@@ -39,7 +39,8 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
     private static final String MAIN_QUERY_TEMPLATE
             = """
             SELECT S6.PARTYID, S6.FIRSTNAME, S6.LASTNAME,
-                   A6.SANTRI_ID, S6.NIS, S6.KELOMPOKPENGASUHANPARTYNAME,
+                   A6.SANTRI_ID, S6.NIS, S6.TAHUNMASUKFROMDATE, 
+                   S6.KELOMPOKPENGASUHANID, S6.KELOMPOKPENGASUHANPARTYNAME, S6.KOORDINATOR,
                    A6.LABEL, A6.FROMDATE, A6.THRUDATE,
                    A6.BDAS_MERAH, A6.BDAS_KUNING, A6.BDAS,
                    A6.NON_BDAS_MERAH, A6.NON_BDAS_KUNING, A6.NON_BDAS
@@ -47,7 +48,7 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
               SELECT SANTRI_ID, LABEL, ORDINAL, FROMDATE, THRUDATE, BDAS_MERAH, BDAS_KUNING, BDAS, NON_BDAS_MERAH, NON_BDAS_KUNING, NON_BDAS
               FROM <?>
             ) AS A6
-            INNER JOIN (
+            JOIN (
                 SELECT ID, PARTYID, PARTYROLETYPEID, FIRSTNAME, LASTNAME, NAMABAPAK, GENDER, DATEOFBIRTH,
                        NIS, STATUS, TAHUNMASUKID, TAHUNMASUKNAME, TAHUNMASUKFROMDATE,
                        KELOMPOKPENGASUHANID, KELOMPOKPENGASUHANPARTYID, KELOMPOKPENGASUHANPARTYNAME, KOORDINATOR
@@ -85,8 +86,13 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
                                     WHERE PROLE0.FROMDATE <=  CURRENT_DATE
                                     AND (PROLE0.THRUDATE IS NULL OR PROLE0.THRUDATE >= CURRENT_DATE)
                                 ) AS S1
-                                 JOIN PARTY_PERSON AS PSON1
-                                 ON S1.PARTY_ID = PSON1.ID
+                                JOIN (
+                                    SELECT PSON.ID, PRTY.FIRSTNAME, PRTY.LASTNAME, PSON.GENDER, PSON.DATEOFBIRTH 
+                                    FROM PARTY_PERSON AS PSON
+                                    JOIN PARTY_PARTY AS PRTY
+                                    ON PSON.ID = PRTY.ID
+                                ) AS PSON1
+                                ON S1.PARTY_ID = PSON1.ID
                             ) AS S2
                             JOIN MIABH_STATUSSANTRI AS SS0
                             ON S2.ID = SS0.SANTRI_ID
@@ -107,21 +113,20 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
                         ON S3.ID = PS2.TOROLE_ID
                     ) AS S4
                     LEFT JOIN (
-                        SELECT KKS1.ID, KKS1.PARTY_ID, ORG0.NAME
+                        SELECT KKS1.ID, KKS1.PARTY_ID, ORG0.FIRSTNAME AS NAME
                         FROM (
                             SELECT KKS0.ID, PROLE0.PARTY_ID
                             FROM MIABH_KELOMPOKPENGASUHAN AS KKS0
                             JOIN PARTY_PARTYROLE AS PROLE0
                             ON KKS0.ID = PROLE0.ID
                         ) AS KKS1
-                        JOIN PARTY_ORGANIZATION AS ORG0
+                        JOIN PARTY_PARTY AS ORG0
                         ON KKS1.PARTY_ID = ORG0.ID
                     ) AS KKS2
                     ON S4.FROMROLE_ID = KKS2.ID
                 )
             ) AS S6
             ON A6.SANTRI_ID = S6.ID
-            ORDER BY A6.SANTRI_ID, A6.ORDINAL
             """;
 
     private static final String SUB_QUERY_TEMPLATE
@@ -230,7 +235,40 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
         return null;
     }
 
-    public String generateQueryForPeriods(List<PeriodePembelajaran> listPeriode, KelompokPengasuhan kelompokPengasuhan, Santri santri) {
+    public String generateQueryForPeriods(List<PeriodePembelajaran> listPeriode, KelompokPengasuhan kelompokPengasuhan) {
+
+        StringBuilder subQuery = new StringBuilder();
+
+        for (int i = 0; i < listPeriode.size(); i++) {
+            PeriodePembelajaran periode = listPeriode.get(i);
+            if (i > 0) {
+                subQuery.append("UNION ALL");
+            }
+            PeriodePembelajaran parentPeriode = periode.getParent();
+            String parentLabel = parentPeriode != null ? (" (" + parentPeriode.getName() + ")") : "";
+            subQuery.append(replaceParameterizedPositions(SUB_QUERY_TEMPLATE,
+                    periode.getName() + parentLabel,
+                    String.valueOf(i),
+                    periode.getFromDate().toString(),
+                    periode.getThruDate().toString(),
+                    periode.getFromDate().toString(),
+                    periode.getThruDate().toString()
+            ));
+        }
+
+        StringBuilder filterKelompok = new StringBuilder();
+
+        if (kelompokPengasuhan != null) {
+            filterKelompok.append("WHERE PS.FROMROLE_ID = ").append(kelompokPengasuhan.getId());
+        }
+
+        String ret = replaceParameterizedPositions(MAIN_QUERY_TEMPLATE, subQuery.toString(),
+                filterKelompok.toString());
+        
+        return ret;
+    }
+
+    public String generateQueryForPeriods(List<PeriodePembelajaran> listPeriode, Santri santri) {
 
         StringBuilder subQuery = new StringBuilder();
 
@@ -253,14 +291,8 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
 
         StringBuilder filterSantri = new StringBuilder();
 
-        if (kelompokPengasuhan != null && santri != null) {
-            filterSantri.append("WHERE PS.FROMROLE_ID = ").append(kelompokPengasuhan.getId())
-                    .append(" AND ")
-                    .append("S.ID = ").append(santri.getId());
-        } else if (kelompokPengasuhan != null && santri == null) {
-            filterSantri.append("WHERE PS.FROMROLE_ID = ").append(kelompokPengasuhan.getId());
-        } else if (kelompokPengasuhan == null && santri != null) {
-            filterSantri.append("WHERE S.ID = ").append(santri.getId());
+        if (santri != null) {
+            filterSantri.append("WHERE WHERE S.ID = ").append(santri.getId());
         }
 
         String ret = replaceParameterizedPositions(MAIN_QUERY_TEMPLATE, subQuery.toString(),
@@ -275,10 +307,20 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
                 RangkumanKepengasuhanDetail.class.getSimpleName()
         );
         q.setParameter(1, santriId);
-        q.setParameter(2, fromDate.toString());
-        q.setParameter(3, thruDate.toString());
+        q.setParameter(2, fromDate);
+        q.setParameter(3, thruDate);
 
         return q.getResultList();
+    }
+
+    @Override
+    protected String translateOrderField(String fieldName) {
+        switch (fieldName) {
+            case "kelompokPengasuhanId":
+                return "S6.KELOMPOKPENGASUHANID";
+            default:
+                return super.translateOrderField(fieldName);
+        }
     }
 
 }

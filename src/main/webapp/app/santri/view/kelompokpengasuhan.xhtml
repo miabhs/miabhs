@@ -6,40 +6,32 @@
 
     <f:metadata>
         <ui:param name="title" value="Kelompok Kepengasuhan" />
-
+X
         <ui:param name="viewPage" value="#{kelompokPengasuhanPage}" />
-        <ui:param name="dataView" value="#{viewPage.dataView}" />
-        <ui:param name="pager" value="#{dataView.pager}" />
-        <ui:param name="filter" value="#{dataView.filter}" />
-        <ui:param name="contentId" value=":data-frm:#{dataView.name}" />
-        
-        <ui:param name="nofilter" value="true" />
-        
-        <ui:include src="/WEB-INF/components/app/santri/meta/kelompokpengasuhan-filterui.xhtml" />
-
         <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
         
-        <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
+        <ui:param name="dataView" value="#{viewPage.dataView}" />
+        <ui:param name="contentId" value=":data-frm:#{dataView.name}" /> 
+        <ui:param name="notool" value="true" />
         
-        <f:viewParam name="s" value="#{dataView.selections}" converter="KelompokPengasuhanListConverter" />
+        <ui:param name="filter" value="#{dataView.filter}" />
+        <ui:param name="filterType" value="overlay" />
+        <ui:param name="filterUi" value="/WEB-INF/components/core/common/common-filterui.xhtml" />
+        <ui:include src="/WEB-INF/components/core/common/meta/common-filterui.xhtml" />
+
+        <ui:param name="pager" value="#{dataView.pager}" />
+        <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
+                    
+        <f:viewParam name="s" value="#{dataView.selectionsInternal}" converter="KelompokPengasuhanListConverter" transient="true" />
     </f:metadata> 
 
     <ui:define name="module-menu">
         <ui:include src="/WEB-INF/components/app/santri/module-menu.xhtml" />
     </ui:define>
 
-    <ui:define name="overlay-filter">
-        <ui:include src="/WEB-INF/components/core/base/filter.xhtml" >
-            <ui:param name="name" value="filterKelompokPengasuhan" />
-            <ui:param name="filterUi" value="/WEB-INF/components/app/santri/kelompokpengasuhan-filterui.xhtml" />
-        </ui:include>
-    </ui:define>
-
     <ui:define name="content">
-        <h:form id="data-frm">
-            <ui:include src="/WEB-INF/components/app/santri/kelompokpengasuhanlist.xhtml">
-                <ui:param name="selectListener" value=":tools-frm" />
-            </ui:include>
+        <h:form id="data-frm" class="flex-grow-1 flex align-items-stretch">
+            <ui:include src="/WEB-INF/components/app/santri/kelompokpengasuhanlist.xhtml" />
         </h:form>
     </ui:define> 
 

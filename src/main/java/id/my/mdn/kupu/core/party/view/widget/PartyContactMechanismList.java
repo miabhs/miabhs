@@ -6,19 +6,20 @@
 package id.my.mdn.kupu.core.party.view.widget;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.party.dao.PartyContactMechanismFacade;
 import id.my.mdn.kupu.core.party.entity.ContactType;
 import id.my.mdn.kupu.core.party.entity.Party;
 import id.my.mdn.kupu.core.party.entity.PartyContactMechanism;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -35,6 +36,10 @@ public class PartyContactMechanismList
     private Party party;    
      
     private ContactType contactType;
+
+    public PartyContactMechanismList() {
+        super(PartyContactMechanism.class);
+    }
 
     @PostConstruct
     public void init() {

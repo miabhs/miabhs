@@ -64,6 +64,10 @@ public abstract class PartyRole implements Serializable {
     public PartyRole() {
     }
 
+    public PartyRole(Long id) {
+        this.id = id;
+    }
+
     public PartyRole(Long id, Party party, PartyRoleType roleType) {
         this.id = id;
         this.party = party;

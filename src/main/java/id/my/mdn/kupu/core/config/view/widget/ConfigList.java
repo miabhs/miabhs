@@ -2,19 +2,20 @@
 package id.my.mdn.kupu.core.config.view.widget;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.EditingFeature;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.base.view.widget.EditingFeature;
 import id.my.mdn.kupu.core.base.view.widget.IEditable;
 import id.my.mdn.kupu.core.config.model.Config;
 import id.my.mdn.kupu.core.config.service.ConfigFacade;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.configuration2.Configuration;
 
 
@@ -35,6 +36,10 @@ public class ConfigList extends AbstractPagedValueList<Config>
 
     @Inject
     private ConfigFacade dao;
+
+    public ConfigList() {
+        super(Config.class);
+    }
 
     @PostConstruct
     public void init() {

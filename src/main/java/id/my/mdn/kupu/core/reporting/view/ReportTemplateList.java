@@ -5,17 +5,18 @@
 package id.my.mdn.kupu.core.reporting.view;
 
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.CommonFilter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.view.widget.CommonFilter;
 import id.my.mdn.kupu.core.reporting.dao.ReportTemplateFacade;
 import id.my.mdn.kupu.core.reporting.model.ReportTemplate;
-import java.util.List;
-import java.util.Map;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +31,10 @@ public class ReportTemplateList extends AbstractMutablePagedValueList<ReportTemp
 
     @Inject    
     private CommonFilter filterContent;
+
+    public ReportTemplateList() {
+        super(ReportTemplate.class);
+    }
 
     @PostConstruct
     public void init() {

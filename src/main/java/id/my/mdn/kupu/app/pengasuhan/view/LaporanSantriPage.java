@@ -6,27 +6,26 @@ package id.my.mdn.kupu.app.pengasuhan.view;
 
 import id.my.mdn.kupu.app.pengasuhan.dao.RangkumanKepengasuhanFacade;
 import id.my.mdn.kupu.app.pengasuhan.entity.RangkumanKepengasuhan;
+import id.my.mdn.kupu.app.pengasuhan.view.widget.LaporanIndividuFilter;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
-import static id.my.mdn.kupu.app.santri.entity.StatusKesantrian.ACTIVE;
-import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanAltList;
+import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranFilter;
 import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranTree;
-import id.my.mdn.kupu.app.santri.view.widget.SantriAltList;
-import id.my.mdn.kupu.app.santri.view.widget.SantriFilter;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.widget.Selector;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
-import id.my.mdn.kupu.core.reporting.view.ReportingPage;
+import id.my.mdn.kupu.core.reporting.view.ReportingChildPage;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.event.AjaxBehaviorEvent;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -34,98 +33,100 @@ import java.util.Map;
  */
 @Named(value = "laporanSantriPage")
 @ViewScoped
-public class LaporanSantriPage extends ReportingPage implements Serializable {
+public class LaporanSantriPage extends ReportingChildPage implements Serializable {
 
     @Inject
     @Bookmarked
     private PeriodePembelajaranTree periodePembelajaranTree;
 
     @Inject
-    @Bookmarked
-    private KelompokPengasuhanAltList kelompokPengasuhanList;
-
-    @Inject
-    @Bookmarked
-    private SantriAltList santriList;
+    private LaporanIndividuFilter filterContent;
 
     @Inject
     private RangkumanKepengasuhanFacade rangkumanFacade;
-    
-    public static Object NULL() { return null; }
+
+    public static Object NULL() {
+        return null;
+    }
 
     @PostConstruct
     @Override
     public void init() {
         super.init();
+        filter.setContent(filterContent);
         periodePembelajaranTreeInit();
 
-        kelompokPengasuhanList.setSelectionMode(() -> Selector.SINGLE);
-        kelompokPengasuhanList.getSelector().setSelectionsLabel("kp"); 
-
-        santriList.setSelectionMode(() -> Selector.SINGLE);
-        santriList.getSelector().setSelectionsLabel("sn");        
-        santriList.getFilter().<SantriFilter>getContent()
-                .setStatusKesantrian(ACTIVE);
-        
     }
 
     private void periodePembelajaranTreeInit() {
         periodePembelajaranTree.setSelectionMode(() -> Selector.CHECKBOX);
         periodePembelajaranTree.setName("periodePembelajaranTbl");
         periodePembelajaranTree.setSelectionsLabel("ps");
-    }
+        periodePembelajaranTree.getFilter().setName("periodeFilter");
 
-    public void doFilter(AjaxBehaviorEvent evt) {
-        periodePembelajaranTree.doFilter();
-        periodePembelajaranTree.setSelections(null);
-        updateUrl();
+        periodePembelajaranTree.setDefaultChecker(
+                () -> periodePembelajaranTree.getFilter().<PeriodePembelajaranFilter>getContent().getTahunPembelajaran() == null);
+
+        periodePembelajaranTree.getSelector().addListenerInternal((obj) -> {
+
+            List<PeriodePembelajaran> selections = (List<PeriodePembelajaran>) obj;
+
+            Optional<LocalDate> min = selections.stream().map(o -> o.getFromDate())
+                    .sorted((a, b) -> a.compareTo(b)).findFirst();
+
+            Optional<LocalDate> max = selections.stream().map(o -> o.getThruDate())
+                    .sorted((a, b) -> (a.compareTo(b) * (-1))).findFirst();
+            
+            if (min.isPresent() && max.isPresent()) {
+                filterContent.setFromDate(min.get());
+                filterContent.setThruDate(max.get());
+            } else {
+                filterContent.setFromDate(null);
+                filterContent.setThruDate(null);
+            }
+        });
     }
 
     private String generateFindAllQuery() {
         List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
         Collections.sort(listPeriode);
-        return rangkumanFacade.generateQueryForPeriods(listPeriode, kelompokPengasuhanList.getSelection(), santriList.getSelection());
+        return rangkumanFacade.generateQueryForPeriods(
+                listPeriode,
+                filterContent.getSantri()
+        );
     }
-    
+
     @Override
-    protected boolean isReady() {        
+    protected boolean isReady() {
         List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
         return listPeriode != null && !listPeriode.isEmpty();
     }
 
     @Override
     protected ReportingJob prepareReportingJob() {
-        
+
         List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
-        
-        List<RangkumanKepengasuhan> listRangkumanKepengasuhan 
-                = (listPeriode != null && !listPeriode.isEmpty()) ? 
-                rangkumanFacade.findAll(
-                this::generateFindAllQuery,
-                0, 0, null, null, null, null, null
-        ) : new ArrayList<>();
+
+        List<RangkumanKepengasuhan> listRangkumanKepengasuhan
+                = (listPeriode != null && !listPeriode.isEmpty())
+                ? rangkumanFacade.findAll(
+                        this::generateFindAllQuery,
+                        0, 0, null, null, null, null, null
+                ) : new ArrayList<>();
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("JenisBDAS", "BDAS");
         parameters.put("JenisNonBDAS", "NON_BDAS");
 
         return new ReportingJob(
-                listRangkumanKepengasuhan, parameters, 
-                "LaporanSantri",  
+                listRangkumanKepengasuhan, parameters,
+                "LaporanSantri",
                 "CatatanKepengasuhan",
                 "HikmahKauniyah"
         );
-        
-    }
-    
-    public SantriAltList getSantriList() {
-        return santriList;
+
     }
 
-    public KelompokPengasuhanAltList getKelompokPengasuhanList() {
-        return kelompokPengasuhanList;
-    }
-    
     public PeriodePembelajaranTree getPeriodePembelajaranTree() {
         return periodePembelajaranTree;
     }

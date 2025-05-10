@@ -1,0 +1,19 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="jakarta.faces.facelets" 
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+
+    <div class="filter-field">
+        <p:outputLabel for="tahun" value="Tahun" class="col-fixed" />
+        <p:selectOneMenu id="tahun" style="min-width: auto!important" immediate="true"
+                         value="#{filter.content.tahunPembelajaran}"
+                         converter="TahunPembelajaranConverter" >                        
+            <f:selectItem itemLabel="Pilih Tahun" itemDisabled="true" itemValue="#{null}" />
+            <f:selectItems value="#{tahunPembelajaranSelectList.fetchedItems}" var="item"
+                           itemLabel="#{item.name}" itemValue="#{item}" />
+        </p:selectOneMenu>
+    </div>
+
+</ui:composition>
+

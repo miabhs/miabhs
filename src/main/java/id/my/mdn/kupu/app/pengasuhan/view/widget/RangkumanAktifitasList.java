@@ -7,14 +7,15 @@ package id.my.mdn.kupu.app.pengasuhan.view.widget;
 import id.my.mdn.kupu.app.pengasuhan.dao.RangkumanAktifitasFacade;
 import id.my.mdn.kupu.app.pengasuhan.entity.RangkumanAktifitas;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import java.util.List;
-import java.util.Map;
+import id.my.mdn.kupu.core.base.view.widget.AbstractPagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -29,6 +30,10 @@ public class RangkumanAktifitasList extends AbstractPagedValueList<RangkumanAkti
 
     @Inject
     private AktifitasHarianFilter filterContent;
+
+    public RangkumanAktifitasList() {
+        super(RangkumanAktifitas.class);
+    }
 
     @PostConstruct
     public void init() {

@@ -28,7 +28,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "PARTY_PARTYRELATIONSHIP")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "PARTYRELATIONSHIPTYPE_ID")
+@DiscriminatorColumn(name = "PARTYRELATIONSHIPTYPE_ID", length = 255)
 public abstract class PartyRelationship implements Serializable {
 
     private static final long serialVersionUID = 1L;

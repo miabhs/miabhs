@@ -9,6 +9,7 @@ import id.my.mdn.kupu.core.base.model.HierarchicalEntity;
 import id.my.mdn.kupu.core.base.util.Result;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.IValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.party.entity.Party;
 import id.my.mdn.kupu.core.party.entity.PartyRole;
 import jakarta.persistence.TypedQuery;
@@ -78,7 +79,7 @@ public abstract class AbstractHierarchicalPartyRoleFacade<T extends PartyRole & 
             Integer maxResult,
             Map<String, Object> parameters,
             List<FilterData> filters,
-            List<IValueList.SorterData> sorters,
+            List<SorterData> sorters,
             List<T> defaultReturn
     ) {
 

@@ -7,16 +7,10 @@
 
     <ui:define name="master-tools"/>
     
-    <ui:define name="detail-filter">
+    <ui:define name="detail-tools" />
+
+    <ui:define name="other-detail-tools">
         <ui:insert name="report-params"/>
-        
-        <div class="formgroup-inline">
-            <p:commandButton id="btn-refresh" icon="pi pi-refresh" immediate="true"
-                             class="ui-button-flat"                             
-                             actionListener="#{viewPage.prepareReport}"
-                             onclick="PF('blocker').show()"
-                             update=":detail-frm" />
-        </div>
     </ui:define>
 
     <ui:define name="detail">
@@ -53,5 +47,5 @@
             $(document).ready(doThat)
         </h:outputScript>
     </ui:define>
-    
+
 </ui:composition>

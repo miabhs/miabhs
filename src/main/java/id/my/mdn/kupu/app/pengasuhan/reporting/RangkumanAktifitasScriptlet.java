@@ -31,8 +31,6 @@ public class RangkumanAktifitasScriptlet extends JRDefaultScriptlet {
 
     @Override
     public void beforeDetailEval() throws JRScriptletException {
-        
-        System.out.println("SELEK BIPOR DETIL: LaporanKepengasuhanSantri.jrxml");
 
         Long santriId = (Long) getParameterValue("santriId");
         PeriodePembelajaran periode = (PeriodePembelajaran) getParameterValue("periodePembelajaran");

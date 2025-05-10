@@ -21,7 +21,7 @@ import java.util.Locale;
 @FacesConverter(value = "IslamicDateConverter", managed = true)
 public class IslamicDateConverter implements Converter<LocalDate> {
     
-    private final Locale locale = new Locale("ID");
+    private final Locale locale = new Locale("in_id");
 
     @Override
     public LocalDate getAsObject(FacesContext context, UIComponent component, String value) {

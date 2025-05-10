@@ -4,12 +4,13 @@
  */
 package id.my.mdn.kupu.app.santri.view.widget;
 
-import id.my.mdn.kupu.app.santri.dao.HalaqohPengajaranFacade;
+import id.my.mdn.kupu.app.santri.dao.HalaqohPengajaranSqlFacade;
 import id.my.mdn.kupu.app.santri.entity.HalaqohPengajaran;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.CommonFilter;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.view.widget.CommonFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -26,10 +27,14 @@ import java.util.Map;
 public class HalaqohPengajaranList extends AbstractMutablePagedValueList<HalaqohPengajaran> {
     
     @Inject
-    private HalaqohPengajaranFacade dao;
+    private HalaqohPengajaranSqlFacade dao;
     
     @Inject
     private CommonFilter filterContent;
+
+    public HalaqohPengajaranList() {
+        super(HalaqohPengajaran.class);
+    }
 
     @PostConstruct
     public void init() {

@@ -4,7 +4,7 @@
  */
 package id.my.mdn.kupu.app.santri.view.converter;
 
-import id.my.mdn.kupu.app.santri.dao.HalaqohPengajaranFacade;
+import id.my.mdn.kupu.app.santri.dao.HalaqohPengajaranSqlFacade;
 import id.my.mdn.kupu.app.santri.entity.HalaqohPengajaran;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
@@ -22,7 +22,7 @@ import jakarta.inject.Singleton;
 public class HalaqohPengajaranConverter implements Converter<HalaqohPengajaran> {
     
     @Inject
-    private HalaqohPengajaranFacade dao;
+    private HalaqohPengajaranSqlFacade dao;
 
     @Override
     public HalaqohPengajaran getAsObject(FacesContext context, UIComponent component, String value) {

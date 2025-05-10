@@ -7,15 +7,16 @@ package id.my.mdn.kupu.app.santri.view.widget;
 import id.my.mdn.kupu.app.santri.dao.UstadzFacade;
 import id.my.mdn.kupu.app.santri.entity.Ustadz;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
-import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
-import id.my.mdn.kupu.core.base.view.widget.CommonFilter;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
-import java.util.List;
-import java.util.Map;
+import id.my.mdn.kupu.core.base.view.widget.AbstractMutablePagedValueList;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
+import id.my.mdn.kupu.core.common.view.widget.CommonFilter;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +31,10 @@ public class UstadzList extends AbstractMutablePagedValueList<Ustadz> {
     
     @Inject
     private CommonFilter filterContent;
+
+    public UstadzList() {
+        super(Ustadz.class);
+    }
 
     @PostConstruct
     public void init() {        
@@ -63,17 +68,20 @@ public class UstadzList extends AbstractMutablePagedValueList<Ustadz> {
 
     @Override
     public String[] getCreatePermission() {
-        return new String[]{"create_ustadz"};
+//        return new String[]{"create_ustadz"};
+        return new String[]{};
     }
 
     @Override
     public String[] getUpdatePermission() {
-        return new String[]{"update_ustadz"};
+//        return new String[]{"update_ustadz"};
+        return new String[]{};
     }
 
     @Override
     public String[] getDeletePermission() {
-        return new String[]{"delete_ustadz"};
+//        return new String[]{"delete_ustadz"};
+        return new String[]{};
     }
     
 }

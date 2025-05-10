@@ -4,24 +4,25 @@
  */
 package id.my.mdn.kupu.app.santri.view.admin;
 
+import id.my.mdn.kupu.app.santri.dao.NikSeedFacade;
 import id.my.mdn.kupu.app.santri.dao.SantriFacade;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.app.santri.view.widget.StatusSantriList;
+import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.ChildPage;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
 import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
-import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.party.entity.Person;
 import id.my.mdn.kupu.core.party.view.PersonDetailPage;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
-import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -30,12 +31,12 @@ import jakarta.inject.Named;
 @Named(value = "santriDetailPage")
 @ViewScoped
 public class SantriDetailPage extends ChildPage implements Serializable {
-    
+
     private static final Logger Log = Logger.getLogger(SantriDetailPage.class.getCanonicalName());
-    
+
     @Bookmarked
     private Santri santri;
-    
+
     @Inject
     @Bookmarked
     private PersonDetailPage partyDetailPage;
@@ -43,9 +44,12 @@ public class SantriDetailPage extends ChildPage implements Serializable {
     @Inject
     @Bookmarked
     private StatusSantriList statusSantriList;
-    
+
     @Inject
     private SantriFacade santriFacade;
+
+    @Inject
+    private NikSeedFacade nisFacade;
 
     @PostConstruct
     @Override
@@ -53,14 +57,14 @@ public class SantriDetailPage extends ChildPage implements Serializable {
         super.init();
         partyDetailPage.init();
     }
-    
+
     @Override
     public void load() {
         partyDetailPage.setParty((Person) santri.getParty());
         partyDetailPage.setContextSupplier(() -> this);
         partyDetailPage.setUpdateListener(person -> santriFacade.edit(santri));
         partyDetailPage.load();
-        
+
         statusSantriList.getFilter().setStaticFilter(() -> List.of(new FilterData("santri", santri)));
         statusSantriList.getSelector().setSelectionsLabel("sts");
         statusSantriList.getPager().setPageSizeLabel("stp");
@@ -87,6 +91,12 @@ public class SantriDetailPage extends ChildPage implements Serializable {
         statusSantriList.delete(statusSantriList.getSelector().getSelections());
     }
 
+    public void generateNis() {
+        if (santri.getNis().isEmpty()) {
+            nisFacade.generateNis(santri);
+        }
+    }
+
     public PersonDetailPage getPartyDetailPage() {
         return partyDetailPage;
     }
@@ -106,5 +116,5 @@ public class SantriDetailPage extends ChildPage implements Serializable {
     public void setStatusSantriList(StatusSantriList statusSantriList) {
         this.statusSantriList = statusSantriList;
     }
-    
+
 }

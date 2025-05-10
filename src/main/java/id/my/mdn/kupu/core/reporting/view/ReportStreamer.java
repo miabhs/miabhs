@@ -11,12 +11,12 @@ import id.my.mdn.kupu.core.reporting.jasperreports.ReportLoadingException;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
 import id.my.mdn.kupu.core.reporting.service.ReportingJobQueue;
 import id.my.mdn.kupu.core.reporting.util.Reporter;
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -35,12 +35,14 @@ public class ReportStreamer implements Serializable {
     private ReportingJobQueue jobQueue;
 
     private StreamedContent getContent(String format) {
-        
 
         ReportingJob job = jobQueue.get();
-        
-        if(job == null) return null;
-        
+
+        if (job == null) {
+            jobQueue.setBusy(false);
+            return null;
+        }
+
         return DefaultStreamedContent.builder()
                 .name(job.getTemplateName() + "." + format)
                 .contentType("application/" + format)
@@ -57,11 +59,11 @@ public class ReportStreamer implements Serializable {
                     }
                 }).build();
     }
-    
-    public StreamedContent getPdf() {        
+
+    public StreamedContent getPdf() {   
         return getContent("pdf");
     }
-    
+
     public StreamedContent getXls() {
         return getContent("xls");
     }

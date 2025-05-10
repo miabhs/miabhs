@@ -15,23 +15,15 @@
 
         <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
 
-        <f:viewParam name="pks" value="#{viewPage.pembinaKepengasuhanList.selections}" converter="PembinaKepengasuhanListConverter" />
-        <f:viewParam name="pkp" value="#{viewPage.pembinaKepengasuhanList.pager.pageSize}" converter="LongConverter" />
-        <f:viewParam name="pko" value="#{viewPage.pembinaKepengasuhanList.pager.offset}" converter="LongConverter" />
+        <f:viewParam name="bks" value="#{viewPage.pelaksanaKepengasuhanList.selectionsInternal}" converter="PelaksanaKepengasuhanListConverter" transient="true" />
+        <f:viewParam name="bkp" value="#{viewPage.pelaksanaKepengasuhanList.pager.pageSize}" converter="LongConverter" transient="true" />
+        <f:viewParam name="bko" value="#{viewPage.pelaksanaKepengasuhanList.pager.offset}" converter="LongConverter" transient="true" />
 
-        <f:viewParam name="bks" value="#{viewPage.pembantuPelaksanaKepengasuhanList.selections}" converter="PembantuPelaksanaKepengasuhanListConverter" />
-        <f:viewParam name="bkp" value="#{viewPage.pembantuPelaksanaKepengasuhanList.pager.pageSize}" converter="LongConverter" />
-        <f:viewParam name="bko" value="#{viewPage.pembantuPelaksanaKepengasuhanList.pager.offset}" converter="LongConverter" />
+        <f:viewParam name="ps" value="#{viewPage.pengasuhanList.selectionsInternal}" converter="PengasuhanListConverter" transient="true" />
+        <f:viewParam name="pp" value="#{viewPage.pengasuhanList.pager.pageSize}" converter="LongConverter" transient="true" />
+        <f:viewParam name="po" value="#{viewPage.pengasuhanList.pager.offset}" converter="LongConverter" transient="true" />
 
-        <f:viewParam name="kks" value="#{viewPage.kakakKepengasuhanList.selections}" converter="KakakKepengasuhanListConverter" />
-        <f:viewParam name="kkp" value="#{viewPage.kakakKepengasuhanList.pager.pageSize}" converter="LongConverter" />
-        <f:viewParam name="kko" value="#{viewPage.kakakKepengasuhanList.pager.offset}" converter="LongConverter" />
-
-        <f:viewParam name="ps" value="#{viewPage.pengasuhanList.selections}" converter="PengasuhanListConverter" />
-        <f:viewParam name="pp" value="#{viewPage.pengasuhanList.pager.pageSize}" converter="LongConverter" />
-        <f:viewParam name="po" value="#{viewPage.pengasuhanList.pager.offset}" converter="LongConverter" />
-
-        <f:viewParam name="kp" value="#{kelompokPengasuhanDetailPage.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" />
+        <f:viewParam name="kp" value="#{kelompokPengasuhanDetailPage.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" transient="true" />
 
         <f:viewAction action="#{viewPage.load}" />
     </f:metadata>
@@ -39,6 +31,17 @@
     <ui:define name="content">
         <ui:decorate template="/WEB-INF/components/core/party/organizationdetail.xhtml">        
             <ui:param name="editor" value="#{viewPage.partyDetailPage}" />
+
+            <ui:define name="organizationform-suffix">
+                <div class="field ui-fluid">
+                    <p:outputLabel for="gender" value="#{string['person.gender.label']}" />
+                    <p:selectOneMenu id="gender" value="#{viewPage.kelompokPengasuhan.gender}"
+                                     converter="GenderTypeConverter" >
+                        <f:selectItems value="#{genderTypeList.fetchedItems}" var="item"
+                                       itemLabel="#{item.label}" itemValue="#{item}" />
+                    </p:selectOneMenu>  
+                </div>
+            </ui:define>
 
             <ui:define name="role-form">                
 
@@ -77,42 +80,12 @@
                     </h:form>
                 </div>
 
-                <div class="col-12 md:col-6">
-                    <h:form>
-                        <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
-                            <ui:param name="title" value="Pembina Kepengasuhan" />
-                            <ui:param name="dataView" value="#{viewPage.pembinaKepengasuhanList}" />
-                            <ui:param name="contentId" value="#{dataView.name}" />
-                            <ui:param name="pager" value="#{dataView.pager}" />
-                            <ui:param name="updateListener" value="@form" />
-
-                            <ui:define name="actions" >
-                                <h:panelGroup id="actions" layout="block">
-                                    <ui:include src="/WEB-INF/components/core/base/crud-create.xhtml"/>
-                                    <ui:include src="/WEB-INF/components/core/base/crud-delete.xhtml"/>
-                                </h:panelGroup>
-                            </ui:define>
-
-                            <ui:define name="fields">
-                                <ui:include src="/WEB-INF/components/app/santri/pembinakepengasuhanlist.xhtml">
-                                    <ui:param name="selectListener" value="@form" />
-                                    <ui:param name="height" value="250" />
-                                </ui:include>
-                            </ui:define>
-
-                            <ui:define name="footer">
-                                <ui:include src="/WEB-INF/components/core/base/pager-alt.xhtml" />
-                            </ui:define>
-
-                        </ui:decorate>
-                    </h:form>
-                </div>
 
                 <div class="col-12 md:col-6">
                     <h:form>
                         <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
-                            <ui:param name="title" value="Pembantu Pelaksana Kepengasuhan" />
-                            <ui:param name="dataView" value="#{viewPage.pembantuPelaksanaKepengasuhanList}" />
+                            <ui:param name="title" value="Pelaksana Kepengasuhan" />
+                            <ui:param name="dataView" value="#{viewPage.pelaksanaKepengasuhanList}" />
                             <ui:param name="contentId" value="#{dataView.name}" />
                             <ui:param name="pager" value="#{dataView.pager}" />
                             <ui:param name="updateListener" value="@form" />
@@ -125,38 +98,7 @@
                             </ui:define>
 
                             <ui:define name="fields">
-                                <ui:include src="/WEB-INF/components/app/santri/pembantupelaksanakepengasuhanlist.xhtml">
-                                    <ui:param name="selectListener" value="@form:actions" />
-                                    <ui:param name="height" value="250" />
-                                </ui:include>
-                            </ui:define>
-
-                            <ui:define name="footer">
-                                <ui:include src="/WEB-INF/components/core/base/pager-alt.xhtml" />
-                            </ui:define>
-
-                        </ui:decorate>
-                    </h:form>
-                </div>
-
-                <div class="col-12 md:col-6">
-                    <h:form>
-                        <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
-                            <ui:param name="title" value="Kakak Kepengasuhan" />
-                            <ui:param name="dataView" value="#{viewPage.kakakKepengasuhanList}" />
-                            <ui:param name="contentId" value="#{dataView.name}" />
-                            <ui:param name="pager" value="#{dataView.pager}" />
-                            <ui:param name="updateListener" value="@form" />
-
-                            <ui:define name="actions">
-                                <h:panelGroup id="actions" layout="block">
-                                    <ui:include src="/WEB-INF/components/core/base/crud-create.xhtml"/>
-                                    <ui:include src="/WEB-INF/components/core/base/crud-delete.xhtml"/>
-                                </h:panelGroup>
-                            </ui:define>
-
-                            <ui:define name="fields">
-                                <ui:include src="/WEB-INF/components/app/santri/kakakkepengasuhanlist.xhtml">
+                                <ui:include src="/WEB-INF/components/app/santri/pelaksanakepengasuhanlist.xhtml">
                                     <ui:param name="selectListener" value="@form:actions" />
                                     <ui:param name="height" value="250" />
                                 </ui:include>

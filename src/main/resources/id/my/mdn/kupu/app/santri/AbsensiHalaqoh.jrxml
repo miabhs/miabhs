@@ -1,28 +1,145 @@
-<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
-<jasperReport name="AbsensiHalaqoh" language="java" columnCount="1" pageWidth="595" pageHeight="842" orientation="Landscape" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" uuid="14d4be08-ec1f-43a0-ae81-763a166aa5a0">
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="Date1" class="java.time.LocalDate"/>
-	<parameter name="Date2" class="java.time.LocalDate"/>
-	<parameter name="Date3" class="java.time.LocalDate"/>
-	<parameter name="Date4" class="java.time.LocalDate"/>
-	<parameter name="Date5" class="java.time.LocalDate"/>
-	<parameter name="Date6" class="java.time.LocalDate"/>
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
+<jasperReport name="AbsensiHalaqoh" language="java" columnCount="1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" uuid="14d4be08-ec1f-43a0-ae81-763a166aa5a0">
+	<parameter name="P1" class="id.my.mdn.kupu.app.pengajaran.entity.PelaksanaanHalaqoh"/>
+	<parameter name="P2" class="id.my.mdn.kupu.app.pengajaran.entity.PelaksanaanHalaqoh"/>
+	<parameter name="P3" class="id.my.mdn.kupu.app.pengajaran.entity.PelaksanaanHalaqoh"/>
+	<parameter name="P4" class="id.my.mdn.kupu.app.pengajaran.entity.PelaksanaanHalaqoh"/>
+	<parameter name="P5" class="id.my.mdn.kupu.app.pengajaran.entity.PelaksanaanHalaqoh"/>
+	<parameter name="P6" class="id.my.mdn.kupu.app.pengajaran.entity.PelaksanaanHalaqoh"/>
+	<parameter name="CatatanAbsensiHalaqoh" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="listCatatanAbsensiHalaqoh" class="java.util.List"/>
+	<parameter name="DetailCatatanAbsensiHalaqoh" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="KPPAbsensiHalaqoh" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="listKppHalaqoh" class="java.util.List"/>
+	<parameter name="periodePembelajaran" class="id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran"/>
+	<parameter name="prevPeriodePembelajaran" class="id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran"/>
+	<parameter name="pengampuName" class="java.lang.String"/>
+	<parameter name="jenisKitab" class="java.lang.String"/>
+	<parameter name="kelompokWaktu" class="java.lang.String"/>
 	<field name="santriId" class="java.lang.Long"/>
-	<field name="name" class="java.lang.String"/>
+	<field name="santriName" class="java.lang.String"/>
 	<field name="nis" class="java.lang.String"/>
 	<field name="tahunMasukName" class="java.lang.String"/>
 	<field name="bdas" class="java.lang.String"/>
+	<field name="bdasWarning" class="java.lang.Boolean"/>
 	<field name="nbdas" class="java.lang.String"/>
+	<field name="kitabKode" class="java.lang.String"/>
 	<field name="lamaBelajar" class="java.lang.Integer"/>
-	<title height="57"/>
+	<field name="k1" class="id.my.mdn.kupu.app.pengajaran.entity.Presensi"/>
+	<field name="s1" class="id.my.mdn.kupu.app.pengajaran.entity.NilaiSetoran"/>
+	<field name="k2" class="id.my.mdn.kupu.app.pengajaran.entity.Presensi"/>
+	<field name="s2" class="id.my.mdn.kupu.app.pengajaran.entity.NilaiSetoran"/>
+	<field name="k3" class="id.my.mdn.kupu.app.pengajaran.entity.Presensi"/>
+	<field name="s3" class="id.my.mdn.kupu.app.pengajaran.entity.NilaiSetoran"/>
+	<field name="k4" class="id.my.mdn.kupu.app.pengajaran.entity.Presensi"/>
+	<field name="s4" class="id.my.mdn.kupu.app.pengajaran.entity.NilaiSetoran"/>
+	<field name="k5" class="id.my.mdn.kupu.app.pengajaran.entity.Presensi"/>
+	<field name="s5" class="id.my.mdn.kupu.app.pengajaran.entity.NilaiSetoran"/>
+	<field name="k6" class="id.my.mdn.kupu.app.pengajaran.entity.Presensi"/>
+	<field name="s6" class="id.my.mdn.kupu.app.pengajaran.entity.NilaiSetoran"/>
+	<field name="nasehat" class="java.lang.Boolean"/>
+	<title height="139">
+		<element kind="frame" uuid="2285b2c4-bc7f-46d0-b021-ffe0c83def3e" x="0" y="0" width="540" height="40">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<element kind="staticText" uuid="85f36915-97c9-4393-9cd7-e5872756b58f" x="0" y="0" width="540" height="20" fontName="Roboto" fontSize="11.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[ABSENSI SETORAN HALAQOH SANTRI]]></text>
+			</element>
+			<element kind="staticText" uuid="a1966525-5ca4-4d53-a55b-a1b97eb6fade" x="0" y="20" width="540" height="20" fontName="Roboto" fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[DALAM TAHAPAN PROSES PEMBELAJARAN DAN KEPENGASUHAN KHUSUS]]></text>
+			</element>
+		</element>
+		<element kind="frame" uuid="955d0112-655f-490e-acea-590589422fcf" stretchType="ContainerHeight" x="0" y="52" width="540" height="87">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<element kind="frame" uuid="5b094184-d347-4943-89b4-c8666ebfe5b3" x="0" y="0" width="540" height="24">
+				<element kind="staticText" uuid="3cf1f273-ec4c-4cd9-b67a-34e25733f87a" x="0" y="3" width="140" height="18" fontName="Roboto" fontSize="9.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+					<text><![CDATA[Jenis Kitab Halaqoh]]></text>
+					<box topPadding="4" leftPadding="4" bottomPadding="0" rightPadding="4"/>
+				</element>
+				<element kind="staticText" uuid="759cfd06-3bc0-4db7-a2c6-9322cb1e653a" x="140" y="3" width="9" height="18" fontName="Roboto" fontSize="9.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+					<text><![CDATA[:]]></text>
+					<box topPadding="4"/>
+				</element>
+				<element kind="frame" uuid="39c131a5-d39a-483b-9c3b-d0231d804843" x="149" y="0" width="390" height="24">
+					<element kind="textField" uuid="42995402-26c5-4a94-a7a2-b31e109a36f7" x="0" y="0" width="390" height="24" fontName="Amiri" fontSize="11.0" textAdjust="ScaleFont" bold="true">
+						<expression><![CDATA[$P{jenisKitab}]]></expression>
+						<box topPadding="4" leftPadding="4"/>
+					</element>
+				</element>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<element kind="frame" uuid="35968939-ba19-4fc0-9a92-a4ff15ec7770" x="0" y="24" width="540" height="21">
+				<element kind="staticText" uuid="50059457-f6ae-46f7-a389-393454514cb9" x="0" y="1" width="140" height="18" fontName="Roboto" fontSize="9.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+					<text><![CDATA[Pengampu Halaqoh]]></text>
+					<box topPadding="4" leftPadding="4"/>
+				</element>
+				<element kind="staticText" uuid="2a62ef77-525e-46a3-a15e-b4eb7e5bc3ee" x="140" y="1" width="9" height="18" fontName="Roboto" fontSize="9.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+					<text><![CDATA[:]]></text>
+					<box topPadding="4" leftPadding="0"/>
+				</element>
+				<element kind="frame" uuid="fbf4f70c-6caf-42d8-b4d1-869155ad5ab7" x="149" y="1" width="390" height="18">
+					<element kind="textField" uuid="5de610b2-ac1a-465a-bbd0-aea2bee84fba" x="0" y="0" width="390" height="18" fontName="Roboto" fontSize="9.0" textAdjust="StretchHeight">
+						<expression><![CDATA[$P{pengampuName}]]></expression>
+						<box topPadding="4" leftPadding="4"/>
+					</element>
+				</element>
+				<box>
+					<topPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<element kind="frame" uuid="431054ce-26b8-4981-b03f-9872421be513" x="0" y="45" width="540" height="21">
+				<element kind="staticText" uuid="f8a4235d-fff4-4b02-949a-ca84b9d4058f" x="0" y="1" width="140" height="18" fontName="Roboto" fontSize="9.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+					<text><![CDATA[Kelompok Halaqoh Pembelajaran]]></text>
+					<box topPadding="4" leftPadding="4"/>
+				</element>
+				<element kind="staticText" uuid="60c5f236-e1fe-4ebf-b864-027040d6fb5f" x="140" y="1" width="9" height="18" fontName="Roboto" fontSize="9.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+					<text><![CDATA[:]]></text>
+					<box topPadding="4" leftPadding="0"/>
+				</element>
+				<element kind="frame" uuid="218525da-04cb-44d9-8c1d-d2e9bcd29015" x="149" y="1" width="390" height="18">
+					<element kind="textField" uuid="e069884c-08b2-4aee-ad4c-10cad52b3798" x="0" y="0" width="390" height="18" fontName="Roboto" fontSize="9.0" textAdjust="StretchHeight">
+						<expression><![CDATA[$P{kelompokWaktu}]]></expression>
+						<box topPadding="4" leftPadding="4"/>
+					</element>
+				</element>
+				<box>
+					<topPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<element kind="frame" uuid="4522ad03-9333-461e-8161-e4c3b183ead8" stretchType="ElementGroupHeight" x="0" y="66" width="540" height="21">
+				<element kind="frame" uuid="db69481d-806e-4211-b278-116b827aca10" stretchType="ElementGroupHeight" x="149" y="1" width="390" height="18">
+					<element kind="subreport" uuid="f02494db-ed30-4438-bc4b-30aa51d7d470" x="0" y="0" width="390" height="18">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{listKppHalaqoh})]]></dataSourceExpression>
+						<expression><![CDATA[$P{KPPAbsensiHalaqoh}]]></expression>
+					</element>
+				</element>
+				<element kind="frame" uuid="d985993a-239c-44b3-ad7d-306b69d7d1d1" stretchType="ContainerHeight" x="0" y="1" width="149" height="18">
+					<element kind="staticText" uuid="9686d809-fe89-4e83-b0f3-4d6b867655ce" x="0" y="0" width="140" height="18" fontName="Roboto" fontSize="9.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+						<text><![CDATA[Ustadz KPP Umum]]></text>
+						<box topPadding="4" leftPadding="4"/>
+					</element>
+					<element kind="staticText" uuid="537d5bff-a8bc-4232-a444-d8e963e50860" x="140" y="0" width="9" height="18" fontName="Roboto" fontSize="9.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+						<text><![CDATA[:]]></text>
+						<box topPadding="4" leftPadding="0"/>
+					</element>
+				</element>
+				<box>
+					<topPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<box>
+				<leftPen lineWidth="0.75"/>
+				<bottomPen lineWidth="0.75"/>
+				<rightPen lineWidth="0.75"/>
+			</box>
+		</element>
+	</title>
 	<columnHeader height="80">
 		<element kind="frame" uuid="2b55736a-d10a-4e04-bc4c-83fa6f0a20ab" x="0" y="0" width="540" height="80">
 			<element kind="frame" uuid="662c4ca7-554e-4311-917b-8f4252562b9d" x="0" y="0" width="20" height="80">
@@ -34,40 +151,41 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 			</element>
-			<element kind="frame" uuid="355886ce-d313-4d95-8778-823463f5138e" x="20" y="0" width="110" height="80">
+			<element kind="frame" uuid="355886ce-d313-4d95-8778-823463f5138e" x="20" y="0" width="100" height="80">
 				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-				<element kind="staticText" uuid="0436373a-28a9-4ca6-bfbc-0b287cff2e15" x="0" y="0" width="110" height="80" fontName="RobotoRoboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<element kind="staticText" uuid="0436373a-28a9-4ca6-bfbc-0b287cff2e15" x="0" y="0" width="100" height="80" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 					<text><![CDATA[Nama]]></text>
 				</element>
 				<box>
 					<rightPen lineWidth="0.75"/>
 				</box>
 			</element>
-			<element kind="frame" uuid="35d738ff-6577-4235-8c71-e001f13d2d6c" x="180" y="0" width="90" height="80">
-				<element kind="frame" uuid="30c4d006-4979-44d5-9b94-bc3911bfd2b8" x="0" y="0" width="90" height="60">
+			<element kind="frame" uuid="35d738ff-6577-4235-8c71-e001f13d2d6c" x="163" y="0" width="57" height="80">
+				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				<element kind="frame" uuid="30c4d006-4979-44d5-9b94-bc3911bfd2b8" x="0" y="0" width="57" height="40">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-					<element kind="staticText" uuid="45d942e1-1cdc-4f15-9271-40244a9ec497" x="0" y="0" width="90" height="60" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<element kind="staticText" uuid="45d942e1-1cdc-4f15-9271-40244a9ec497" x="0" y="0" width="57" height="40" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 						<text><![CDATA[Kepengasuhan Pekan Akhir]]></text>
 					</element>
 					<box>
 						<bottomPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="21d777b6-6dfc-47a9-9766-b94a1e670a39" x="0" y="60" width="90" height="20">
+				<element kind="frame" uuid="21d777b6-6dfc-47a9-9766-b94a1e670a39" x="0" y="40" width="57" height="40">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-					<element kind="frame" uuid="5674c344-d94d-4c4e-9674-cbb1b7996e79" x="0" y="0" width="45" height="20">
+					<element kind="frame" uuid="5674c344-d94d-4c4e-9674-cbb1b7996e79" x="0" y="0" width="29" height="40">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="staticText" uuid="ace05caa-60f2-47ce-a153-b55abef36965" x="0" y="0" width="45" height="20" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="staticText" uuid="ace05caa-60f2-47ce-a153-b55abef36965" x="0" y="0" width="29" height="40" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 							<text><![CDATA[BDAS]]></text>
 						</element>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="d614cda4-57b4-4761-ac9c-2350c43940c2" x="45" y="0" width="45" height="20">
+					<element kind="frame" uuid="d614cda4-57b4-4761-ac9c-2350c43940c2" x="29" y="0" width="28" height="40">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="staticText" uuid="972c9d33-08b8-4fd2-bfc5-f85b8a9d0630" x="0" y="0" width="45" height="20" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-							<text><![CDATA[NBDAS]]></text>
+						<element kind="staticText" uuid="972c9d33-08b8-4fd2-bfc5-f85b8a9d0630" x="0" y="0" width="28" height="40" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Non BDAS]]></text>
 						</element>
 					</element>
 				</element>
@@ -75,20 +193,20 @@
 					<rightPen lineWidth="0.75"/>
 				</box>
 			</element>
-			<element kind="frame" uuid="9f9e110e-e1f7-4c5c-a7fe-2e3e4c5f8c69" x="270" y="0" width="30" height="80">
+			<element kind="frame" uuid="9f9e110e-e1f7-4c5c-a7fe-2e3e4c5f8c69" x="250" y="0" width="23" height="80">
 				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-				<element kind="staticText" uuid="7be7f03f-1254-489c-b6d4-c21b6319ffe8" x="0" y="0" width="30" height="80" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-					<text><![CDATA[NSHT]]></text>
+				<element kind="staticText" uuid="7be7f03f-1254-489c-b6d4-c21b6319ffe8" x="0" y="0" width="23" height="80" rotation="Left" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Nasehat]]></text>
 				</element>
 				<box>
 					<rightPen lineWidth="0.75"/>
 				</box>
 			</element>
-			<element kind="frame" uuid="c4fb8552-0f46-44ea-bb64-7938c5d01a04" x="300" y="0" width="240" height="80">
+			<element kind="frame" uuid="c4fb8552-0f46-44ea-bb64-7938c5d01a04" x="273" y="0" width="267" height="80">
 				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-				<element kind="frame" uuid="2db8b036-0239-4cae-927c-1f92125472d7" x="0" y="0" width="240" height="16">
+				<element kind="frame" uuid="2db8b036-0239-4cae-927c-1f92125472d7" x="0" y="0" width="267" height="16">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-					<element kind="staticText" uuid="48056668-45e6-4b52-9acc-59664ef5308b" x="0" y="0" width="240" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<element kind="staticText" uuid="48056668-45e6-4b52-9acc-59664ef5308b" x="0" y="0" width="267" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 						<text><![CDATA[Tanggal Setoran Halaqoh]]></text>
 						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
 					</element>
@@ -96,125 +214,127 @@
 						<bottomPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="ae61884d-11ef-423b-89e1-0ed9044ce343" x="0" y="16" width="240" height="16">
+				<element kind="frame" uuid="ae61884d-11ef-423b-89e1-0ed9044ce343" x="0" y="16" width="267" height="16">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-					<element kind="frame" uuid="48dae9c3-ff9c-4196-ac28-2dd9a9fcfa7f" x="0" y="0" width="40" height="16">
+					<element kind="frame" uuid="48dae9c3-ff9c-4196-ac28-2dd9a9fcfa7f" x="0" y="0" width="47" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="textField" uuid="0db58a95-456e-436f-9561-245d9bc0bd9d" x="0" y="0" width="40" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yyyy" bold="true" hTextAlign="Center" vTextAlign="Middle">
-							<expression><![CDATA[$P{Date1}]]></expression>
+						<element kind="textField" uuid="0db58a95-456e-436f-9561-245d9bc0bd9d" x="0" y="0" width="47" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yy" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[new java.util.Date($P{P1}.getPengajaranDate().atStartOfDay().toInstant(java.time.ZoneOffset.of("+7")).toEpochMilli())]]></expression>
 						</element>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="9280bebf-4234-4172-8178-f7ae82d84840" x="40" y="0" width="40" height="16">
+					<element kind="frame" uuid="9280bebf-4234-4172-8178-f7ae82d84840" x="47" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="textField" uuid="63df0f20-b312-4344-8ff5-9fc8bb0c28e3" x="0" y="0" width="40" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yyyy" bold="true" hTextAlign="Center" vTextAlign="Middle">
-							<expression><![CDATA[$P{Date2}]]></expression>
+						<element kind="textField" uuid="63df0f20-b312-4344-8ff5-9fc8bb0c28e3" x="0" y="0" width="44" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yy" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[new java.util.Date($P{P2}.getPengajaranDate().atStartOfDay().toInstant(java.time.ZoneOffset.of("+7")).toEpochMilli())]]></expression>
 						</element>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="4b6da723-41f7-4e27-9842-f169c66b7493" x="80" y="0" width="40" height="16">
+					<element kind="frame" uuid="4b6da723-41f7-4e27-9842-f169c66b7493" x="91" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="textField" uuid="603c3826-706a-429f-925a-295dc734cf5e" x="0" y="0" width="40" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yyyy" bold="true" hTextAlign="Center" vTextAlign="Middle">
-							<expression><![CDATA[$P{Date3}]]></expression>
+						<element kind="textField" uuid="603c3826-706a-429f-925a-295dc734cf5e" x="0" y="0" width="44" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yy" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[new java.util.Date($P{P3}.getPengajaranDate().atStartOfDay().toInstant(java.time.ZoneOffset.of("+7")).toEpochMilli())]]></expression>
 						</element>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="e7d46fb1-605d-4524-86f9-690cb2bf401a" x="120" y="0" width="40" height="16">
+					<element kind="frame" uuid="e7d46fb1-605d-4524-86f9-690cb2bf401a" x="135" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="textField" uuid="72f4b71e-3c25-4a90-b312-523121c73c81" x="0" y="0" width="40" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yyyy" bold="true" hTextAlign="Center" vTextAlign="Middle">
-							<expression><![CDATA[$P{Date4}]]></expression>
+						<element kind="textField" uuid="72f4b71e-3c25-4a90-b312-523121c73c81" x="0" y="0" width="44" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yy" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[new java.util.Date($P{P4}.getPengajaranDate().atStartOfDay().toInstant(java.time.ZoneOffset.of("+7")).toEpochMilli())]]></expression>
 						</element>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="4f9e7020-92c5-468b-bdee-a8981bf6c1e9" x="160" y="0" width="40" height="16">
+					<element kind="frame" uuid="4f9e7020-92c5-468b-bdee-a8981bf6c1e9" x="179" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="textField" uuid="aa19742e-a5b7-4a37-905b-4602e3e29aae" x="0" y="0" width="40" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yyyy" bold="true" hTextAlign="Center" vTextAlign="Middle">
-							<expression><![CDATA[$P{Date5}]]></expression>
+						<element kind="textField" uuid="aa19742e-a5b7-4a37-905b-4602e3e29aae" x="0" y="0" width="44" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yy" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[new java.util.Date($P{P5}.getPengajaranDate().atStartOfDay().toInstant(java.time.ZoneOffset.of("+7")).toEpochMilli())]]></expression>
 						</element>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="28314f69-1baa-494a-9db5-402bc825de93" x="200" y="0" width="40" height="16">
+					<element kind="frame" uuid="28314f69-1baa-494a-9db5-402bc825de93" x="223" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="textField" uuid="7f0660d1-ddb0-4cff-b432-502e1c57de14" x="0" y="0" width="40" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yyyy" bold="true" hTextAlign="Center" vTextAlign="Middle">
-							<expression><![CDATA[$P{Date6}]]></expression>
+						<element kind="textField" uuid="7f0660d1-ddb0-4cff-b432-502e1c57de14" x="0" y="0" width="44" height="16" fontName="Roboto" fontSize="8.0" pattern="dd-MM-yy" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[new java.util.Date($P{P6}.getPengajaranDate().atStartOfDay().toInstant(java.time.ZoneOffset.of("+7")).toEpochMilli())]]></expression>
 						</element>
 					</element>
 					<box>
 						<bottomPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="3c9cc4bc-d1a7-4724-9be9-e3d2814f9cca" x="0" y="32" width="240" height="16">
+				<element kind="frame" uuid="3c9cc4bc-d1a7-4724-9be9-e3d2814f9cca" x="0" y="32" width="267" height="16">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-					<element kind="staticText" uuid="23fe32e3-ca6b-4610-82bb-137824a8bb23" x="0" y="0" width="240" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<element kind="staticText" uuid="23fe32e3-ca6b-4610-82bb-137824a8bb23" x="0" y="0" width="267" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 						<text><![CDATA[Jam Mulai - Selesai Mengajar]]></text>
 					</element>
 					<box>
 						<bottomPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="4cbb8327-f573-4308-8b23-3fe5f040101e" x="0" y="48" width="240" height="16">
+				<element kind="frame" uuid="4cbb8327-f573-4308-8b23-3fe5f040101e" x="0" y="48" width="267" height="16">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-					<element kind="frame" uuid="7b29a130-30d9-48d6-bc98-06ac3566a8ad" x="0" y="0" width="40" height="16">
+					<element kind="frame" uuid="7b29a130-30d9-48d6-bc98-06ac3566a8ad" x="0" y="0" width="47" height="16">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="42f887e7-eb11-4249-8785-220104cc3b07" x="47" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="42f887e7-eb11-4249-8785-220104cc3b07" x="40" y="0" width="40" height="16">
+					<element kind="frame" uuid="ea45ce08-1c42-4af0-90ab-9c9903491ed5" x="91" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="ea45ce08-1c42-4af0-90ab-9c9903491ed5" x="80" y="0" width="40" height="16">
+					<element kind="frame" uuid="91a31d77-596f-48f8-a7f5-c4731b5cb660" x="135" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="91a31d77-596f-48f8-a7f5-c4731b5cb660" x="120" y="0" width="40" height="16">
+					<element kind="frame" uuid="9915f445-81c5-4530-90f9-45a57e37f5ee" x="179" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 						<box>
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="9915f445-81c5-4530-90f9-45a57e37f5ee" x="160" y="0" width="40" height="16">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="d461d3c7-3b48-4418-8597-8d70d287a72b" x="200" y="0" width="40" height="16">
+					<element kind="frame" uuid="d461d3c7-3b48-4418-8597-8d70d287a72b" x="223" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
 					</element>
 					<box>
 						<bottomPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="7ea55c6d-5e34-48f8-b2cb-434bee701778" x="0" y="64" width="240" height="16">
+				<element kind="frame" uuid="7ea55c6d-5e34-48f8-b2cb-434bee701778" x="0" y="64" width="267" height="16">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-					<element kind="frame" uuid="e7b6a97a-b4c0-4f0c-bf08-456402cb4956" x="0" y="0" width="40" height="16">
+					<element kind="frame" uuid="e7b6a97a-b4c0-4f0c-bf08-456402cb4956" x="0" y="0" width="47" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<element kind="frame" uuid="d8e1e4da-17b7-4e63-bf16-13289b81735b" x="0" y="0" width="20" height="16">
-							<element kind="staticText" uuid="33f10875-7357-47b2-a37b-fd7fe91de636" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="d8e1e4da-17b7-4e63-bf16-13289b81735b" x="0" y="0" width="24" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="33f10875-7357-47b2-a37b-fd7fe91de636" x="0" y="0" width="24" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[K]]></text>
 							</element>
 							<box>
 								<rightPen lineWidth="0.75"/>
 							</box>
 						</element>
-						<element kind="frame" uuid="0eed4398-26cd-4e5a-9f7d-7243d3e76050" x="20" y="0" width="20" height="16">
-							<element kind="staticText" uuid="1ac398f1-ba11-416c-aa11-d100eecf642c" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="0eed4398-26cd-4e5a-9f7d-7243d3e76050" x="24" y="0" width="23" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="1ac398f1-ba11-416c-aa11-d100eecf642c" x="0" y="0" width="23" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[S]]></text>
 							</element>
 						</element>
@@ -222,18 +342,20 @@
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="5d956d68-17ac-429a-9070-618c14aab6ba" x="40" y="0" width="40" height="16">
+					<element kind="frame" uuid="5d956d68-17ac-429a-9070-618c14aab6ba" x="47" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<element kind="frame" uuid="d73d3158-8983-4c6d-9eb5-1865220ece69" x="0" y="0" width="20" height="16">
-							<element kind="staticText" uuid="210162f6-bc5c-401c-8eb2-a7897117e58f" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="d73d3158-8983-4c6d-9eb5-1865220ece69" x="0" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="210162f6-bc5c-401c-8eb2-a7897117e58f" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[K]]></text>
 							</element>
 							<box>
 								<rightPen lineWidth="0.75"/>
 							</box>
 						</element>
-						<element kind="frame" uuid="ae708747-5c24-4ac5-81ae-bda8564f137d" x="20" y="0" width="20" height="16">
-							<element kind="staticText" uuid="29bebed9-c5be-4b0c-b99e-7f372893a316" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="ae708747-5c24-4ac5-81ae-bda8564f137d" x="22" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="29bebed9-c5be-4b0c-b99e-7f372893a316" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[S]]></text>
 							</element>
 						</element>
@@ -241,17 +363,18 @@
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="fcafa9ef-092d-4a96-9ea8-94cc4ef9d6a1" x="80" y="0" width="40" height="16">
+					<element kind="frame" uuid="fcafa9ef-092d-4a96-9ea8-94cc4ef9d6a1" x="91" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<element kind="frame" uuid="bfc6a25f-a64d-40ac-a61a-470564a43712" x="0" y="0" width="20" height="16">
-							<element kind="staticText" uuid="894a52a3-9f13-4e27-9227-0645ab6aaf55" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="bfc6a25f-a64d-40ac-a61a-470564a43712" x="0" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="894a52a3-9f13-4e27-9227-0645ab6aaf55" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[K]]></text>
 							</element>
 							<box>
 								<rightPen lineWidth="0.75"/>
 							</box>
 						</element>
-						<element kind="frame" uuid="456a985d-5fed-469b-9251-e44dc8567134" x="20" y="0" width="20" height="16">
+						<element kind="frame" uuid="456a985d-5fed-469b-9251-e44dc8567134" x="22" y="0" width="22" height="16">
 							<element kind="staticText" uuid="e50a3be4-f729-47bc-bf6f-e2ea916df6a6" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[S]]></text>
 							</element>
@@ -260,18 +383,20 @@
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="80f78ec1-743b-4641-a6aa-94da156d232d" x="120" y="0" width="40" height="16">
+					<element kind="frame" uuid="80f78ec1-743b-4641-a6aa-94da156d232d" x="135" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<element kind="frame" uuid="7a5da199-ee46-4113-9002-2eeab204f8fe" x="0" y="0" width="20" height="16">
-							<element kind="staticText" uuid="cc3a1386-af66-474c-8ac6-a3eb481b5000" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="7a5da199-ee46-4113-9002-2eeab204f8fe" x="0" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="cc3a1386-af66-474c-8ac6-a3eb481b5000" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[K]]></text>
 							</element>
 							<box>
 								<rightPen lineWidth="0.75"/>
 							</box>
 						</element>
-						<element kind="frame" uuid="52b89bfd-915e-4421-acf2-37af060f93ea" x="20" y="0" width="20" height="16">
-							<element kind="staticText" uuid="d4fda5da-6b42-4be8-8825-ea7098e9b9f1" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="52b89bfd-915e-4421-acf2-37af060f93ea" x="22" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="d4fda5da-6b42-4be8-8825-ea7098e9b9f1" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[S]]></text>
 							</element>
 						</element>
@@ -279,18 +404,20 @@
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="0a2a443d-ef98-4921-9cc9-7f9128df6975" x="160" y="0" width="40" height="16">
+					<element kind="frame" uuid="0a2a443d-ef98-4921-9cc9-7f9128df6975" x="179" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<element kind="frame" uuid="c3c7d1dc-47d0-4342-b71f-e5c40187e99f" x="0" y="0" width="20" height="16">
-							<element kind="staticText" uuid="c47e2543-3bb7-4e5c-9df7-08d19df3d131" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="c3c7d1dc-47d0-4342-b71f-e5c40187e99f" x="0" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="c47e2543-3bb7-4e5c-9df7-08d19df3d131" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[K]]></text>
 							</element>
 							<box>
 								<rightPen lineWidth="0.75"/>
 							</box>
 						</element>
-						<element kind="frame" uuid="d600ad80-d217-4944-973a-a101c55eaf55" x="20" y="0" width="20" height="16">
-							<element kind="staticText" uuid="c574b3ae-cb5a-4e35-b634-a81bcb41ad79" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="d600ad80-d217-4944-973a-a101c55eaf55" x="22" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="c574b3ae-cb5a-4e35-b634-a81bcb41ad79" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[S]]></text>
 							</element>
 						</element>
@@ -298,28 +425,39 @@
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="fdbae867-c861-497d-b84e-48abbb7293b3" x="200" y="0" width="40" height="16">
+					<element kind="frame" uuid="fdbae867-c861-497d-b84e-48abbb7293b3" x="223" y="0" width="44" height="16">
 						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<element kind="frame" uuid="2b4a8f58-bc33-4f15-aa48-43d861bd8d80" x="0" y="0" width="20" height="16">
-							<element kind="staticText" uuid="16b5bdf1-342c-4bbf-b8cd-13c2330a66ec" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="2b4a8f58-bc33-4f15-aa48-43d861bd8d80" x="0" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="16b5bdf1-342c-4bbf-b8cd-13c2330a66ec" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[K]]></text>
 							</element>
 							<box>
 								<rightPen lineWidth="0.75"/>
 							</box>
 						</element>
-						<element kind="frame" uuid="8d8f06f2-a6e6-4361-a569-ad495b106eef" x="20" y="0" width="20" height="16">
-							<element kind="staticText" uuid="3754cf13-2815-4f98-a467-248dd039f0da" x="0" y="0" width="20" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+						<element kind="frame" uuid="8d8f06f2-a6e6-4361-a569-ad495b106eef" x="22" y="0" width="22" height="16">
+							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+							<element kind="staticText" uuid="3754cf13-2815-4f98-a467-248dd039f0da" x="0" y="0" width="22" height="16" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 								<text><![CDATA[S]]></text>
 							</element>
 						</element>
 					</element>
 				</element>
 			</element>
-			<element kind="frame" uuid="2ccc86c0-ec24-40be-a65a-16aea8b2a2ed" x="130" y="0" width="50" height="80">
+			<element kind="frame" uuid="2ccc86c0-ec24-40be-a65a-16aea8b2a2ed" x="120" y="0" width="43" height="80">
 				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-				<element kind="staticText" uuid="e32564f9-77a5-4605-89bc-4e621380db66" x="0" y="0" width="50" height="80" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-					<text><![CDATA[Thn Masuk / Lama Belajar]]></text>
+				<element kind="staticText" uuid="e32564f9-77a5-4605-89bc-4e621380db66" x="0" y="0" width="43" height="80" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Tahun Masuk    dan     Lama Belajar]]></text>
+				</element>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<element kind="frame" uuid="3e0c63d1-b98c-40a8-b952-f466c1970535" x="220" y="0" width="29" height="80">
+				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				<element kind="staticText" uuid="be5edf0e-e206-4a72-aa9f-b39e86c771bb" x="0" y="0" width="29" height="80" rotation="None" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Kode Kitab]]></text>
 				</element>
 				<box>
 					<rightPen lineWidth="0.75"/>
@@ -345,39 +483,45 @@
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="d55cf696-059c-4813-bf1a-dd91c5d555a8" x="20" y="0" width="110" height="20">
+				<element kind="frame" uuid="d55cf696-059c-4813-bf1a-dd91c5d555a8" x="20" y="0" width="100" height="20">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-					<element kind="textField" uuid="ca9d6508-0241-42e4-bead-33397e69a1cd" x="0" y="0" width="106" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Left" vTextAlign="Middle">
-						<expression><![CDATA[$F{name}]]></expression>
+					<element kind="textField" uuid="ca9d6508-0241-42e4-bead-33397e69a1cd" x="0" y="0" width="96" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Left" vTextAlign="Middle">
+						<expression><![CDATA[$F{santriName}]]></expression>
 					</element>
 					<box leftPadding="2" rightPadding="2">
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="9612af31-3441-476b-b8fc-be7c10ffba99" x="130" y="0" width="50" height="20">
+				<element kind="frame" uuid="9612af31-3441-476b-b8fc-be7c10ffba99" x="120" y="0" width="43" height="20">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-					<element kind="textField" uuid="a307b374-749e-4ce6-b3e2-cf62894b3370" x="0" y="0" width="46" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+					<element kind="textField" uuid="a307b374-749e-4ce6-b3e2-cf62894b3370" x="0" y="0" width="39" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
 						<expression><![CDATA[$F{tahunMasukName} + " / " + $F{lamaBelajar} ]]></expression>
 					</element>
 					<box leftPadding="2" rightPadding="2">
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="d91d7c99-cbdc-4bd2-9b36-e1089fbd9a88" x="180" y="0" width="90" height="20">
+				<element kind="frame" uuid="d91d7c99-cbdc-4bd2-9b36-e1089fbd9a88" x="163" y="0" width="57" height="20">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-					<element kind="frame" uuid="4e081399-d47c-4569-a8b8-4a6edf6f214e" x="0" y="0" width="45" height="20">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="textField" uuid="0cdbbc75-e990-4666-83cd-106db8fa9e14" x="0" y="0" width="41" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+					<element kind="frame" uuid="4e081399-d47c-4569-a8b8-4a6edf6f214e" x="0" y="0" width="29" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+						<element kind="textField" uuid="0cdbbc75-e990-4666-83cd-106db8fa9e14" x="0" y="0" width="24" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[$F{bdasWarning}.equals( Boolean.FALSE )]]></printWhenExpression>
 							<expression><![CDATA[$F{bdas}]]></expression>
+							<box leftPadding="0" rightPadding="0"/>
+						</element>
+						<element kind="textField" uuid="f1339684-dcd2-4682-9f45-5cf9a8c7a0dd" x="0" y="0" width="24" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[$F{bdasWarning}.equals( Boolean.TRUE )]]></printWhenExpression>
+							<expression><![CDATA[$F{bdas} + "*"]]></expression>
 							<box leftPadding="0" rightPadding="0"/>
 						</element>
 						<box leftPadding="2" rightPadding="2">
 							<rightPen lineWidth="0.75"/>
 						</box>
 					</element>
-					<element kind="frame" uuid="7db4fb1f-b60b-4b43-8888-624a928c0ad3" x="45" y="0" width="45" height="20">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-						<element kind="textField" uuid="184ea01d-0323-4105-b09a-396863a7ac88" x="0" y="0" width="41" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+					<element kind="frame" uuid="7db4fb1f-b60b-4b43-8888-624a928c0ad3" x="29" y="0" width="28" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="184ea01d-0323-4105-b09a-396863a7ac88" x="0" y="0" width="24" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
 							<expression><![CDATA[$F{nbdas}]]></expression>
 							<box leftPadding="2" rightPadding="2"/>
 						</element>
@@ -387,76 +531,164 @@
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="0e6fe684-c7c7-48e1-b79d-312600844e5a" x="270" y="0" width="30" height="20">
-					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				<element kind="frame" uuid="0e6fe684-c7c7-48e1-b79d-312600844e5a" x="250" y="0" width="23" height="20">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+					<element kind="staticText" uuid="e40ed300-adc6-489f-912b-1e856af8d11a" x="0" y="0" width="23" height="20" fontName="Roboto" fontSize="8.0" hTextAlign="Center" vTextAlign="Middle">
+						<printWhenExpression><![CDATA[$F{nasehat}.equals( true )]]></printWhenExpression>
+						<text><![CDATA[V]]></text>
+						<box leftPadding="2" rightPadding="2"/>
+					</element>
 					<box>
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="e043b340-92f3-4734-9e47-be5b91fb2944" x="300" y="0" width="240" height="20">
+				<element kind="frame" uuid="e043b340-92f3-4734-9e47-be5b91fb2944" x="273" y="0" width="267" height="20">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+					<element kind="frame" uuid="a72c0153-e7bb-4fab-8206-3330a9b36d74" x="0" y="0" width="24" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="6844616a-e99f-44d4-bd1d-fd8488186634" x="0" y="0" width="24" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{k1}.getAbbr().equals( "H" )]]></printWhenExpression>
+							<expression><![CDATA[$F{k1}.getAbbr()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="18af9e80-a1ad-413e-9940-c20ab311d0b9" x="24" y="0" width="23" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="04fcf85f-f7ae-4936-ad9b-186e61dd6771" x="0" y="0" width="23" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{s1}.name().equals( "E" )]]></printWhenExpression>
+							<expression><![CDATA[$F{s1}.name()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="a5c8bd77-c6ea-432c-a72a-a6dc31ac8050" x="47" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="b517be42-6501-4a8d-9b91-37322fe511e5" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{k2}.getAbbr().equals( "H" )]]></printWhenExpression>
+							<expression><![CDATA[$F{k2}.getAbbr()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="ef65d226-aa09-4d44-bc5c-f7b53e6d7d6d" x="69" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="23901657-9a9d-4616-8581-e24cef08f168" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{s2}.name().equals( "E" )]]></printWhenExpression>
+							<expression><![CDATA[$F{s2}.name()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<pen lineWidth="0.75"/>
+							<topPen lineWidth="0.0"/>
+							<leftPen lineWidth="0.0"/>
+							<bottomPen lineWidth="0.0"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="247d5f00-abfa-4104-8bcd-877a53333b78" x="91" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="4b7f90bf-979d-4f22-aafe-814d75642f82" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{k3}.getAbbr().equals( "H" )]]></printWhenExpression>
+							<expression><![CDATA[$F{k3}.getAbbr()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="e801350b-8fc3-4cae-8977-ab3b5ced8854" x="113" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="2c816269-9211-43d3-a79d-de5fa69db391" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{s3}.name().equals( "E" )]]></printWhenExpression>
+							<expression><![CDATA[$F{s3}.name()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="5ba799c8-d4a8-42f1-8f68-0e7223ba730c" x="135" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="affdc52e-4253-478c-9b91-8a46d21f02ab" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{k4}.getAbbr().equals( "H" )]]></printWhenExpression>
+							<expression><![CDATA[$F{k4}.getAbbr()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="62ecfdf0-06a4-4655-8dd0-e758de64263d" x="157" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="db84536e-1a7d-49f8-8c54-c45b93916a65" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{s4}.name().equals( "E" )]]></printWhenExpression>
+							<expression><![CDATA[$F{s4}.name()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="ef7bf590-b04b-4379-a2a0-f263de9200cd" x="179" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="50c7128a-a9e1-4f36-802c-73c10c7470e3" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{k5}.getAbbr().equals( "H" )]]></printWhenExpression>
+							<expression><![CDATA[$F{k5}.getAbbr()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="5a65027f-f2db-4f41-92b9-159d92b11972" x="201" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="199b67eb-e80a-4c00-8601-f0b42afbbd5a" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{s5}.name().equals( "E" )]]></printWhenExpression>
+							<expression><![CDATA[$F{s5}.name()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<pen lineWidth="0.75"/>
+							<topPen lineWidth="0.0"/>
+							<leftPen lineWidth="0.0"/>
+							<bottomPen lineWidth="0.0"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="b4cd1638-aca5-4f68-857a-971040a12321" x="223" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="d64c80e4-3996-4be9-97dd-0650e00a6b53" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{k6}.getAbbr().equals( "H" )]]></printWhenExpression>
+							<expression><![CDATA[$F{k6}.getAbbr()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+						<box>
+							<rightPen lineWidth="0.75"/>
+						</box>
+					</element>
+					<element kind="frame" uuid="702b1670-989e-4c14-8b03-9c8d98357b90" x="245" y="0" width="22" height="20">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+						<element kind="textField" uuid="08cba7ba-641c-4f50-a699-99a2a84a2860" x="0" y="0" width="22" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+							<printWhenExpression><![CDATA[!$F{s6}.name().equals( "E" )]]></printWhenExpression>
+							<expression><![CDATA[$F{s6}.name()]]></expression>
+							<box leftPadding="2" rightPadding="2"/>
+						</element>
+					</element>
+				</element>
+				<element kind="frame" uuid="d4b62420-23c9-4acf-b1a4-7e9f297fbe4e" x="220" y="0" width="29" height="20">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-					<element kind="frame" uuid="a72c0153-e7bb-4fab-8206-3330a9b36d74" x="0" y="0" width="20" height="20">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
+					<element kind="textField" uuid="107b12b2-2abb-43d9-97ee-970434ddbb55" x="0" y="0" width="25" height="20" fontName="Roboto" fontSize="8.0" textAdjust="StretchHeight" hTextAlign="Center" vTextAlign="Middle">
+						<expression><![CDATA[$F{kitabKode}]]></expression>
+						<box leftPadding="2" rightPadding="2"/>
 					</element>
-					<element kind="frame" uuid="18af9e80-a1ad-413e-9940-c20ab311d0b9" x="20" y="0" width="20" height="20">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="a5c8bd77-c6ea-432c-a72a-a6dc31ac8050" x="40" y="0" width="20" height="20">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="ef65d226-aa09-4d44-bc5c-f7b53e6d7d6d" x="60" y="0" width="20" height="20">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<box>
-							<pen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="247d5f00-abfa-4104-8bcd-877a53333b78" x="80" y="0" width="20" height="20">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="e801350b-8fc3-4cae-8977-ab3b5ced8854" x="100" y="0" width="20" height="20">
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="5ba799c8-d4a8-42f1-8f68-0e7223ba730c" x="120" y="0" width="20" height="20">
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="62ecfdf0-06a4-4655-8dd0-e758de64263d" x="140" y="0" width="20" height="20">
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="ef7bf590-b04b-4379-a2a0-f263de9200cd" x="160" y="0" width="20" height="20">
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="5a65027f-f2db-4f41-92b9-159d92b11972" x="180" y="0" width="20" height="20">
-						<box>
-							<pen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="b4cd1638-aca5-4f68-857a-971040a12321" x="200" y="0" width="20" height="20">
-						<box>
-							<rightPen lineWidth="0.75"/>
-						</box>
-					</element>
-					<element kind="frame" uuid="702b1670-989e-4c14-8b03-9c8d98357b90" x="220" y="0" width="20" height="20"/>
+					<box leftPadding="2" rightPadding="2">
+						<rightPen lineWidth="0.75"/>
+					</box>
 				</element>
 				<box>
 					<leftPen lineWidth="0.75"/>
@@ -466,5 +698,57 @@
 			</element>
 		</band>
 	</detail>
-	<lastPageFooter height="50"/>
+	<lastPageFooter height="85">
+		<element kind="frame" uuid="bf8a34e2-fe14-4485-a4d2-ee912518346b" stretchType="NoStretch" x="-1" y="0" width="540" height="85" removeLineWhenBlank="true">
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="ShowOutOfBoundContent" value="false"/>
+			<element kind="frame" uuid="bdc059a5-0a4a-46b3-a072-62ed6e123dd5" x="0" y="0" width="420" height="85" removeLineWhenBlank="true">
+				<element kind="staticText" uuid="27f24d75-0f53-4a32-beed-c4a750d98c0e" x="4" y="0" width="170" height="20" fontName="Roboto" fontSize="8.0" bold="true" vTextAlign="Middle">
+					<text><![CDATA[Catatan Proses Pembelajaran Santri]]></text>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</element>
+				<box>
+					<rightPen lineWidth="0.75"/>
+				</box>
+			</element>
+			<element kind="frame" uuid="988ce635-eb47-45d2-bb2e-ecb3a06e9d62" x="420" y="0" width="119" height="85">
+				<element kind="staticText" uuid="0bed13db-1e65-4e61-a926-71b343a2f1f4" x="15" y="4" width="88" height="30" fontName="Roboto" fontSize="8.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+					<text><![CDATA[Pelaksana Utama Pengampu Halaqoh Ustadz KPP Khusus]]></text>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</element>
+				<element kind="textField" uuid="94acfdf3-f5c0-4029-932a-08906a99e766" x="0" y="67" width="119" height="18" fontName="Roboto" fontSize="9.0" textAdjust="StretchHeight" hTextAlign="Center">
+					<expression><![CDATA[$P{pengampuName}]]></expression>
+					<box topPadding="4" leftPadding="4"/>
+				</element>
+			</element>
+			<box>
+				<topPen lineWidth="0.75"/>
+				<leftPen lineWidth="0.75"/>
+				<bottomPen lineWidth="0.75"/>
+				<rightPen lineWidth="0.75"/>
+			</box>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</lastPageFooter>
+	<summary height="20" splitType="Prevent">
+		<element kind="subreport" uuid="d612f6ef-68ec-4b97-a7dc-930686ceceb1" stretchType="ContainerHeight" x="0" y="0" width="539" height="20" removeLineWhenBlank="true">
+			<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{listCatatanAbsensiHalaqoh})]]></dataSourceExpression>
+			<expression><![CDATA[$P{CatatanAbsensiHalaqoh}]]></expression>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<parameter name="DetailCatatanAbsensiHalaqoh">
+				<expression><![CDATA[$P{DetailCatatanAbsensiHalaqoh}]]></expression>
+			</parameter>
+			<parameter name="periodePembelajaran">
+				<expression><![CDATA[$P{periodePembelajaran}]]></expression>
+			</parameter>
+			<parameter name="prevPeriodePembelajaran">
+				<expression><![CDATA[$P{prevPeriodePembelajaran}]]></expression>
+			</parameter>
+			<parameter name="pengampuName">
+				<expression><![CDATA[$P{pengampuName}]]></expression>
+			</parameter>
+		</element>
+		<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</summary>
 </jasperReport>

@@ -12,7 +12,7 @@ import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
 import id.my.mdn.kupu.core.party.view.widget.OrganizationList;
 import java.io.Serializable;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 

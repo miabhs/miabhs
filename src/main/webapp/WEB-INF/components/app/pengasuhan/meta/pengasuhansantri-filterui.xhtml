@@ -1,0 +1,8 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+                xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+    
+    <f:viewParam name="kp" value="#{filter.content.kelompokPengasuhan}" converter="KelompokPengasuhanConverter" transient="true" />
+    <f:viewParam name="sn" value="#{filter.content.santri}" converter="SantriConverter" transient="true" />
+
+</ui:composition>
+

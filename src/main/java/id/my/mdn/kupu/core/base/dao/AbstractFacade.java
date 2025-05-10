@@ -2,7 +2,8 @@ package id.my.mdn.kupu.core.base.dao;
 
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.util.Result;
-import id.my.mdn.kupu.core.base.view.widget.IValueList.SorterData;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
@@ -314,13 +315,13 @@ public abstract class AbstractFacade<T> {
         }
     }
 
-    public T findSingleByAttributes(List<FilterData> attributes) {
+    public T findSingleByAttributes(List<FilterData> filters) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> cq = cb.createQuery(entityClass);
 
         From[] roots = selectFind(cq, null);
 
-        applyFilters(attributes, cq, roots);
+        applyFilters(filters, cq, roots);
 
         try {
             T obj = getEntityManager().createQuery(cq).getSingleResult();
@@ -328,6 +329,10 @@ public abstract class AbstractFacade<T> {
         } catch (Exception ex) {
             return null;
         }
+    }
+    
+    public T findSingleByAttributes(FilterData... filters) {
+        return findSingleByAttributes(List.of(filters));
     }
 
     protected From[] selectFind(CriteriaQuery cq, Map<String, Object> parameters) {
@@ -388,8 +393,8 @@ public abstract class AbstractFacade<T> {
         List<Order> orders = new ArrayList<>();
         for (SorterData sorter : sorters) {
             Order order = orderMethod(
-                    sorter.field,
-                    sorter.order.equals(SorterData.ASC),
+                    sorter.getField(),
+                    sorter.getOrder().equals(SorterField.Order.ASC.getSql()),
                     from
             );
 

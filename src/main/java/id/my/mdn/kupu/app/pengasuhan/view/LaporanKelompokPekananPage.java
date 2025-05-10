@@ -4,28 +4,29 @@
  */
 package id.my.mdn.kupu.app.pengasuhan.view;
 
-import id.my.mdn.kupu.app.pengasuhan.entity.Status;
-import id.my.mdn.kupu.app.pengasuhan.view.widget.AktifitasHarianFilter;
-import id.my.mdn.kupu.app.santri.dao.KelompokPengasuhanFacade;
-import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
+import id.my.mdn.kupu.app.pengasuhan.dao.RangkumanKepengasuhanFacade;
+import id.my.mdn.kupu.app.pengasuhan.entity.RangkumanKepengasuhan;
+import id.my.mdn.kupu.app.pengasuhan.view.widget.LaporanKelompokFilter;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
-import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanAltList;
+import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranFilter;
 import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranTree;
-import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
-import static id.my.mdn.kupu.core.base.view.widget.Selector.SINGLE;
+import static id.my.mdn.kupu.core.base.view.widget.Selector.CHECKBOX;
+import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
-import id.my.mdn.kupu.core.reporting.view.ReportingPage;
+import id.my.mdn.kupu.core.reporting.view.ReportingChildPage;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.event.AjaxBehaviorEvent;
-import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -33,82 +34,94 @@ import java.util.Map;
  */
 @Named(value = "laporanKelompokPekananPage")
 @ViewScoped
-public class LaporanKelompokPekananPage extends ReportingPage implements Serializable {
+public class LaporanKelompokPekananPage extends ReportingChildPage implements Serializable {
 
     @Inject
     @Bookmarked
     private PeriodePembelajaranTree periodePembelajaranTree;
 
     @Inject
-    @Bookmarked
-    private KelompokPengasuhanAltList kelompokPengasuhanList;
+    private LaporanKelompokFilter filterContent;
 
     @Inject
-    private KelompokPengasuhanFacade kelompokPengasuhanFacade;
-
-    @Inject
-    private AktifitasHarianFilter filterContent;
-
-    @Bookmarked(name = "st")
-    private Status status;
+    private RangkumanKepengasuhanFacade rangkumanFacade;
 
     @PostConstruct
     @Override
     public void init() {
         super.init();
-        periodePembelajaranTreeInit();
-
-        kelompokPengasuhanList.setSelectionMode(() -> SINGLE);
-        kelompokPengasuhanList.getSelector().setSelectionsLabel("kp");
+        filter.setContent(filterContent);
+        periodePembelajaranTreeInit(); 
     }
 
     private void periodePembelajaranTreeInit() {
-        periodePembelajaranTree.setSelectionMode(() -> SINGLE);
+        periodePembelajaranTree.setSelectionMode(() -> CHECKBOX);
         periodePembelajaranTree.setName("periodePembelajaranTbl");
         periodePembelajaranTree.setSelectionsLabel("ps");
+        periodePembelajaranTree.getFilter().setName("periodeFilter");
+
+        periodePembelajaranTree.setDefaultChecker(
+                () -> periodePembelajaranTree.getFilter().<PeriodePembelajaranFilter>getContent().getTahunPembelajaran() == null);
+
+        periodePembelajaranTree.getSelector().addListenerInternal((obj) -> {
+
+            List<PeriodePembelajaran> selections = (List<PeriodePembelajaran>) obj;
+
+            Optional<LocalDate> min = selections.stream().map(o -> o.getFromDate())
+                    .sorted((a, b) -> a.compareTo(b)).findFirst();
+
+            Optional<LocalDate> max = selections.stream().map(o -> o.getThruDate())
+                    .sorted((a, b) -> (a.compareTo(b) * (-1))).findFirst();
+
+            if (min.isPresent() && max.isPresent()) {
+                filterContent.setFromDate(min.get());
+                filterContent.setThruDate(max.get());
+            } else {
+                filterContent.setFromDate(null);
+                filterContent.setThruDate(null);
+            }
+        });
     }
 
-    public void doFilter(AjaxBehaviorEvent evt) {
-        periodePembelajaranTree.doFilter();
-        periodePembelajaranTree.setSelections(null);
-        updateUrl();
+    private String generateFindAllQuery() {
+        List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
+        Collections.sort(listPeriode);
+        return rangkumanFacade.generateQueryForPeriods(
+                listPeriode,
+                filterContent.getKelompokPengasuhan()
+        );
     }
 
     @Override
     protected boolean isReady() {
-        PeriodePembelajaran listPeriode = periodePembelajaranTree.getSelection();
-        return listPeriode != null;
+        List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
+        return listPeriode != null && !listPeriode.isEmpty();
     }
 
     @Override
     protected ReportingJob prepareReportingJob() {
 
-        List<FilterData> filters = new ArrayList<>();
-        
-        KelompokPengasuhan kelompokPengasuhan = kelompokPengasuhanList.getSelection();
-        if (kelompokPengasuhan != null) {
-            filters.add(FilterData.by("kelompokPengasuhan", kelompokPengasuhan));
-        }
+        List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
 
-        List<KelompokPengasuhan> listKelompokPengasuhan
-                = kelompokPengasuhanFacade.findAll(filters);
+        List<RangkumanKepengasuhan> listRangkumanKepengasuhan
+                = (listPeriode != null && !listPeriode.isEmpty())
+                ? rangkumanFacade.findAll(
+                        this::generateFindAllQuery,
+                        0, 0, null, null, List.of(SorterData.by("kelompokPengasuhanId")), null, null
+                ) : new ArrayList<>();
 
         Map<String, Object> parameters = new HashMap<>();
 
         if (filterContent.getFromDate() != null) {
-            parameters.put("fromDate", periodePembelajaranTree.getSelection().getFromDate());
+            parameters.put("fromDate", filterContent.getFromDate());
         }
 
         if (filterContent.getThruDate() != null) {
-            parameters.put("thruDate", periodePembelajaranTree.getSelection().getThruDate());
-        }
-
-        if (filterContent.getStatus() != null) {
-            parameters.put("status", status);
+            parameters.put("thruDate", filterContent.getThruDate());
         }
 
         return new ReportingJob(
-                listKelompokPengasuhan, parameters, 
+                listRangkumanKepengasuhan, parameters,
                 "RangkumanAktifitas",
                 "PembinaKepengasuhan",
                 "PembantuPelaksanaKepengasuhan",
@@ -118,19 +131,7 @@ public class LaporanKelompokPekananPage extends ReportingPage implements Seriali
         );
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
     public PeriodePembelajaranTree getPeriodePembelajaranTree() {
         return periodePembelajaranTree;
-    }
-
-    public KelompokPengasuhanAltList getKelompokPengasuhanList() {
-        return kelompokPengasuhanList;
     }
 }

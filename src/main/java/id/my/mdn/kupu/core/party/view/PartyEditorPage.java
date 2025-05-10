@@ -13,7 +13,7 @@ import id.my.mdn.kupu.core.party.entity.Organization;
 import id.my.mdn.kupu.core.party.entity.Party;
 import id.my.mdn.kupu.core.party.entity.Person;
 import jakarta.faces.event.AjaxBehaviorEvent;
-import jakarta.faces.view.ViewScoped;
+import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 

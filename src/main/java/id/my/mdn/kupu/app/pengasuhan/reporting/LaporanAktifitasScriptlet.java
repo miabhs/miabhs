@@ -87,6 +87,8 @@ public class LaporanAktifitasScriptlet extends JRDefaultScriptlet {
                                 FungsionalKepengasuhan.PEMBANTU_PELAKSANA_KEPENGASUHAN
                         ))
                 );
+        listPembantu.sort((e1, e2) -> Integer.compare(e1.getFungsional().getLevel(), e2.getFungsional().getLevel()));
+        
         setVariableValue("listPembantu", new JRBeanCollectionDataSource(listPembantu));
 
         List<PelaksanaKepengasuhan> listKakak = helper.getPelaksanaFacade().
@@ -101,6 +103,7 @@ public class LaporanAktifitasScriptlet extends JRDefaultScriptlet {
         parameters.put("thruDate", getParameterValue("thruDate"));
 
         List<FilterData> filters = new ArrayList<>();
+        
         filters.add(new FilterData("kelompokPengasuhan", kelompokPengasuhan));
 
         List<Aktifitas> listAktifitas = helper.getAktifitasFacade()

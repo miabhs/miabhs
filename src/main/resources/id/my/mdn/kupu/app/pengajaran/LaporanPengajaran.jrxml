@@ -22,6 +22,7 @@
 	</variable>
 	<group name="Group1" startNewPage="true">
 		<expression><![CDATA[$F{id}]]></expression>
+                <!--
 		<groupHeader>
 			<band height="50">
 				<element kind="staticText" uuid="0a2ee2f0-e9eb-4620-a5c1-285b7b139061" x="0" y="0" width="555" height="20" fontName="Roboto" fontSize="17.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
@@ -29,6 +30,7 @@
 				</element>
 			</band>
 		</groupHeader>
+                -->
 		<groupFooter>
 			<band height="132">
 				<element kind="frame" uuid="533919a1-e007-4e8b-a643-d2cd41f56ff4" x="0" y="102" width="555" height="30">

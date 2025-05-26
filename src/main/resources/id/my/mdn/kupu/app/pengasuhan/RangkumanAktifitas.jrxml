@@ -70,7 +70,7 @@
 	<group name="KelompokPengasuhan" keepTogether="true" startNewPage="true" resetPageNumber="true" reprintHeaderOnEachPage="true">
 		<expression><![CDATA[$F{kelompokPengasuhanId}]]></expression>
 		<groupHeader>
-			<band height="62" splitType="Prevent">
+			<band height="99" splitType="Prevent">
 				<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
 				<element kind="frame" uuid="d474d2c3-39d8-49d7-9608-04d4b18ce867" x="0" y="0" width="525" height="62" printInFirstWholeBand="true">
 					<element kind="staticText" uuid="0a2ee2f0-e9eb-4620-a5c1-285b7b139061" x="0" y="0" width="525" height="30" fontSize="18.0" bold="true" hTextAlign="Center" vTextAlign="Top">
@@ -88,9 +88,7 @@
 						</element>
 					</element>
 				</element>
-			</band>
-			<band height="30">
-				<element kind="frame" uuid="3778b469-4976-4dc0-9cae-deeb94dfc9f8" mode="Opaque" x="0" y="0" width="525" height="30" backcolor="#E6E6E6" printWhenGroupChanges="KelompokPengasuhan">
+				<element kind="frame" uuid="3778b469-4976-4dc0-9cae-deeb94dfc9f8" mode="Opaque" x="0" y="69" width="525" height="30" backcolor="#E6E6E6" printWhenGroupChanges="KelompokPengasuhan">
 					<element kind="textField" uuid="48e15a67-59e0-44b8-ab4c-3543d1b7dee4" mode="Transparent" x="0" y="1" width="525" height="28" printWhenGroupChanges="KelompokPengasuhan" fontSize="16.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
 						<expression><![CDATA[$F{kelompokPengasuhanPartyName}]]></expression>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -153,6 +151,7 @@
 				</element>
 			</band>
 			<band height="23">
+				<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
 				<element kind="frame" uuid="786e91ac-0cde-4a29-9867-593dbb217892" positionType="FixRelativeToBottom" mode="Opaque" x="0" y="0" width="525" height="23" backcolor="#E8E8E8">
 					<property name="ShowOutOfBoundContent" value="true"/>
 					<element kind="frame" uuid="16b02812-9539-4add-b756-33e33f6b051f" x="0" y="0" width="30" height="23">
@@ -236,7 +235,7 @@
 				<element kind="frame" uuid="566c823e-9df5-46a7-9919-1a56a01570d5" x="0" y="0" width="30" height="24">
 					<element kind="textField" uuid="9983e297-00ff-4c52-bf2a-b54ecdf6b211" stretchType="ContainerHeight" x="0" y="0" width="30" height="24" fontSize="11.0" hTextAlign="Center" vTextAlign="Middle">
 						<paragraph rightIndent="0"/>
-						<expression><![CDATA[$V{REPORT_COUNT}]]></expression>
+						<expression><![CDATA[$V{KelompokPengasuhan_COUNT}]]></expression>
 						<box padding="4">
 							<pen lineWidth="1.0"/>
 							<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>

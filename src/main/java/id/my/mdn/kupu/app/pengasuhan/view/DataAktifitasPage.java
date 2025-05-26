@@ -33,6 +33,7 @@ public class DataAktifitasPage extends Page implements Serializable {
     @Override
     public void init() {
         super.init();
+        aktifitasList.setCached(true);
     }
 
     @Creator(of = "aktifitasList")

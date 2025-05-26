@@ -72,16 +72,22 @@ public class ApplicationUserEditorPage extends FormPage<ApplicationUser> {
     @Override
     protected ApplicationUser newEntity() {
         Person person = ((party != null && (party instanceof Person)) ? (Person) party : Person.builder().get());
-        String suggestion = (!person.getFirstName().isBlank()
-                ? person.getFirstName().toLowerCase()
+
+        String suggestion = ((party != null && !party.getFirstName().isBlank())
+                ? party.getFirstName().toLowerCase()
                 : "appuser") + PasswordUtil.generateUserSuffix();
+
         ApplicationUser.Builder userBuilder = ApplicationUser.builder()
-                .withParty(party)
+                .withParty(person)
                 .withUsername(suggestion)
                 .withPassword(PasswordUtil.generateRandomPassword());
 
-        for (ApplicationSecurityGroup group : groups) {
-            userBuilder.addToGroup(group);
+        if (groups != null) {
+            for (ApplicationSecurityGroup group : groups) {
+                userBuilder.addToGroup(group);
+            }
+        } else {
+            userBuilder.addToGroup(null);
         }
 
         return userBuilder.get();

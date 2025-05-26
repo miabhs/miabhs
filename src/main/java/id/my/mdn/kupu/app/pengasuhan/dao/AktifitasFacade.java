@@ -27,12 +27,17 @@ import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.core.base.dao.AbstractSqlFacade;
 import id.my.mdn.kupu.core.base.util.FilterTypes.FilterData;
+import id.my.mdn.kupu.core.base.util.Result;
 import id.my.mdn.kupu.core.party.entity.GenderType;
+import id.my.mdn.kupu.core.security.service.SecurityService;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,119 +52,71 @@ import java.util.stream.Collectors;
 @Stateless
 public class AktifitasFacade extends AbstractSqlFacade<Aktifitas> {
 
-    
     private static final String FINDALL
             = """
-              SELECT AKTIFITAS5.ID, AKTIFITAS5.CREATED, AKTIFITAS5.ACTIVITYDATE,
-                     AKTIFITAS5.SANTRI_ID, P1.NAME AS SANTRI_NAME, P1.GENDER AS SANTRI_GENDER,
-                     AKTIFITAS5.KELOMPOKPENGASUHANNAME AS KELOMPOKPENGASUHAN_NAME,
-                     AKTIFITAS5.BENTUKAKTIFITAS_ID, AKTIFITAS5.BENTUK AS BENTUKAKTIFITAS_BENTUK,
-                     AKTIFITAS5.JENIS AS BENTUKAKTIFITAS_JENIS, AKTIFITAS5.NILAI AS BENTUKAKTIFITAS_NILAI,
-                     AKTIFITAS5.NOTES, AKTIFITAS5.CONFIRMED,
-                     AKTIFITAS5.SANTRI_ID, AKTIFITAS5.KELOMPOKPENGASUHAN_ID, AKTIFITAS5.BENTUKAKTIFITAS_ID
+              SELECT ID, ACTIVITYDATE, CONFIRMED, CREATED, CREATOR_ID, LASTMODIFIED, LASTMODIFIER_ID, NOTES,   
+                     SANTRI_ID, SANTRI_PERSON_ID, SANTRI_NAME, SANTRI_GENDER,
+                     KELOMPOKPENGASUHAN_ID, KELOMPOKPENGASUHAN_ORG_ID, KELOMPOKPENGASUHAN_NAME, KELOMPOKPENGASUHAN_FROMDATE, 
+                     BENTUKAKTIFITAS_ID, BENTUKAKTIFITAS_BENTUK, BENTUKAKTIFITAS_JENIS, BENTUKAKTIFITAS_NILAI
               FROM (
-                  SELECT AKTIFITAS4.ID, AKTIFITAS4.CREATED, AKTIFITAS4.ACTIVITYDATE, AKTIFITAS4.SANTRI_ID, AKTIFITAS4.BENTUKAKTIFITAS_ID,
-                         AKTIFITAS4.NOTES, AKTIFITAS4.CONFIRMED, AKTIFITAS4.BENTUK, AKTIFITAS4.JENIS, AKTIFITAS4.NILAI,
-                         AKTIFITAS4.KELOMPOKPENGASUHAN_ID, AKTIFITAS4.KELOMPOKPENGASUHANNAME,
-                         PRO1.PARTY_ID
+                  SELECT AKT.ID, AKT.ACTIVITYDATE, AKT.CONFIRMED, AKT.CREATED, AKT.CREATOR_ID, AKT.LASTMODIFIED, AKT.LASTMODIFIER_ID, AKT.NOTES,   
+                         SN.ID AS SANTRI_ID, SN.PERSON_ID AS SANTRI_PERSON_ID, SN.PERSON_NAME AS SANTRI_NAME, SN.PERSON_GENDER AS SANTRI_GENDER,
+                         PS.FROMROLE_ID AS KELOMPOKPENGASUHAN_ID, PYX.ID AS KELOMPOKPENGASUHAN_ORG_ID, PYX.FIRSTNAME AS KELOMPOKPENGASUHAN_NAME, PS.FROMDATE AS KELOMPOKPENGASUHAN_FROMDATE, 
+                         AKT.BENTUKAKTIFITAS_ID, AKT.BENTUK AS BENTUKAKTIFITAS_BENTUK, AKT.JENIS AS BENTUKAKTIFITAS_JENIS, AKT.NILAI AS BENTUKAKTIFITAS_NILAI
                   FROM (
-                      SELECT AKTIFITAS3.ID, AKTIFITAS3.CREATED, AKTIFITAS3.ACTIVITYDATE, AKTIFITAS3.SANTRI_ID, AKTIFITAS3.BENTUKAKTIFITAS_ID,
-                             AKTIFITAS3.NOTES, AKTIFITAS3.CONFIRMED, AKTIFITAS3.BENTUK, AKTIFITAS3.JENIS, AKTIFITAS3.NILAI,
-                             AKTIFITAS3.KELOMPOKPENGASUHAN_ID, P0.FIRSTNAME AS KELOMPOKPENGASUHANNAME
-                      FROM (
-                          SELECT AKTIFITAS2.ID, AKTIFITAS2.CREATED, AKTIFITAS2.ACTIVITYDATE, AKTIFITAS2.SANTRI_ID, AKTIFITAS2.BENTUKAKTIFITAS_ID,
-                                 AKTIFITAS2.NOTES, AKTIFITAS2.CONFIRMED, AKTIFITAS2.BENTUK, AKTIFITAS2.JENIS, AKTIFITAS2.NILAI,
-                                 AKTIFITAS2.KELOMPOKPENGASUHAN_ID, PR0.PARTY_ID AS KELOMPOKPENGASUHAN_PARTY_ID
+                      SELECT AKT0.ID, AKT0.ACTIVITYDATE, AKT0.SANTRI_ID, AKT0.BENTUKAKTIFITAS_ID, AKT0.NOTES, AKT0.CONFIRMED,
+                             BAKT0.BENTUK, BAKT0.JENIS, BAKT0.NILAI, 
+                             AKT0.CREATED, AKT0.CREATOR_ID, AKT0.LASTMODIFIED, AKT0.LASTMODIFIER_ID
+                      FROM MIABH_AKTIFITAS AS AKT0
+                      LEFT JOIN MIABH_BENTUKAKTIFITAS AS BAKT0 ON AKT0.BENTUKAKTIFITAS_ID = BAKT0.ID
+                      WHERE AKT0.ACTIVITYDATE >= ? AND AKT0.ACTIVITYDATE <= ?
+                  ) AS AKT
+                  LEFT JOIN (
+                      SELECT ID,
+                             PERSON_ID, PERSON_NAME, PERSON_GENDER, PERSON_DOB,
+                             NAMABAPAK, NIS, JENISSANTRI, TAHUNMASUK_ID, TAHUNMASUK_NAME, TAHUNMASUK_FROMDATE, ANGKATAN
                           FROM (
-                              SELECT AKTIFITAS1.ID, AKTIFITAS1.CREATED, AKTIFITAS1.ACTIVITYDATE, AKTIFITAS1.SANTRI_ID, AKTIFITAS1.BENTUKAKTIFITAS_ID,
-                                     AKTIFITAS1.NOTES, AKTIFITAS1.CONFIRMED, AKTIFITAS1.BENTUK, AKTIFITAS1.JENIS, AKTIFITAS1.NILAI,
-                                     PS0.FROMROLE_ID AS KELOMPOKPENGASUHAN_ID
-                              FROM (
-                                      SELECT AKTIFITAS0.ID, AKTIFITAS0.CREATED, AKTIFITAS0.ACTIVITYDATE, AKTIFITAS0.SANTRI_ID, AKTIFITAS0.BENTUKAKTIFITAS_ID, AKTIFITAS0.NOTES, AKTIFITAS0.CONFIRMED,
-                                           BENTUKAKTIFITAS0.BENTUK, BENTUKAKTIFITAS0.JENIS, BENTUKAKTIFITAS0.NILAI
-                                      FROM MIABH_AKTIFITAS AS AKTIFITAS0
-                                      LEFT JOIN MIABH_BENTUKAKTIFITAS AS BENTUKAKTIFITAS0
-                                      ON AKTIFITAS0.BENTUKAKTIFITAS_ID = BENTUKAKTIFITAS0.ID
-                                      WHERE AKTIFITAS0.ACTIVITYDATE >= ? AND AKTIFITAS0.ACTIVITYDATE <= ?
-                              ) AS AKTIFITAS1
-                              LEFT JOIN MIABH_PENGASUHAN AS PS0
-                              ON AKTIFITAS1.SANTRI_ID = PS0.TOROLE_ID
-                          ) AS AKTIFITAS2
-                          LEFT JOIN PARTY_PARTYROLE AS PR0
-                          ON AKTIFITAS2.KELOMPOKPENGASUHAN_ID = PR0.ID
-                      ) AS AKTIFITAS3
-                      LEFT JOIN PARTY_PARTY AS P0
-                      ON AKTIFITAS3.KELOMPOKPENGASUHAN_PARTY_ID = P0.ID
-                  ) AS AKTIFITAS4
-                  LEFT JOIN PARTY_PARTYROLE AS PRO1
-                  ON AKTIFITAS4.SANTRI_ID = PRO1.ID
-              ) AS AKTIFITAS5
-              LEFT JOIN (
-                SELECT PN.ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS NAME, PN.GENDER
-                FROM PARTY_PERSON AS PN
-                JOIN PARTY_PARTY AS PY
-                ON PN.ID = PY.ID
-              ) AS P1
-              ON AKTIFITAS5.PARTY_ID = P1.ID
+                          SELECT SN.ID,
+                                 PR.PARTY_ID AS PERSON_ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS PERSON_NAME, PN.GENDER AS PERSON_GENDER, PN.DATEOFBIRTH AS PERSON_DOB,
+                                 SN.NAMABAPAK, SN.NIS, SN.JENISSANTRI, SN.TAHUNMASUK_ID, TP.NAME AS TAHUNMASUK_NAME, TP.FROMDATE AS TAHUNMASUK_FROMDATE, SN.ANGKATAN
+                          FROM MIABH_SANTRI AS SN
+                          JOIN PARTY_PARTYROLE AS PR ON SN.ID = PR.ID
+                          JOIN PARTY_PARTY AS PY ON PR.PARTY_ID = PY.ID
+                          JOIN PARTY_PERSON AS PN ON PY.ID = PN.ID
+                          JOIN MIABH_TAHUNPEMBELAJARAN AS TP ON SN.TAHUNMASUK_ID = TP.ID
+                      )
+                  ) AS SN ON AKT.SANTRI_ID = SN.ID
+                  LEFT JOIN (
+                      SELECT PS1.FROMROLE_ID, PS1.TOROLE_ID, PS1. FROMDATE, PREL1.THRUDATE
+                      FROM MIABH_PENGASUHAN AS PS1
+                      JOIN PARTY_PARTYRELATIONSHIP AS PREL1
+                      ON PREL1.PARTYRELATIONSHIPTYPE_ID = 'Pengasuhan' AND PS1.FROMROLE_ID = PREL1.FROMROLE_ID AND PS1.TOROLE_ID = PREL1.TOROLE_ID AND PS1.FROMDATE = PREL1.FROMDATE
+                      WHERE PS1.FROMDATE <= ?
+                  ) AS PS ON AKT.SANTRI_ID = PS.TOROLE_ID AND ((PS.THRUDATE IS NOT NULL AND AKT.ACTIVITYDATE <= PS.THRUDATE) OR (PS.THRUDATE IS NULL AND AKT.ACTIVITYDATE >= PS.FROMDATE))        
+                  LEFT JOIN PARTY_PARTYROLE AS PRX ON PS.FROMROLE_ID = PRX.ID
+                  LEFT JOIN PARTY_PARTY AS PYX ON PRX.PARTY_ID = PYX.ID
+              )
               """;
-    
-    private static final String FIND 
+
+    private static final String FIND
             = """
-              SELECT AKTIFITAS5.ID, AKTIFITAS5.CREATED, AKTIFITAS5.ACTIVITYDATE,
-                     AKTIFITAS5.SANTRI_ID, P1.NAME AS SANTRI_NAME, P1.LASTNAME AS SANTRI_LASTNAME,
-                     AKTIFITAS5.KELOMPOKPENGASUHANNAME AS KELOMPOKPENGASUHAN_NAME,
-                     AKTIFITAS5.BENTUKAKTIFITAS_ID, AKTIFITAS5.BENTUK AS BENTUKAKTIFITAS_BENTUK,
-                     AKTIFITAS5.JENIS AS BENTUKAKTIFITAS_JENIS, AKTIFITAS5.NILAI AS BENTUKAKTIFITAS_NILAI,
-                     AKTIFITAS5.NOTES, AKTIFITAS5.CONFIRMED,
-                     AKTIFITAS5.SANTRI_ID, AKTIFITAS5.KELOMPOKPENGASUHAN_ID, AKTIFITAS5.BENTUKAKTIFITAS_ID
-              FROM (
-                  SELECT AKTIFITAS4.ID, AKTIFITAS4.CREATED, AKTIFITAS4.ACTIVITYDATE, AKTIFITAS4.SANTRI_ID, AKTIFITAS4.BENTUKAKTIFITAS_ID,
-                         AKTIFITAS4.NOTES, AKTIFITAS4.CONFIRMED, AKTIFITAS4.BENTUK, AKTIFITAS4.JENIS, AKTIFITAS4.NILAI,
-                         AKTIFITAS4.KELOMPOKPENGASUHAN_ID, AKTIFITAS4.KELOMPOKPENGASUHANNAME,
-                         PRO1.PARTY_ID
-                  FROM (
-                      SELECT AKTIFITAS3.ID, AKTIFITAS3.CREATED, AKTIFITAS3.ACTIVITYDATE, AKTIFITAS3.SANTRI_ID, AKTIFITAS3.BENTUKAKTIFITAS_ID,
-                             AKTIFITAS3.NOTES, AKTIFITAS3.CONFIRMED, AKTIFITAS3.BENTUK, AKTIFITAS3.JENIS, AKTIFITAS3.NILAI,
-                             AKTIFITAS3.KELOMPOKPENGASUHAN_ID, P0.FIRSTNAME AS KELOMPOKPENGASUHANNAME
-                      FROM (
-                          SELECT AKTIFITAS2.ID, AKTIFITAS2.CREATED, AKTIFITAS2.ACTIVITYDATE, AKTIFITAS2.SANTRI_ID, AKTIFITAS2.BENTUKAKTIFITAS_ID,
-                                 AKTIFITAS2.NOTES, AKTIFITAS2.CONFIRMED, AKTIFITAS2.BENTUK, AKTIFITAS2.JENIS, AKTIFITAS2.NILAI,
-                                 AKTIFITAS2.KELOMPOKPENGASUHAN_ID, PR0.PARTY_ID AS KELOMPOKPENGASUHAN_PARTY_ID
-                          FROM (
-                              SELECT AKTIFITAS1.ID, AKTIFITAS1.CREATED, AKTIFITAS1.ACTIVITYDATE, AKTIFITAS1.SANTRI_ID, AKTIFITAS1.BENTUKAKTIFITAS_ID,
-                                     AKTIFITAS1.NOTES, AKTIFITAS1.CONFIRMED, AKTIFITAS1.BENTUK, AKTIFITAS1.JENIS, AKTIFITAS1.NILAI,
-                                     PS0.FROMROLE_ID AS KELOMPOKPENGASUHAN_ID
-                              FROM (
-                                      SELECT AKTIFITAS0.ID, AKTIFITAS0.CREATED, AKTIFITAS0.ACTIVITYDATE, AKTIFITAS0.SANTRI_ID, AKTIFITAS0.BENTUKAKTIFITAS_ID, AKTIFITAS0.NOTES, AKTIFITAS0.CONFIRMED,
-                                           BENTUKAKTIFITAS0.BENTUK, BENTUKAKTIFITAS0.JENIS, BENTUKAKTIFITAS0.NILAI
-                                      FROM MIABH_AKTIFITAS AS AKTIFITAS0
-                                      LEFT JOIN MIABH_BENTUKAKTIFITAS AS BENTUKAKTIFITAS0
-                                      ON AKTIFITAS0.BENTUKAKTIFITAS_ID = BENTUKAKTIFITAS0.ID
-                                      WHERE AKTIFITAS0.ID = ?
-                              ) AS AKTIFITAS1
-                              LEFT JOIN MIABH_PENGASUHAN AS PS0
-                              ON AKTIFITAS1.SANTRI_ID = PS0.TOROLE_ID
-                          ) AS AKTIFITAS2
-                          LEFT JOIN PARTY_PARTYROLE AS PR0
-                          ON AKTIFITAS2.KELOMPOKPENGASUHAN_ID = PR0.ID
-                      ) AS AKTIFITAS3
-                      LEFT JOIN PARTY_PARTY AS P0
-                      ON AKTIFITAS3.KELOMPOKPENGASUHAN_PARTY_ID = P0.ID
-                  ) AS AKTIFITAS4
-                  LEFT JOIN PARTY_PARTYROLE AS PRO1
-                  ON AKTIFITAS4.SANTRI_ID = PRO1.ID
-              ) AS AKTIFITAS5
-              LEFT JOIN (
-                SELECT PN.ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS NAME, PN.GENDER
-                FROM PARTY_PERSON AS PN
-                JOIN PARTY_PARTY AS PY
-                ON PN.ID = PY.ID
-              ) AS P1
-              ON AKTIFITAS5.PARTY_ID = P1.ID  
+              SELECT AK.ID, AK.ACTIVITYDATE,
+                     AK.CONFIRMED, AK.CREATED, AK.CREATOR_ID, AK.LASTMODIFIED, AK.LASTMODIFIER_ID
+              FROM MIABH_AKTIFITAS AS AK
+              WHERE AK.ID = ?
               """;
 
     @Inject
     private EntityManager em;
+
+    @Inject
+    private PeriodePembelajaranFacade periodeFacade;
+
+    @Inject
+    private CatatanKepengasuhanFacade catatanLaporanFacade;
+
+    @Inject
+    private SecurityService ss;
 
     public AktifitasFacade() {
         super(Aktifitas.class);
@@ -171,21 +128,17 @@ public class AktifitasFacade extends AbstractSqlFacade<Aktifitas> {
     }
 
     @Override
-    public Aktifitas find(Object id) {
-        return getEntityManager().find(Aktifitas.class, id);
-    }
-
-    @Override
     protected void setParameters(Query q, Map<String, Object> parameters) {
         q.setParameter(1, parameters.get("fromDate"));
         q.setParameter(2, parameters.get("thruDate"));
+        q.setParameter(3, parameters.get("thruDate"));
     }
 
     @Override
     protected String applyFilter(FilterData filterData) {
         switch (filterData.name) {
             case "id":
-                return "AKTIFITAS5.ID = '" + filterData.value + "'";
+                return "ID = '" + filterData.value + "'";
             case "santriName":
                 String nameQuery = filterData.value != null ? (String) filterData.value : "";
                 if (nameQuery.equals("")) {
@@ -194,16 +147,16 @@ public class AktifitasFacade extends AbstractSqlFacade<Aktifitas> {
                 return "(UPPER(SANTRI_NAME) LIKE '%" + nameQuery.toUpperCase() + "%')";
             case "gender":
                 GenderType gender = (GenderType) filterData.value;
-                return "(P1.GENDER = '" + gender.name() + "' OR P1.GENDER IS NULL)";
+                return "(SANTRI_GENDER = '" + gender.name() + "' OR SANTRI_GENDER IS NULL)";
             case "santri":
                 Santri santri = (Santri) filterData.value;
-                return "AKTIFITAS5.SANTRI_ID = " + santri.getId();
+                return "SANTRI_ID = " + santri.getId();
             case "santriId":
                 Long santriId = (Long) filterData.value;
-                return "AKTIFITAS5.SANTRI_ID = " + santriId;
+                return "SANTRI_ID = " + santriId;
             case "kelompokPengasuhan":
                 KelompokPengasuhan kelompokPengasuhan = (KelompokPengasuhan) filterData.value;
-                return "(KELOMPOKPENGASUHAN_ID = " + kelompokPengasuhan.getId() + " OR KELOMPOKPENGASUHAN_ID IS NULL)";
+                return "KELOMPOKPENGASUHAN_ID = " + kelompokPengasuhan.getId() + "";
             case "bentukAktifitas":
                 BentukAktifitas bentukAktifitas = (BentukAktifitas) filterData.value;
                 return "BENTUKAKTIFITAS_ID = '" + bentukAktifitas.getId() + "'";
@@ -211,15 +164,15 @@ public class AktifitasFacade extends AbstractSqlFacade<Aktifitas> {
                 if (filterData.value instanceof List) {
                     List<JenisAktifitas> listJenisAktifitas = (List<JenisAktifitas>) filterData.value;
                     return listJenisAktifitas.stream()
-                            .map(jenisAktifitas -> "JENIS = '" + jenisAktifitas.name() + "'")
+                            .map(jenisAktifitas -> "BENTUKAKTIFITAS_JENIS = '" + jenisAktifitas.name() + "'")
                             .collect(Collectors.joining(" OR ", "( ", " )"));
                 } else {
                     JenisAktifitas jenisAktifitas = (JenisAktifitas) filterData.value;
-                    return "JENIS = '" + jenisAktifitas.name() + "'";
+                    return "BENTUKAKTIFITAS_JENIS = '" + jenisAktifitas.name() + "'";
                 }
             case "nilaiAktifitas":
                 NilaiAktifitas nilaiAktifitas = (NilaiAktifitas) filterData.value;
-                return "NILAI = '" + nilaiAktifitas.name() + "'";
+                return "BENTUKAKTIFITAS_NILAI = '" + nilaiAktifitas.name() + "'";
             default:
                 return null;
         }
@@ -229,11 +182,11 @@ public class AktifitasFacade extends AbstractSqlFacade<Aktifitas> {
     protected String translateOrderField(String fieldName) {
         switch (fieldName) {
             case "activityDate":
-                return "AKTIFITAS5.ACTIVITYDATE";
+                return "ACTIVITYDATE";
             case "created":
-                return "AKTIFITAS5.CREATED";
+                return "CREATED";
             case "santriId":
-                return "AKTIFITAS5.SANTRI_ID";
+                return "SANTRI_ID";
             case "santriName":
                 return "SANTRI_NAME";
             default:
@@ -432,12 +385,6 @@ public class AktifitasFacade extends AbstractSqlFacade<Aktifitas> {
         return rangkumanPeriode;
     }
 
-    @Inject
-    private PeriodePembelajaranFacade periodeFacade;
-
-    @Inject
-    private CatatanKepengasuhanFacade catatanLaporanFacade;
-
     public CatatanKepengasuhan findCatatanLaporan(Santri santri, PeriodePembelajaran periode) {
         CatatanKepengasuhanId id = new CatatanKepengasuhanId(santri.getId(), periode.getId());
         return catatanLaporanFacade.find(id);
@@ -447,10 +394,10 @@ public class AktifitasFacade extends AbstractSqlFacade<Aktifitas> {
         List<LaporanKepengasuhan> collect = periodeFacade.getChildren(parentPeriode).stream()
                 .map(periode
                         -> new LaporanKepengasuhan(
-                                santri,
-                                periode,
-                                getRangkumanPeriode(santri.getId(), periode),
-                                findCatatanLaporan(santri, periode))
+                        santri,
+                        periode,
+                        getRangkumanPeriode(santri.getId(), periode),
+                        findCatatanLaporan(santri, periode))
                 ).collect(Collectors.toList());
         return collect;
     }
@@ -679,8 +626,22 @@ public class AktifitasFacade extends AbstractSqlFacade<Aktifitas> {
                 });
         return listCatatanAktifitas;
     }
-    
-    public void createBlank(LocalDate date) {        
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public Result<String> create(Aktifitas entity) {
+        entity.setCreator(ss.getUser());
+        return super.create(entity);
+    }
+
+    @Override
+    public Result<String> edit(Aktifitas entity) {
+        entity.setLastModified(LocalDateTime.now());
+        entity.setLastModifier(ss.getUser());
+        return super.edit(entity);
+    }
+
+    public void createBlank(LocalDate date) {
         Aktifitas entity = new Aktifitas();
         entity.setActivityDate(date);
         create(entity);

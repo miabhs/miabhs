@@ -14,6 +14,7 @@ import id.my.mdn.kupu.core.reporting.jasperreports.ReportCompiler;
 import id.my.mdn.kupu.core.reporting.jasperreports.ReportFiller;
 import id.my.mdn.kupu.core.reporting.jasperreports.ReportLoader;
 import id.my.mdn.kupu.core.reporting.jasperreports.ReportLoadingException;
+import id.my.mdn.kupu.core.reporting.model.CompiledReportingJob;
 import id.my.mdn.kupu.core.reporting.model.ReportTemplate;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
 import jakarta.enterprise.context.Dependent;
@@ -27,6 +28,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -135,6 +138,32 @@ public class Reporter implements Serializable {
         return null;
     }
 
+    public void generateReport(ReportingJob job, OutputStream os, String format)
+            throws ReportCompilationException, ReportDeserializationException,
+            ReportLoadingException, ReportFillingException {
+        compileNSerializeSubTemplates(job);
+        generateReport(job.getTemplateName(), job.getParameters(), job.getDataSource(), os, format);
+    }
+
+    public void generateReport(OutputStream os, List<ReportingJob> jobs)
+            throws ReportCompilationException, ReportDeserializationException,
+            ReportLoadingException, ReportFillingException {
+        
+        List<CompiledReportingJob> compiledJobs = new ArrayList<>();
+        
+        for(ReportingJob job : jobs) {
+            compileNSerializeSubTemplates(job);
+            compiledJobs.add(new CompiledReportingJob(
+                    job.getDataSource(),
+                    job.getParameters(),
+                    compileNSerializeTemplate(job.getTemplateName())
+            ));
+            
+        }
+        
+        filler.fillAsCompositePdf(os, compiledJobs);
+    }
+
     public void compileNSerializeSubTemplates(ReportingJob job) throws ReportLoadingException, ReportCompilationException {
         if (job.getSubReportsTemplateName() != null && job.getSubReportsTemplateName().length > 0) {
             for (String subReportTemplateName : job.getSubReportsTemplateName()) {
@@ -179,13 +208,6 @@ public class Reporter implements Serializable {
             throws ReportDeserializationException {
         ByteArrayInputStream bis = new ByteArrayInputStream(compiledTemplate);
         return bis;
-    }
-
-    public void generateReport(ReportingJob job, OutputStream os, String format)
-            throws ReportCompilationException, ReportDeserializationException,
-            ReportLoadingException, ReportFillingException {
-        compileNSerializeSubTemplates(job);
-        generateReport(job.getTemplateName(), job.getParameters(), job.getDataSource(), os, format);
     }
 
     private void generateReport(String templateName, Map<String, Object> parameters,

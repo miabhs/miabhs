@@ -8,6 +8,7 @@ import id.my.mdn.kupu.app.pengajaran.dao.PresensiSantriFacade;
 import id.my.mdn.kupu.app.pengajaran.entity.PresensiSantri;
 import id.my.mdn.kupu.app.pengasuhan.service.PengasuhanService;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
+import id.my.mdn.kupu.app.santri.entity.Pengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
@@ -29,8 +30,8 @@ import java.util.Map;
  */
 @Named(value = "presensiSantriList")
 @Dependent
-public class PresensiSantriList extends AbstractMutablePagedValueList<PresensiSantri> {    
-    
+public class PresensiSantriList extends AbstractMutablePagedValueList<PresensiSantri> {
+
     @Inject
     private PresensiSantriFacade dao;
 
@@ -47,16 +48,16 @@ public class PresensiSantriList extends AbstractMutablePagedValueList<PresensiSa
     }
 
     @Override
-    protected List<PresensiSantri> getPagedFetchedItemsInternal(int first, int pageSize, 
-            Map<String, Object> parameters, List<FilterData> filters, 
-            List<SorterData> sorters, DefaultList<PresensiSantri> defaultList, 
+    protected List<PresensiSantri> getPagedFetchedItemsInternal(int first, int pageSize,
+            Map<String, Object> parameters, List<FilterData> filters,
+            List<SorterData> sorters, DefaultList<PresensiSantri> defaultList,
             AbstractFacade.DefaultChecker defaultChecker) {
         return dao.findAll(first, pageSize, parameters, filters, sorters);
     }
 
     @Override
-    protected long getItemsCountInternal(Map<String, Object> parameters, 
-            List<FilterData> filters, DefaultCount defaultCount, 
+    protected long getItemsCountInternal(Map<String, Object> parameters,
+            List<FilterData> filters, DefaultCount defaultCount,
             DefaultChecker defaultChecker) {
         return dao.countAll(parameters, filters);
     }
@@ -68,7 +69,15 @@ public class PresensiSantriList extends AbstractMutablePagedValueList<PresensiSa
         Santri santri = (Santri) evt.getNewValue();
         KelompokPengasuhan kelompokPengasuhan = pengasuhanService.getKelompokPengasuhan(santri.getId(), LocalDate.now());
 
-        santri.setKelompokPengasuhan(kelompokPengasuhan);
+        if (!santri.getTargetRelationships().isEmpty() && santri.getTargetRelationships().size() == 1) {
+            ((Pengasuhan) santri.getTargetRelationships().get(0)).setKelompokPengasuhan(kelompokPengasuhan);
+        } else {
+            Pengasuhan pengasuhan = new Pengasuhan();
+            pengasuhan.setSantri(santri);
+            pengasuhan.setKelompokPengasuhan(kelompokPengasuhan);
+            
+            santri.getTargetRelationships().add(pengasuhan);
+        }
     }
 
     @Override
@@ -85,5 +94,5 @@ public class PresensiSantriList extends AbstractMutablePagedValueList<PresensiSa
     public void edit(PresensiSantri entity) {
         dao.edit(entity);
     }
-    
+
 }

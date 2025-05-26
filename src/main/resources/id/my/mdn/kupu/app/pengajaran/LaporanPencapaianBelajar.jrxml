@@ -12,9 +12,9 @@
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<property name="com.jaspersoft.studio.report.description" value=""/>
 	<query language="sql"><![CDATA[]]></query>
-	<field name="jenisPengajaran.nama" class="java.lang.String"/>
-	<field name="jenisKitab.judul" class="java.lang.String"/>
-	<field name="capaian" class="java.lang.String"/>
+	<field name="jenisPengajaranNama" class="java.lang.String"/>
+	<field name="jenisKitabJudul" class="java.lang.String"/>
+	<field name="pencapaian" class="java.lang.String"/>
 	<columnHeader height="24">
 		<element kind="frame" uuid="7571cbc0-46cf-45a0-af95-e1f856d9369f" mode="Opaque" x="0" y="0" width="555" height="24" backcolor="#E8E8E8">
 			<element kind="frame" uuid="03d8b456-0acf-4d9a-9123-0be6a2b9ce29" x="0" y="0" width="147" height="24">
@@ -58,7 +58,7 @@
 			<element kind="frame" uuid="710ee87c-d2b1-422e-965f-30059bca39b0" x="0" y="0" width="555" height="20">
 				<element kind="frame" uuid="0f6054cd-659c-430b-9bf1-299e15b81169" stretchType="ContainerHeight" x="0" y="0" width="147" height="20">
 					<element kind="textField" uuid="1baed24e-f063-483d-8934-3a45c99fcc7d" x="0" y="0" width="147" height="20" fontName="Roboto" fontSize="9.0" printRepeatedValues="false" hTextAlign="Left" vTextAlign="Middle">
-						<expression><![CDATA[$F{jenisPengajaran.nama}]]></expression>
+						<expression><![CDATA[$F{jenisPengajaranNama}]]></expression>
 						<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="4">
 							<topPen lineWidth="0.75"/>
 						</box>
@@ -69,7 +69,7 @@
 				</element>
 				<element kind="frame" uuid="4bfc4372-8f92-4f94-b5fa-d43305925418" stretchType="ContainerHeight" x="147" y="0" width="234" height="20">
 					<element kind="textField" uuid="4c43bf92-ce10-4363-a100-3dcfc691dddc" x="0" y="0" width="233" height="20" fontName="Amiri" fontSize="9.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
-						<expression><![CDATA[$F{jenisKitab.judul}]]></expression>
+						<expression><![CDATA[$F{jenisKitabJudul}]]></expression>
 						<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="4"/>
 					</element>
 					<box>
@@ -79,7 +79,7 @@
 				</element>
 				<element kind="frame" uuid="7c74111f-6000-4eec-8dcb-7402a5920dfc" stretchType="ContainerHeight" x="381" y="0" width="174" height="20">
 					<element kind="textField" uuid="d2c7a7ba-b62c-4692-8cab-7482d23c4eb8" x="0" y="0" width="174" height="20" fontName="Roboto" fontSize="9.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle">
-						<expression><![CDATA[$F{capaian}]]></expression>
+						<expression><![CDATA[$F{pencapaian}]]></expression>
 						<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="4"/>
 					</element>
 					<box>

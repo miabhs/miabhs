@@ -10,12 +10,12 @@ import id.my.mdn.kupu.core.security.model.AccessControl;
 import id.my.mdn.kupu.core.security.model.ApplicationSecurityGroup;
 import id.my.mdn.kupu.core.security.view.widget.GroupAccessControlList;
 import jakarta.annotation.PostConstruct;
-import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -29,22 +29,17 @@ public class GroupAccessControlPage extends ChildPage implements Serializable {
     @Bookmarked
     private GroupAccessControlList dataView;
 
-    @Bookmarked
+    @Bookmarked(name = "sg")
     private ApplicationSecurityGroup securityGroup;
 
     @PostConstruct
     @Override
     protected void init() {
         super.init();
+        dataView.setHiddenParameters(this::parameters);
     }
 
-    @Override
-    public void load() {
-        dataView.setParameters(this::parameters);
-    }
-
-    private Map<String, Object> parameters() {
-
+    private Map<String, Object> parameters() {   
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("securityGroup", securityGroup);
         return parameters;

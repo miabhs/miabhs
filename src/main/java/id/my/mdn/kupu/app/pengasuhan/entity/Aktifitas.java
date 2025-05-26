@@ -5,6 +5,7 @@
 package id.my.mdn.kupu.app.pengasuhan.entity;
 
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
+import id.my.mdn.kupu.app.santri.entity.Pengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.core.base.view.annotation.SorterField;
 import id.my.mdn.kupu.core.base.view.annotation.SorterField.Order;
@@ -12,7 +13,10 @@ import id.my.mdn.kupu.core.base.view.annotation.SorterField.Sort;
 import id.my.mdn.kupu.core.base.view.annotation.SorterFields;
 import id.my.mdn.kupu.core.party.entity.GenderType;
 import id.my.mdn.kupu.core.party.entity.Organization;
+import id.my.mdn.kupu.core.party.entity.PartyRelationship;
+import id.my.mdn.kupu.core.party.entity.PartyRelationshipId;
 import id.my.mdn.kupu.core.party.entity.Person;
+import id.my.mdn.kupu.core.security.model.ApplicationUser;
 import jakarta.persistence.ColumnResult;
 import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.Entity;
@@ -24,11 +28,11 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.SqlResultSetMapping;
 import jakarta.persistence.SqlResultSetMappings;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Formatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -46,23 +50,30 @@ import java.util.UUID;
                         targetClass = Aktifitas.class,
                         columns = {
                             @ColumnResult(name = "ID", type = String.class),
-                            @ColumnResult(name = "CREATED", type = LocalDateTime.class),
                             @ColumnResult(name = "ACTIVITYDATE", type = LocalDate.class),
 
+                            @ColumnResult(name = "CONFIRMED", type = Boolean.class),
+
+                            @ColumnResult(name = "CREATED", type = LocalDateTime.class),
+                            @ColumnResult(name = "CREATOR_ID", type = Long.class),
+                            @ColumnResult(name = "LASTMODIFIED", type = LocalDateTime.class),
+                            @ColumnResult(name = "LASTMODIFIER_ID", type = Long.class),
+                            @ColumnResult(name = "NOTES", type = String.class),
+
                             @ColumnResult(name = "SANTRI_ID", type = Long.class),
+                            @ColumnResult(name = "SANTRI_PERSON_ID", type = Long.class),
                             @ColumnResult(name = "SANTRI_NAME", type = String.class),
                             @ColumnResult(name = "SANTRI_GENDER", type = String.class),
 
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_ID", type = Long.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_ORG_ID", type = Long.class),
                             @ColumnResult(name = "KELOMPOKPENGASUHAN_NAME", type = String.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_PENGASUHAN_FROMDATE", type = LocalDate.class),
 
                             @ColumnResult(name = "BENTUKAKTIFITAS_ID", type = String.class),
                             @ColumnResult(name = "BENTUKAKTIFITAS_BENTUK", type = String.class),
                             @ColumnResult(name = "BENTUKAKTIFITAS_JENIS", type = String.class),
-                            @ColumnResult(name = "BENTUKAKTIFITAS_NILAI", type = String.class),
-
-                            @ColumnResult(name = "NOTES", type = String.class),
-                            @ColumnResult(name = "CONFIRMED", type = Boolean.class)
-                        }
+                            @ColumnResult(name = "BENTUKAKTIFITAS_NILAI", type = String.class),}
                 )
             }
     ),
@@ -90,24 +101,23 @@ import java.util.UUID;
                 @ConstructorResult(
                         targetClass = RangkumanKepengasuhan.class,
                         columns = {
-                            @ColumnResult(name = "partyId", type = Long.class),
-                            @ColumnResult(name = "firstname", type = String.class),
-                            @ColumnResult(name = "lastname", type = String.class),
-                            @ColumnResult(name = "santri_id", type = Long.class),
-                            @ColumnResult(name = "nis", type = String.class),
-                            @ColumnResult(name = "tahunMasukFromDate", type = LocalDate.class),
-                            @ColumnResult(name = "kelompokPengasuhanId", type = Long.class),
-                            @ColumnResult(name = "kelompokPengasuhanPartyName", type = String.class),
-                            @ColumnResult(name = "koordinator", type = Boolean.class),
-                            @ColumnResult(name = "label", type = String.class),
-                            @ColumnResult(name = "fromDate", type = LocalDate.class),
-                            @ColumnResult(name = "thruDate", type = LocalDate.class),
-                            @ColumnResult(name = "bdas_merah", type = Integer.class),
-                            @ColumnResult(name = "bdas_kuning", type = Integer.class),
-                            @ColumnResult(name = "bdas", type = String.class),
-                            @ColumnResult(name = "non_bdas_merah", type = Integer.class),
-                            @ColumnResult(name = "non_bdas_kuning", type = Integer.class),
-                            @ColumnResult(name = "non_bdas", type = String.class)}
+                            @ColumnResult(name = "PERSON_ID", type = Long.class),
+                            @ColumnResult(name = "PERSON_NAME", type = String.class),
+                            @ColumnResult(name = "SANTRI_ID", type = Long.class),
+                            @ColumnResult(name = "NIS", type = String.class),
+                            @ColumnResult(name = "TAHUNMASUK_FROMDATE", type = LocalDate.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_ID", type = Long.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_NAME", type = String.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_KOORDINATOR", type = Boolean.class),
+                            @ColumnResult(name = "LABEL", type = String.class),
+                            @ColumnResult(name = "FROMDATE", type = LocalDate.class),
+                            @ColumnResult(name = "THRUDATE", type = LocalDate.class),
+                            @ColumnResult(name = "BDAS_MERAH", type = Integer.class),
+                            @ColumnResult(name = "BDAS_KUNING", type = Integer.class),
+                            @ColumnResult(name = "BDAS", type = String.class),
+                            @ColumnResult(name = "NON_BDAS_MERAH", type = Integer.class),
+                            @ColumnResult(name = "NON_BDAS_KUNING", type = Integer.class),
+                            @ColumnResult(name = "NON_BDAS", type = String.class)}
                 )
             }
     ),
@@ -157,7 +167,7 @@ public class Aktifitas implements Serializable {
 
     @Id
     private String id;
-    
+
     private LocalDate activityDate;
 
     @ManyToOne
@@ -166,158 +176,81 @@ public class Aktifitas implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private BentukAktifitas bentukAktifitas;
 
-    
-    private LocalDateTime created;
-
     private boolean confirmed;
 
     @Lob
     private String notes;
 
-    @Transient 
-    private String santriName;
+    private LocalDateTime created;
 
-    @Transient
-    private GenderType santriGender;
+    @ManyToOne
+    private ApplicationUser creator;
 
-    @Transient
-    private String kelompokPengasuhanName;
+    private LocalDateTime lastModified;
 
-    @Transient
-    private String bentukAktifitasBentuk;
-
-    @Transient
-    private JenisAktifitas bentukAktifitasJenis;
-
-    @Transient
-    private NilaiAktifitas bentukAktifitasNilai;
+    @ManyToOne
+    private ApplicationUser lastModifier;
 
     public Aktifitas() {
     }
 
-    public Aktifitas(String id, LocalDateTime created, LocalDate activityDate,
-            Long santriId, String santriName, String santriGender, String kelompokPengasuhanName,
-            String bentukAktifitasId, String bentukAktifitasBentuk, String bentukAktifitasJenis, String bentukAktifitasNilai,
-            String notes, Boolean confirmed) {
-
-        this.id = id;
-        this.created = created;
-        this.activityDate = activityDate;
-
-        Santri s = new Santri();
-        s.setId(santriId);
-        this.santri = s;
-
-        this.santriName = santriName;
-
-        if (santriGender != null) {
-            this.santriGender = GenderType.valueOf(santriGender);
-        }
-
-        this.kelompokPengasuhanName = kelompokPengasuhanName;
-
-        BentukAktifitas btk = new BentukAktifitas();
-        btk.setId(bentukAktifitasId);
-        this.bentukAktifitas = btk;
-        this.bentukAktifitasBentuk = bentukAktifitasBentuk;
-        this.bentukAktifitasJenis = bentukAktifitasJenis != null ? JenisAktifitas.valueOf(bentukAktifitasJenis) : null;
-        this.bentukAktifitasNilai = bentukAktifitasNilai != null ? NilaiAktifitas.valueOf(bentukAktifitasNilai) : null;
-
-        this.notes = notes;
-        this.confirmed = confirmed;
+    public Aktifitas(String id) {
+        setId(id);
     }
 
-    public Aktifitas(
-            String id, LocalDate activityDate, LocalDateTime created, String notes, Boolean confirmed,
-            Long santriId, Long personId, String firstName, String lastName,
-            Long kelompokPengasuhanId, Long kelompokPengasuhanOrganizationId, String kelompokPengasuhanOrganizationName,
-            String bentukAktifitasId, String bentuk, String jenis, String nilai
-    ) {
+    public Aktifitas(String id, LocalDate activityDate,
+            Boolean confirmed, LocalDateTime created,
+            Long creatorId, LocalDateTime lastModified, Long lastModifier, String notes,
+            Long santriId, Long santriPersonId, String santriName, String santriGender,
+            Long kelompokPengasuhanId, Long kelompokPengasuhanOrgId, String kelompokPengasuhanName, LocalDate kelompokPengasuhanPengasuhanFromDate,
+            String bentukAktifitasId, String bentukAktifitasBentuk, String bentukAktifitasJenis, String bentukAktifitasNilai) {
 
         this.id = id;
         this.activityDate = activityDate;
-        this.created = created;
+
         this.notes = notes;
         this.confirmed = confirmed;
 
-        // Santri
+        this.created = created;
+        this.creator = new ApplicationUser();
+        this.creator.setId(creatorId);
+
+        this.lastModified = lastModified;
+        this.lastModifier = new ApplicationUser();
+        this.lastModifier.setId(lastModifier);
+
         if (santriId != null) {
-            this.santri = new Santri();
+            this.santri = Santri.builder()
+                    .withPerson(
+                            Person.builder()
+                                    .firstName(santriName)
+                                    .gender(santriGender != null ? GenderType.valueOf(santriGender) : null)
+                                    .get())
+                    .get();
             this.santri.setId(santriId);
-            Person person = new Person();
-            person.setId(personId);
-            person.setFirstName(firstName);
-            person.setLastName(lastName);
-            this.santri.setPerson(person);
+            this.santri.getPerson().setId(santriPersonId);
+            this.santri.setTargetRelationships(new ArrayList<>());
         }
 
-        // Kelompok Pengasuhan
         if (kelompokPengasuhanId != null) {
-            KelompokPengasuhan kelompokPengasuhan = new KelompokPengasuhan();
+            KelompokPengasuhan kelompokPengasuhan = KelompokPengasuhan.builder().withOrganization(new Organization()).get();
             kelompokPengasuhan.setId(kelompokPengasuhanId);
-            Organization organization = new Organization();
-            organization.setId(kelompokPengasuhanOrganizationId);
-            organization.setName(kelompokPengasuhanOrganizationName);
-            kelompokPengasuhan.setOrganization(organization);
-            this.santri.setKelompokPengasuhan(kelompokPengasuhan);
+            kelompokPengasuhan.getOrganization().setId(kelompokPengasuhanOrgId);
+            kelompokPengasuhan.getOrganization().setName(kelompokPengasuhanName);
 
+            Pengasuhan pengasuhan = Pengasuhan.builder().from(kelompokPengasuhan).to(this.santri).get();
+            pengasuhan.setId(new PartyRelationshipId(kelompokPengasuhanId, santriId, kelompokPengasuhanPengasuhanFromDate, "Pengasuhan"));
+
+            this.santri.getTargetRelationships().add(pengasuhan);
         }
 
-        // Bentuk Aktifitas
-        if (bentukAktifitasId != null && !bentukAktifitasId.isEmpty()) {
+        if (bentukAktifitasId != null) {
             this.bentukAktifitas = new BentukAktifitas();
             this.bentukAktifitas.setId(bentukAktifitasId);
-            this.bentukAktifitas.setBentuk(bentuk);
-            if (jenis != null) {
-                this.bentukAktifitas.setJenis(JenisAktifitas.valueOf(jenis));
-            }
-            if (nilai != null) {
-                this.bentukAktifitas.setNilai(NilaiAktifitas.valueOf(nilai));
-            }
-        } else {
-            this.bentukAktifitas = null;
+            this.bentukAktifitas.setNilai(bentukAktifitasNilai != null ? NilaiAktifitas.valueOf(bentukAktifitasNilai) : null);
+            this.bentukAktifitas.setBentuk(bentukAktifitasBentuk);
+            this.bentukAktifitas.setJenis(bentukAktifitasJenis != null ? JenisAktifitas.valueOf(bentukAktifitasJenis) : null);
         }
-
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public LocalDate getActivityDate() {
-        return activityDate;
-    }
-
-    public void setActivityDate(LocalDate activityDate) {
-        this.activityDate = activityDate;
-    }
-
-    public Santri getSantri() {
-        return santri;
-    }
-
-    public void setSantri(Santri santri) {
-        this.santri = santri;
-    }
-
-    public KelompokPengasuhan getKelompokPengasuhan() {
-        return santri != null ? santri.getKelompokPengasuhan() : null;
-    }
-
-    public JenisAktifitas getJenis() {
-        return bentukAktifitas != null ? bentukAktifitas.getJenis() : null;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
     }
 
     @PrePersist
@@ -326,10 +259,6 @@ public class Aktifitas implements Serializable {
             id = UUID.randomUUID().toString();
         }
         created = LocalDateTime.now();
-    }
-
-    public String getLabel() {
-        return new Formatter().format("%s", bentukAktifitas.getBentuk()).toString();
     }
 
     @Override
@@ -359,6 +288,50 @@ public class Aktifitas implements Serializable {
         return Objects.equals(this.id, other.id);
     }
 
+    public KelompokPengasuhan getKelompokPengasuhan() {
+        if (this.santri == null) {
+            return null;
+        }
+        List<PartyRelationship> targetRelationships = this.santri.getTargetRelationships();
+        if (!targetRelationships.isEmpty() && targetRelationships.size() == 1) {
+            return (KelompokPengasuhan) targetRelationships.get(0).getFromRole();
+        } else {
+            return null;
+        }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public LocalDate getActivityDate() {
+        return activityDate;
+    }
+
+    public void setActivityDate(LocalDate activityDate) {
+        this.activityDate = activityDate;
+    }
+
+    public Santri getSantri() {
+        return santri;
+    }
+
+    public void setSantri(Santri santri) {
+        this.santri = santri;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
     public BentukAktifitas getBentukAktifitas() {
         return bentukAktifitas;
     }
@@ -383,48 +356,28 @@ public class Aktifitas implements Serializable {
         this.notes = notes;
     }
 
-    public String getSantriName() {
-        return santriName;
+    public ApplicationUser getCreator() {
+        return creator;
     }
 
-    public void setSantriName(String santriName) {
-        this.santriName = santriName;
+    public void setCreator(ApplicationUser creator) {
+        this.creator = creator;
     }
 
-    public String getKelompokPengasuhanName() {
-        return kelompokPengasuhanName;
+    public LocalDateTime getLastModified() {
+        return lastModified;
     }
 
-    public void setKelompokPengasuhanName(String kelompokPengasuhanName) {
-        this.kelompokPengasuhanName = kelompokPengasuhanName;
+    public void setLastModified(LocalDateTime lastModified) {
+        this.lastModified = lastModified;
     }
 
-    public void setBentukAktifitasBentuk(String bentukAktifitasBentuk) {
-        this.bentukAktifitasBentuk = bentukAktifitasBentuk;
+    public ApplicationUser getLastModifier() {
+        return lastModifier;
     }
 
-    public void setBentukAktifitasJenis(JenisAktifitas bentukAktifitasJenis) {
-        this.bentukAktifitasJenis = bentukAktifitasJenis;
-    }
-
-    public void setBentukAktifitasNilai(NilaiAktifitas bentukAktifitasNilai) {
-        this.bentukAktifitasNilai = bentukAktifitasNilai;
-    }
-
-    public String getBentukAktifitasBentuk() {
-        return bentukAktifitasBentuk;
-    }
-
-    public JenisAktifitas getBentukAktifitasJenis() {
-        return bentukAktifitasJenis;
-    }
-
-    public NilaiAktifitas getBentukAktifitasNilai() {
-        return bentukAktifitasNilai;
-    }
-
-    public GenderType getSantriGender() {
-        return santriGender;
+    public void setLastModifier(ApplicationUser lastModifier) {
+        this.lastModifier = lastModifier;
     }
 
 }

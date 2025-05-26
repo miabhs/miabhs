@@ -8,7 +8,7 @@
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <f:metadata>
-        <ui:param name="title" value="Editor Laporan Pembelajaran" /> 
+        <ui:param name="title" value="Editor Laporan Hasil Pembelajaran" /> 
         
         <ui:param name="viewPage" value="#{laporanPengajaranEditorPage}" /> 
         <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>    
@@ -27,9 +27,9 @@
 
         <f:viewParam name="ps" value="#{masterDataView.selectionInternal}" converter="PeriodePembelajaranConverter" transient="true" />
 
-        <ui:param name="detailTitle" value="Laporan Kepengasuhan" />
+        <ui:param name="detailTitle" value="Hasil Pembelajaran" />
         <ui:param name="detailDataView" value="#{viewPage.santriList}" />
-        <ui:param name="detailContentId" value=":detail-frm" /> 
+        <ui:param name="detailContentId" value=":detail-frm:#{detailDataView.name}" /> 
         <ui:param name="detail_notool" value="true" />
 
         <ui:param name="detailFilter" value="#{viewPage.filter}" />
@@ -123,7 +123,7 @@
         <h:form id="master-frm">
             <ui:decorate template="/WEB-INF/components/app/santri/periodepembelajarantree.xhtml" >
                 <ui:param name="dataView" value="#{masterDataView}" />
-                <ui:param name="selectListener" value=":detail-tools-frm #{detailContentId} :detail-pager-frm :messages" />
+                <ui:param name="selectCallback" value="refreshDetail()" />
             </ui:decorate>
         </h:form>
     </ui:define>
@@ -136,9 +136,8 @@
 
     <ui:define name="detail">
         <h:form id="detail-frm" class="flex-grow-1 flex align-items-stretch">
-            <ui:decorate template="/WEB-INF/components/core/base/table-direct.xhtml" >
+            <ui:decorate template="/WEB-INF/components/core/base/table.xhtml" >
                 <ui:param name="dataView" value="#{detailDataView}" />
-                <ui:param name="selectListener" value=":detail-tools-frm" />
                 <ui:param name="styleClass" value="w-full border-0" />
 
                 <ui:define name="columns">
@@ -177,18 +176,18 @@
                                 </div>
                             </div>
                             
-                            <p:dataTable value="#{viewPage.getPencapaianBelajar(data)}" 
+                            <p:dataTable value="#{viewPage.getPencapaianPembelajaran(data)}" 
                                          var="pencapaian" size="small"  tableStyle="width: 100%!important"  >
                                 <p:column headerText="Jenis Pengajaran" groupRow="true">
-                                    <h:outputText value="#{pencapaian.jenisPengajaran.nama}" />
+                                    <h:outputText value="#{pencapaian.jenisPengajaranNama}" />
                                 </p:column>
                                 <p:column headerText="Jenis Kitab">
                                     <div class="text-right w-full">
-                                        <h:outputText value="#{pencapaian.jenisKitab.judul}" styleClass="amiri-regular text-lg"/>
+                                        <h:outputText value="#{pencapaian.jenisKitabJudul}" styleClass="amiri-regular text-lg"/>
                                     </div>
                                 </p:column>
                                 <p:column headerText="Pencapaian">
-                                    <h:outputText value="#{pencapaian.capaian}"  />
+                                    <h:outputText value="#{pencapaian.pencapaian}"  />
                                 </p:column>
                             </p:dataTable>
                             
@@ -230,21 +229,14 @@
                                         </span>
                                     </f:facet>
                                 </p:textEditor>
-                            </p:panel>
-
+                            </p:panel>   
+                            
                         </div>
                     </p:column>
                 </ui:define>
 
             </ui:decorate>
         </h:form>
-    </ui:define>
-
-    <ui:define name="detail-pager">
-        <ui:include src="/WEB-INF/components/core/base/pager.xhtml" >
-            <ui:param name="pager" value="#{detailPager}" />
-            <ui:param name="pagerListener" value="#{detailContentId}" />
-        </ui:include>
     </ui:define>
 
 </ui:composition>

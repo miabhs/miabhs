@@ -36,7 +36,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -67,7 +66,6 @@ public class PeriodePembelajaranTree extends AbstractMutableTree<PeriodePembelaj
             List<FilterData> filters, List<SorterData> sorters,
             DefaultList<PeriodePembelajaran> defaultReturn,
             DefaultChecker defaultChecker) {
-        System.err.printf("SELEKTRI FET: %s", filters.stream().map(f -> f.name + "->" + f.value).collect(Collectors.joining(", ")));
         return dao.findAll(0, 0, parameters, filters, sorters, List.of(), defaultChecker);
     }
 

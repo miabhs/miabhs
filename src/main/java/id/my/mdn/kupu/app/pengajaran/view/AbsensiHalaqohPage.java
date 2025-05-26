@@ -52,10 +52,10 @@ public class AbsensiHalaqohPage extends ReportingChildPage implements Serializab
 
     @Inject
     private HalaqohPengajaranSqlFacade halaqohFacade;
-    
+
     @Inject
     private PelaksanaanHalaqohFacade pelaksanaanHalaqohFacade;
-    
+
     @Inject
     private PeriodePembelajaranFacade periodePembelajaranFacade;
 
@@ -88,7 +88,7 @@ public class AbsensiHalaqohPage extends ReportingChildPage implements Serializab
     }
 
     @Override
-    protected ReportingJob prepareReportingJob() {
+    protected List<ReportingJob> prepareReportingJob() {
 
         List<RangkumanPengajaran> listPengajaran = pengajaranFacade.findAll(parametersPengajaran());
 
@@ -137,13 +137,14 @@ public class AbsensiHalaqohPage extends ReportingChildPage implements Serializab
         parameters.put("jenisKitab", halaqoh != null ? halaqoh.getJenisKitabJudul() : "");
         parameters.put("kelompokWaktu", halaqoh != null ? halaqoh.getKelompokWaktu() : "");
 
-        return new ReportingJob(
-                listPengajaran, parameters,
-                "AbsensiHalaqoh",
-                "CatatanAbsensiHalaqoh",
-                "DetailCatatanAbsensiHalaqoh",
-                "KPPAbsensiHalaqoh"
-        );
+        return List.of(
+                new ReportingJob(
+                        listPengajaran, parameters,
+                        "AbsensiHalaqoh",
+                        "CatatanAbsensiHalaqoh",
+                        "DetailCatatanAbsensiHalaqoh",
+                        "KPPAbsensiHalaqoh"
+                ));
     }
 
     public HalaqohPengajaranList getMasterDataView() {

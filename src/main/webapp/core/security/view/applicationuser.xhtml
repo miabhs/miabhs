@@ -8,19 +8,19 @@
     <f:metadata>
 
         <ui:param name="primaryTitle" value="Users" />
-        <ui:param name="viewPage" value="#{applicationUserPage}" />
-        <ui:param name="dataView" value="#{viewPage.dataView}" />
-        <ui:param name="pager" value="#{dataView.pager}" />
-        <ui:param name="contentId" value=":data-frm:#{dataView.name}" /> 
         
-        <ui:param name="nofilter" value="true" />
-
+        <ui:param name="viewPage" value="#{applicationUserPage}" />
         <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
         
+        <ui:param name="dataView" value="#{viewPage.dataView}" />
+        <ui:param name="notool" value="true" />
+        <ui:param name="contentId" value=":data-frm:#{dataView.name}" />         
+        
+        <ui:param name="pager" value="#{dataView.pager}" />
         <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
         
-        <f:viewParam name="s" value="#{dataView.selections}" 
-                     converter="ApplicationUserListConverter" />
+        <f:viewParam name="s" value="#{dataView.selectionsInternal}" 
+                     converter="ApplicationUserListConverter" transient="true" />
         
     </f:metadata>
     

@@ -2,14 +2,14 @@ package id.my.mdn.kupu.core.config.bean;
 
 import id.my.mdn.kupu.core.config.model.AbstractConfigurationWrapper;
 import id.my.mdn.kupu.core.config.service.ConfigFacade;
-import java.io.Serializable;
-import java.util.Iterator;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import java.util.Iterator;
 import org.apache.commons.configuration2.Configuration;
 
 /**
@@ -99,6 +99,11 @@ public class ApplicationConfiguration implements Serializable {
                 @Override
                 protected boolean containsKeyInternal(String key) {
                     return configFacade.containsKey(key);
+                }
+
+                @Override
+                protected boolean containsValueInternal(Object o) {
+                    return false;
                 }
             };
 

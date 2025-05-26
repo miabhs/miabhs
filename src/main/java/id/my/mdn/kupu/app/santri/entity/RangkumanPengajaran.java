@@ -98,8 +98,6 @@ public class RangkumanPengajaran implements Serializable {
             LocalDate d4, String k4, String s4,
             LocalDate d5, String k5, String s5,
             LocalDate d6, String k6, String s6) {
-        
-        System.err.printf("SELEKTRI NILENE BDAS: %dM, %dK; NBDAS: %dM, %dK", bdasMerah, bdasKuning, nbdasMerah, nbdasKuning);
 
         this.id = new PartyRelationshipId(halaqohId, santriId, pengajaranFromDate, "Pengajaran");
 
@@ -169,7 +167,6 @@ public class RangkumanPengajaran implements Serializable {
     }
 
     public PartyRelationshipId getId() {
-        System.err.printf("SELEKTRI RANGKUMAN PENGAJARAN: %s", id);
         return id;
     }
 

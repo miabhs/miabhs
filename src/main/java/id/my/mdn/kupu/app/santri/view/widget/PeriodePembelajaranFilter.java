@@ -34,13 +34,11 @@ public class PeriodePembelajaranFilter extends FilterContent implements Serializ
        tahunPembelajaran = tahunFacade.findSingleByAttributes(List.of(FilterData.by("date", LocalDate.now())));
     }
 
-    public TahunPembelajaran getTahunPembelajaran() { 
-        System.err.printf("SELEKTRI GET PILTER THP: %s", tahunPembelajaran);
+    public TahunPembelajaran getTahunPembelajaran() {
         return tahunPembelajaran;
     }
 
     public void setTahunPembelajaran(TahunPembelajaran tahunPembelajaran) {
-        System.err.printf("SELEKTRI SET PILTER THP: %s", tahunPembelajaran);
         this.tahunPembelajaran = tahunPembelajaran;
     }
 }

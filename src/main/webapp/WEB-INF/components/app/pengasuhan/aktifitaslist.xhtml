@@ -84,14 +84,14 @@
                 </f:facet>
                 <p:cellEditor id="santri">
                     <f:facet name="output">
-                        <h:outputText value="#{data.santriName}" class="white-space-normal text-base font-medium block mb-2" />
-                        <h:outputText value="#{data.kelompokPengasuhanName}"
+                        <h:outputText value="#{data.santri.person.firstName}" class="white-space-normal text-base font-medium block mb-2" />
+                        <h:outputText value="#{data.kelompokPengasuhan.organization.name}"
                                       class="white-space-normal font-light text-sm font-italic" />
                     </f:facet>
                     <f:facet name="input">
                         <span class="ui-input-icon-right">
                             <i class="pi pi-chevron-down" />
-                            <p:inputText value="#{data.santriName}" 
+                            <p:inputText value="#{data.santri.person.firstName}" 
                                          style="cursor: pointer;"
                                          readonly="true"
                                          onclick="showSantriSelector('#{component.clientId}', '#{component.parent.parent.clientId}, #{component.parent.parent.clientId.replace('santri', 'confirmation')}')" />
@@ -109,11 +109,11 @@
                 <p:cellEditor id="bentuk-aktifitas">
                     <f:facet name="output">
                         <h:panelGroup class="flex align-items-start w-12 gap-2">
-                            <h:outputText value="#{data.bentukAktifitasNilai.label}"  
-                                          class="flex-grow-0 flex-shrink-0 justify-content-center flex align-items-center w-2rem h-2rem #{data.bentukAktifitasNilai.color} font-bold text-sm text-white" />
+                            <h:outputText value="#{data.bentukAktifitas.nilai.label}"  
+                                          class="flex-grow-0 flex-shrink-0 justify-content-center flex align-items-center w-2rem h-2rem #{data.bentukAktifitas.nilai.color} font-bold text-sm text-white" />
                             <h:panelGroup layout="block" class="flex-grow-1 flex flex-column">
-                                <h:outputText class="white-space-normal font-medium text-base block mb-2" value="#{data.bentukAktifitasBentuk}" />                            
-                                <h:outputText value="#{data.bentukAktifitasJenis.label}" 
+                                <h:outputText class="white-space-normal font-medium text-base block mb-2" value="#{data.bentukAktifitas.bentuk}" />                            
+                                <h:outputText value="#{data.bentukAktifitas.jenis.label}" 
                                               class="align-self-end white-space-normal font-light text-sm font-italic" />
                             </h:panelGroup>
                         </h:panelGroup>
@@ -121,7 +121,7 @@
                     <f:facet name="input">
                         <span class="ui-input-icon-right w-12">
                             <i class="pi pi-chevron-down" />
-                            <p:inputTextarea value="#{data.bentukAktifitasBentuk}"  class="w-full"
+                            <p:inputTextarea value="#{data.bentukAktifitas.bentuk}"  class="w-full"
                                              style="cursor: pointer;"
                                              readonly="true"
                                              onclick="showBentukAktifitasSelector('#{component.clientId}', '#{component.parent.parent.clientId}, #{component.parent.parent.clientId.replace('bentuk-aktifitas', 'confirmation')}')" />

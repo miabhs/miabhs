@@ -65,24 +65,14 @@
 
                         <div class="field ui-fluid">
                             <p:outputLabel for="jilid" value="Berjilid" />
-                            <p:selectBooleanCheckbox id="jilid" value="#{viewPage.entity.berjilid}" /> 
-                        </div>
-                        <ui:remove>
-                        <div class="field ui-fluid">
-                            <p:outputLabel for="penulis" value="Penulis" />
-                            <p:inputText id="penulis" value="#{viewPage.entity.penulis}" /> 
+                            <p:selectBooleanCheckbox id="jilid" value="#{viewPage.entity.berjilid}" disabled="#{viewPage.entity.parent ne null}" /> 
                         </div>
 
                         <div class="field ui-fluid">
-                            <p:outputLabel for="halaman" value="Jumlah Halaman" />
-                            <p:inputNumber id="halaman" value="#{viewPage.entity.jumlahHalaman}" /> 
+                            <p:outputLabel for="dirincikan" value="Dirincikan" />
+                            <p:selectBooleanCheckbox id="dirincikan" value="#{viewPage.entity.dirincikan}" disabled="#{viewPage.entity.parent ne null}" /> 
                         </div>
-
-                        <div class="field ui-fluid">
-                            <p:outputLabel for="deskripsi" value="Deskripsi" />
-                            <p:inputTextarea id="deskripsi" value="#{viewPage.entity.description}" /> 
-                        </div>
-                        </ui:remove>
+                        
                     </ui:define>
                 </ui:decorate>
             </div>

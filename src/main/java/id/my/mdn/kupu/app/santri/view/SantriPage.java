@@ -42,6 +42,10 @@ public class SantriPage extends Page implements Serializable {
     @Inject
     private SantriFacade santriFacade;
     
+    public void generateAktifitas(ActionEvent evt) {
+        santriFacade.generateAktifitas(50000);
+    }
+    
     @Override
     @PostConstruct
     public void init() {
@@ -89,6 +93,11 @@ public class SantriPage extends Page implements Serializable {
 
     public void generateNis(ActionEvent evt) {
         santriFacade.generateNis(dataView.getSelections());
+    }
+    
+    public void gotoLPPB(ActionEvent evt) {
+        gotoChild(LppbPage.class)
+                .open();
     }
     
     public void gotoPengasuhan(ActionEvent evt) {

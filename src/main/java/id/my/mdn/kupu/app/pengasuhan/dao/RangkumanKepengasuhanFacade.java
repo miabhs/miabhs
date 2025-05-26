@@ -38,176 +38,137 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
 
     private static final String MAIN_QUERY_TEMPLATE
             = """
-            SELECT S6.PARTYID, S6.FIRSTNAME, S6.LASTNAME,
-                   A6.SANTRI_ID, S6.NIS, S6.TAHUNMASUKFROMDATE, 
-                   S6.KELOMPOKPENGASUHANID, S6.KELOMPOKPENGASUHANPARTYNAME, S6.KOORDINATOR,
+            SELECT S6.PERSON_ID, S6.PERSON_NAME,
+                   S6.SANTRI_ID, S6.NIS, S6.TAHUNMASUK_FROMDATE, S6.KELOMPOKPENGASUHAN_ID, S6.KELOMPOKPENGASUHAN_NAME, S6.KELOMPOKPENGASUHAN_KOORDINATOR,
                    A6.LABEL, A6.FROMDATE, A6.THRUDATE,
                    A6.BDAS_MERAH, A6.BDAS_KUNING, A6.BDAS,
                    A6.NON_BDAS_MERAH, A6.NON_BDAS_KUNING, A6.NON_BDAS
             FROM (
+                SELECT ID AS SANTRI_ID,
+                       PERSON_ID, PERSON_NAME, PERSON_GENDER, PERSON_DOB,
+                       NAMABAPAK, NIS, JENISSANTRI, TAHUNMASUK_ID, TAHUNMASUK_NAME, TAHUNMASUK_FROMDATE, ANGKATAN,
+                       KELOMPOKPENGASUHAN_ID, KELOMPOKPENGASUHAN_ORG_ID, KELOMPOKPENGASUHAN_NAME, KELOMPOKPENGASUHAN_KOORDINATOR, KELOMPOKPENGASUHAN_PENGASUHAN_FROMDATE,
+                       STATUS, STATUS_FROMDATE
+                FROM (
+                    SELECT SN.ID,
+                           PR.PARTY_ID AS PERSON_ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS PERSON_NAME, PN.GENDER AS PERSON_GENDER, PN.DATEOFBIRTH AS PERSON_DOB,
+                           SN.NAMABAPAK, SN.NIS, SN.JENISSANTRI, SN.TAHUNMASUK_ID, TP.NAME AS TAHUNMASUK_NAME, TP.FROMDATE AS TAHUNMASUK_FROMDATE, SN.ANGKATAN,
+                           PS.FROMROLE_ID AS KELOMPOKPENGASUHAN_ID, PYX.ID AS KELOMPOKPENGASUHAN_ORG_ID, PYX.FIRSTNAME AS KELOMPOKPENGASUHAN_NAME, PS.KOORDINATOR AS KELOMPOKPENGASUHAN_KOORDINATOR, PS.FROMDATE AS KELOMPOKPENGASUHAN_PENGASUHAN_FROMDATE,
+                           SS.STATUS, SS.STATUS_FROMDATE
+                    FROM MIABH_SANTRI AS SN
+                    JOIN PARTY_PARTYROLE AS PR ON SN.ID = PR.ID
+                    JOIN PARTY_PARTY AS PY ON PR.PARTY_ID = PY.ID
+                    JOIN PARTY_PERSON AS PN ON PY.ID = PN.ID
+                    JOIN MIABH_TAHUNPEMBELAJARAN AS TP ON SN.TAHUNMASUK_ID = TP.ID
+                    JOIN (
+                        SELECT PSZ.FROMROLE_ID, PSZ.TOROLE_ID, PSZ.FROMDATE, PSZ.KOORDINATOR
+                        FROM (
+                            SELECT PSX.FROMROLE_ID, PSX.TOROLE_ID, PSX.FROMDATE, PSX.KOORDINATOR
+                            FROM MIABH_PENGASUHAN AS PSX
+                            JOIN (    
+                                SELECT PS.TOROLE_ID, MAX(PS.FROMDATE) AS FROMDATE
+                                FROM MIABH_PENGASUHAN AS PS
+                                WHERE PS.FROMDATE <= CURRENT_DATE                    
+                                GROUP BY PS.TOROLE_ID
+                            ) AS PSY
+                            ON PSX.TOROLE_ID = PSY.TOROLE_ID AND PSX.FROMDATE = PSY.FROMDATE
+                        ) AS PSZ
+                        JOIN PARTY_PARTYRELATIONSHIP AS PREL
+                        ON PSZ.FROMROLE_ID = PREL.FROMROLE_ID AND PSZ.TOROLE_ID = PREL.TOROLE_ID AND PSZ.FROMDATE = PREL.FROMDATE AND PREL.PARTYRELATIONSHIPTYPE_ID = 'Pengasuhan'
+                    ) AS PS ON PS.TOROLE_ID = SN.ID        
+                    LEFT JOIN PARTY_PARTYROLE AS PRX ON PS.FROMROLE_ID = PRX.ID
+                    LEFT JOIN PARTY_PARTY AS PYX ON PRX.PARTY_ID = PYX.ID
+                    LEFT JOIN (
+                        SELECT SSY.SANTRI_ID, SSY.FROMDATE AS STATUS_FROMDATE, SSX.STATUS
+                        FROM (
+                                SELECT SANTRI_ID, MAX(FROMDATE) AS FROMDATE
+                                FROM MIABH_STATUSSANTRI
+                                WHERE FROMDATE <= CURRENT_DATE
+                                GROUP BY SANTRI_ID
+                        ) AS SSY
+                        JOIN MIABH_STATUSSANTRI AS SSX
+                        ON SSY.SANTRI_ID = SSX.SANTRI_ID AND SSY.FROMDATE = SSX.FROMDATE
+                    ) AS SS ON SN.ID = SS.SANTRI_ID
+                ) 
+            ) AS S6
+            LEFT JOIN (
               SELECT SANTRI_ID, LABEL, ORDINAL, FROMDATE, THRUDATE, BDAS_MERAH, BDAS_KUNING, BDAS, NON_BDAS_MERAH, NON_BDAS_KUNING, NON_BDAS
               FROM <?>
-            ) AS A6
-            JOIN (
-                SELECT ID, PARTYID, PARTYROLETYPEID, FIRSTNAME, LASTNAME, NAMABAPAK, GENDER, DATEOFBIRTH,
-                       NIS, STATUS, TAHUNMASUKID, TAHUNMASUKNAME, TAHUNMASUKFROMDATE,
-                       KELOMPOKPENGASUHANID, KELOMPOKPENGASUHANPARTYID, KELOMPOKPENGASUHANPARTYNAME, KOORDINATOR
-                FROM (
-                    SELECT S4.ID, S4.PARTY_ID AS PARTYID, S4.PARTYROLETYPE_ID AS PARTYROLETYPEID,
-                           S4.FIRSTNAME, S4.LASTNAME, S4.NAMABAPAK, S4.GENDER, S4.DATEOFBIRTH AS DATEOFBIRTH,
-                           S4.KOORDINATOR, KKS2.ID AS KELOMPOKPENGASUHANID, KKS2.PARTY_ID AS KELOMPOKPENGASUHANPARTYID,
-                           KKS2.NAME AS KELOMPOKPENGASUHANPARTYNAME, S4.STATUS AS STATUS, S4.NIS,
-                           S4.TAHUNMASUK_ID AS TAHUNMASUKID, S4.TAHUNMASUKNAME, S4.TAHUNMASUKFROMDATE
-                    FROM (
-                        SELECT S3.ID, S3.PARTY_ID, S3.PARTYROLETYPE_ID, S3.FIRSTNAME, S3.LASTNAME,
-                               S3.NAMABAPAK, S3.GENDER, S3.DATEOFBIRTH, PS2.KOORDINATOR, PS2.FROMROLE_ID,
-                               S3.STATUS, S3.NIS, S3.TAHUNMASUK_ID, S3.TAHUNMASUKNAME, S3.TAHUNMASUKFROMDATE
-                        FROM (
-                            SELECT S2.ID, S2.PARTY_ID, S2.PARTYROLETYPE_ID, S2.FIRSTNAME, S2.LASTNAME,
-                                   S2.NAMABAPAK, S2.GENDER, S2.DATEOFBIRTH, SS0.STATUS, S2.NIS,
-                                   S2.TAHUNMASUK_ID, S2.TAHUNMASUKNAME, S2.TAHUNMASUKFROMDATE
-                            FROM (
-                                SELECT S1.ID, S1.PARTY_ID, S1.PARTYROLETYPE_ID, PSON1.FIRSTNAME, PSON1.LASTNAME,
-                                       S1.NAMABAPAK, PSON1.GENDER, PSON1.DATEOFBIRTH, S1.NIS,
-                                       S1.TAHUNMASUK_ID, S1.TAHUNMASUKNAME, S1.TAHUNMASUKFROMDATE
-                                FROM (
-                                    SELECT S0.ID, PROLE0.PARTY_ID, PROLE0.PARTYROLETYPE_ID, S0.NAMABAPAK,
-                                           S0.NIS, S0.TAHUNMASUK_ID, S0.TAHUNMASUKNAME, S0.TAHUNMASUKFROMDATE
-                                    FROM (
-                                        SELECT S.ID, S.NAMABAPAK, S.NIS,
-                                               S.TAHUNMASUK_ID, TP.NAME AS TAHUNMASUKNAME, TP.FROMDATE AS TAHUNMASUKFROMDATE
-                                        FROM MIABH_SANTRI S
-                                        JOIN MIABH_PENGASUHAN PS ON PS.TOROLE_ID = S.ID
-                                        JOIN MIABH_TAHUNPEMBELAJARAN TP ON S.TAHUNMASUK_ID = TP.ID
-                                        <?>
-                                    ) AS S0
-                                    JOIN PARTY_PARTYROLE AS PROLE0
-                                    ON S0.ID = PROLE0.ID
-                                    WHERE PROLE0.FROMDATE <=  CURRENT_DATE
-                                    AND (PROLE0.THRUDATE IS NULL OR PROLE0.THRUDATE >= CURRENT_DATE)
-                                ) AS S1
-                                JOIN (
-                                    SELECT PSON.ID, PRTY.FIRSTNAME, PRTY.LASTNAME, PSON.GENDER, PSON.DATEOFBIRTH 
-                                    FROM PARTY_PERSON AS PSON
-                                    JOIN PARTY_PARTY AS PRTY
-                                    ON PSON.ID = PRTY.ID
-                                ) AS PSON1
-                                ON S1.PARTY_ID = PSON1.ID
-                            ) AS S2
-                            JOIN MIABH_STATUSSANTRI AS SS0
-                            ON S2.ID = SS0.SANTRI_ID
-                            WHERE SS0.FROMDATE <=  CURRENT_DATE
-                            AND (SS0.THRUDATE IS NULL OR SS0.THRUDATE >= CURRENT_DATE)
-                        ) AS S3
-                        LEFT JOIN (
-                            SELECT PS1.FROMROLE_ID, PS1.TOROLE_ID, PS1.FROMDATE, PREL1.THRUDATE, PS1.KOORDINATOR
-                            FROM MIABH_PENGASUHAN AS PS1
-                            JOIN PARTY_PARTYRELATIONSHIP AS PREL1
-                            ON PS1.PARTYRELATIONSHIPTYPE_ID = PREL1.PARTYRELATIONSHIPTYPE_ID
-                            AND PS1.FROMROLE_ID = PREL1.FROMROLE_ID
-                            AND PS1.TOROLE_ID = PREL1.TOROLE_ID
-                            AND PS1.FROMDATE = PREL1.FROMDATE
-                            WHERE PREL1.FROMDATE <=  CURRENT_DATE
-                            AND (PREL1.THRUDATE IS NULL OR PREL1.THRUDATE >= CURRENT_DATE)
-                        ) AS PS2
-                        ON S3.ID = PS2.TOROLE_ID
-                    ) AS S4
-                    LEFT JOIN (
-                        SELECT KKS1.ID, KKS1.PARTY_ID, ORG0.FIRSTNAME AS NAME
-                        FROM (
-                            SELECT KKS0.ID, PROLE0.PARTY_ID
-                            FROM MIABH_KELOMPOKPENGASUHAN AS KKS0
-                            JOIN PARTY_PARTYROLE AS PROLE0
-                            ON KKS0.ID = PROLE0.ID
-                        ) AS KKS1
-                        JOIN PARTY_PARTY AS ORG0
-                        ON KKS1.PARTY_ID = ORG0.ID
-                    ) AS KKS2
-                    ON S4.FROMROLE_ID = KKS2.ID
-                )
-            ) AS S6
-            ON A6.SANTRI_ID = S6.ID
+            ) AS A6            
+            ON A6.SANTRI_ID = S6.SANTRI_ID
+            <?>
             """;
 
     private static final String SUB_QUERY_TEMPLATE
             = """   
                 (
-                  SELECT S0.ID AS SANTRI_ID, '<?>' AS LABEL, <?> AS ORDINAL, (DATE '<?>') AS FROMDATE, (DATE '<?>') AS THRUDATE,
-                         (CASE WHEN A5.BDAS_MERAH IS NULL THEN 0 ELSE A5.BDAS_MERAH END) AS BDAS_MERAH,
-                         (CASE WHEN A5.BDAS_KUNING IS NULL THEN 0 ELSE A5.BDAS_KUNING END) AS BDAS_KUNING ,
-                         (CASE WHEN A5.BDAS IS NULL THEN 'HIJAU' ELSE A5.BDAS END) AS BDAS ,
-                         (CASE WHEN A5.NON_BDAS_MERAH IS NULL THEN 0 ELSE A5.NON_BDAS_MERAH END) AS NON_BDAS_MERAH,
-                         (CASE WHEN A5.NON_BDAS_KUNING IS NULL THEN 0 ELSE A5.NON_BDAS_KUNING END) AS NON_BDAS_KUNING,
-                         (CASE WHEN A5.NON_BDAS IS NULL THEN 'HIJAU' ELSE A5.NON_BDAS END) AS NON_BDAS
-                  FROM MIABH_SANTRI AS S0
-                  LEFT OUTER JOIN (
-                          SELECT A4.SANTRI_ID,
-                                 A4.BDAS_MERAH, A4.BDAS_KUNING,
-                                 (
-                                  CASE WHEN A4.BDAS_MERAH > 2
-                                       THEN 'MERAH'
-                                       WHEN (A4.BDAS_MERAH BETWEEN 1 AND 2) OR A4.BDAS_KUNING > 2
-                                       THEN 'KUNING'
-                                       ELSE 'HIJAU'
-                                  END
-                                 ) AS BDAS,
-                                 A4.NON_BDAS_MERAH, A4.NON_BDAS_KUNING,
-                                 (
-                                  CASE WHEN A4.NON_BDAS_MERAH > 2
-                                       THEN 'MERAH'
-                                       WHEN (A4.NON_BDAS_MERAH BETWEEN 1 AND 2) OR A4.NON_BDAS_KUNING > 2
-                                       THEN 'KUNING'
-                                       ELSE 'HIJAU'
-                                  END
-                                 ) AS NON_BDAS
-                          FROM (
-                              SELECT A3.SANTRI_ID,
-                                     SUM(CASE WHEN BDAS = 'MERAH' THEN 1 ELSE 0 END) AS BDAS_MERAH,
-                                     SUM(CASE WHEN BDAS = 'KUNING' THEN 1 ELSE 0 END) AS BDAS_KUNING,
-                                     SUM(CASE WHEN NON_BDAS = 'MERAH' THEN 1 ELSE 0 END) AS NON_BDAS_MERAH,
-                                     SUM(CASE WHEN NON_BDAS = 'KUNING' THEN 1 ELSE 0 END) AS NON_BDAS_KUNING
-                              FROM (
-                                  SELECT A2.SANTRI_ID, A2.ACTIVITYDATE,
-                                          (
-                                           CASE WHEN (BDAS_POKOK_MERAH + BDAS_POKOK_KUNING = 0) AND (BDAS_MERAH + BDAS_KUNING <= 4)
-                                                THEN 'HIJAU'
-                                                WHEN (BDAS_POKOK_MERAH = 0) AND (BDAS_POKOK_KUNING >= 1 AND BDAS_POKOK_KUNING <= 4) AND (BDAS_MERAH + BDAS_KUNING <= 4)
-                                                THEN 'KUNING'
-                                                ELSE 'MERAH'
-                                           END
-                                          ) AS BDAS,
-                                          (
-                                           CASE WHEN (NON_BDAS_MERAH > 0)
-                                                THEN 'MERAH'
-                                                WHEN (NON_BDAS_MERAH = 0) AND (NON_BDAS_KUNING > 0 OR NON_BDAS_ORANGE > 0)
-                                                THEN 'KUNING'
-                                                ELSE 'HIJAU'
-                                           END
-                                          ) AS NON_BDAS
-                                  FROM (
-                                      SELECT A1.SANTRI_ID, A1.ACTIVITYDATE,
-                                             SUM(CASE WHEN A1.JENIS = 'BDAS_POKOK_MERAH' THEN FREKUENSI ELSE 0 END) AS BDAS_POKOK_MERAH,
-                                             SUM(CASE WHEN A1.JENIS = 'BDAS_POKOK_KUNING' THEN FREKUENSI ELSE 0 END) AS BDAS_POKOK_KUNING,
-                                             SUM(CASE WHEN A1.JENIS = 'BDAS_MERAH' THEN FREKUENSI ELSE 0 END) AS BDAS_MERAH,
-                                             SUM(CASE WHEN A1.JENIS = 'BDAS_KUNING' THEN FREKUENSI ELSE 0 END) AS BDAS_KUNING,
-                                             SUM(CASE WHEN A1.JENIS = 'NON_BDAS_MERAH' THEN FREKUENSI ELSE 0 END) AS NON_BDAS_MERAH,
-                                             SUM(CASE WHEN A1.JENIS = 'NON_BDAS_KUNING' THEN FREKUENSI ELSE 0 END) AS NON_BDAS_KUNING,
-                                             SUM(CASE WHEN A1.JENIS = 'NON_BDAS_ORANGE' THEN FREKUENSI ELSE 0 END) AS NON_BDAS_ORANGE
-                                      FROM (
-                                          SELECT A0.SANTRI_ID, A0.ACTIVITYDATE, (BA0.JENIS || '_' || BA0.NILAI) AS JENIS, COUNT(BA0.NILAI) AS FREKUENSI
-                                          FROM MIABH_AKTIFITAS AS A0
-                                          JOIN MIABH_BENTUKAKTIFITAS AS BA0
-                                          ON A0.BENTUKAKTIFITAS_ID = BA0.ID
-                                          WHERE A0.ACTIVITYDATE BETWEEN '<?>' AND '<?>'
-                                          GROUP BY A0.SANTRI_ID, A0.ACTIVITYDATE, BA0.JENIS, BA0.NILAI
-                                      ) AS A1
-                                      GROUP BY A1.SANTRI_ID, A1.ACTIVITYDATE
-                              ) AS A2
-                              ) AS A3
-                              GROUP BY A3.SANTRI_ID
-                          ) AS A4
-                      ) AS A5
-                  ON S0.ID = A5.SANTRI_ID
+                    SELECT S0.ID AS SANTRI_ID, '<?>' AS LABEL, <?> AS ORDINAL, (DATE '<?>') AS FROMDATE, (DATE '<?>') AS THRUDATE,
+                           (CASE WHEN A5.BDAS_MERAH IS NULL THEN 0 ELSE A5.BDAS_MERAH END) AS BDAS_MERAH,
+                           (CASE WHEN A5.BDAS_KUNING IS NULL THEN 0 ELSE A5.BDAS_KUNING END) AS BDAS_KUNING ,
+                           (CASE WHEN A5.BDAS IS NULL THEN 'HIJAU' ELSE A5.BDAS END) AS BDAS ,
+                           (CASE WHEN A5.NON_BDAS_MERAH IS NULL THEN 0 ELSE A5.NON_BDAS_MERAH END) AS NON_BDAS_MERAH,
+                           (CASE WHEN A5.NON_BDAS_KUNING IS NULL THEN 0 ELSE A5.NON_BDAS_KUNING END) AS NON_BDAS_KUNING,
+                           (CASE WHEN A5.NON_BDAS IS NULL THEN 'HIJAU' ELSE A5.NON_BDAS END) AS NON_BDAS
+                    FROM MIABH_SANTRI AS S0
+                    LEFT OUTER JOIN (
+                        SELECT A4.SANTRI_ID,
+                            A4.BDAS_MERAH, A4.BDAS_KUNING,
+                            (
+                             CASE WHEN A4.BDAS_MERAH > 2 THEN 'MERAH'
+                                  WHEN (A4.BDAS_MERAH BETWEEN 1 AND 2) OR A4.BDAS_KUNING > 2 THEN 'KUNING'
+                                  ELSE 'HIJAU'
+                             END
+                            ) AS BDAS,
+                            A4.NON_BDAS_MERAH, A4.NON_BDAS_KUNING,
+                            (
+                             CASE WHEN A4.NON_BDAS_MERAH > 2 THEN 'MERAH'
+                                  WHEN (A4.NON_BDAS_MERAH BETWEEN 1 AND 2) OR A4.NON_BDAS_KUNING > 2 THEN 'KUNING'
+                                  ELSE 'HIJAU'
+                             END
+                            ) AS NON_BDAS
+                        FROM (
+                            SELECT A3.SANTRI_ID,
+                                   SUM(CASE WHEN BDAS = 'MERAH' THEN 1 ELSE 0 END) AS BDAS_MERAH,
+                                   SUM(CASE WHEN BDAS = 'KUNING' THEN 1 ELSE 0 END) AS BDAS_KUNING,
+                                   SUM(CASE WHEN NON_BDAS = 'MERAH' THEN 1 ELSE 0 END) AS NON_BDAS_MERAH,
+                                   SUM(CASE WHEN NON_BDAS = 'KUNING' THEN 1 ELSE 0 END) AS NON_BDAS_KUNING
+                            FROM (
+                                SELECT A2.SANTRI_ID, A2.ACTIVITYDATE,
+                                    (
+                                        CASE WHEN (BDAS_POKOK_MERAH + BDAS_POKOK_KUNING = 0) AND (BDAS_MERAH + BDAS_KUNING <= 4) THEN 'HIJAU'
+                                            WHEN (BDAS_POKOK_MERAH = 0) AND (BDAS_POKOK_KUNING >= 1 AND BDAS_POKOK_KUNING <= 4) AND (BDAS_MERAH + BDAS_KUNING <= 4) THEN 'KUNING'
+                                            ELSE 'MERAH'
+                                        END
+                                    ) AS BDAS,
+                                    (
+                                        CASE WHEN (NON_BDAS_MERAH > 0) THEN 'MERAH'
+                                            WHEN (NON_BDAS_MERAH = 0) AND (NON_BDAS_KUNING > 0 OR NON_BDAS_ORANGE > 0) THEN 'KUNING'
+                                            ELSE 'HIJAU'
+                                        END
+                                    ) AS NON_BDAS
+                                FROM (
+                                    SELECT A1.SANTRI_ID, A1.ACTIVITYDATE,
+                                        SUM(CASE WHEN A1.JENIS = 'BDAS_POKOK' AND A1.NILAI = 'MERAH' THEN FREKUENSI ELSE 0 END) AS BDAS_POKOK_MERAH,
+                                        SUM(CASE WHEN A1.JENIS = 'BDAS_POKOK' AND A1.NILAI = 'KUNING' THEN FREKUENSI ELSE 0 END) AS BDAS_POKOK_KUNING,
+                                        SUM(CASE WHEN A1.JENIS = 'BDAS' AND A1.NILAI = 'MERAH' THEN FREKUENSI ELSE 0 END) AS BDAS_MERAH,
+                                        SUM(CASE WHEN A1.JENIS = 'BDAS' AND A1.NILAI = 'KUNING' THEN FREKUENSI ELSE 0 END) AS BDAS_KUNING,
+                                        SUM(CASE WHEN A1.JENIS = 'NON_BDAS' AND A1.NILAI = 'MERAH' THEN FREKUENSI ELSE 0 END) AS NON_BDAS_MERAH,
+                                        SUM(CASE WHEN A1.JENIS = 'NON_BDAS' AND A1.NILAI = 'KUNING' THEN FREKUENSI ELSE 0 END) AS NON_BDAS_KUNING,
+                                        SUM(CASE WHEN A1.JENIS = 'NON_BDAS' AND A1.NILAI = 'ORANGE' THEN FREKUENSI ELSE 0 END) AS NON_BDAS_ORANGE
+                                    FROM (
+                                        SELECT A0.SANTRI_ID, A0.ACTIVITYDATE, BA0.JENIS, BA0.NILAI, COUNT(BA0.NILAI) AS FREKUENSI
+                                        FROM MIABH_AKTIFITAS AS A0
+                                        JOIN MIABH_BENTUKAKTIFITAS AS BA0 ON A0.BENTUKAKTIFITAS_ID = BA0.ID
+                                        WHERE A0.ACTIVITYDATE BETWEEN '<?>' AND '<?>'
+                                        GROUP BY A0.SANTRI_ID, A0.ACTIVITYDATE, BA0.JENIS, BA0.NILAI
+                                    ) AS A1
+                                    GROUP BY A1.SANTRI_ID, A1.ACTIVITYDATE
+                                ) AS A2
+                            ) AS A3
+                            GROUP BY A3.SANTRI_ID
+                        ) AS A4
+                    ) AS A5
+                    ON S0.ID = A5.SANTRI_ID
                 )           
             """;
 
@@ -259,7 +220,7 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
         StringBuilder filterKelompok = new StringBuilder();
 
         if (kelompokPengasuhan != null) {
-            filterKelompok.append("WHERE PS.FROMROLE_ID = ").append(kelompokPengasuhan.getId());
+            filterKelompok.append("WHERE S6.KELOMPOKPENGASUHAN_ID = ").append(kelompokPengasuhan.getId());
         }
 
         String ret = replaceParameterizedPositions(MAIN_QUERY_TEMPLATE, subQuery.toString(),
@@ -292,7 +253,7 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
         StringBuilder filterSantri = new StringBuilder();
 
         if (santri != null) {
-            filterSantri.append("WHERE WHERE S.ID = ").append(santri.getId());
+            filterSantri.append("WHERE S6.SANTRI_ID = ").append(santri.getId());
         }
 
         String ret = replaceParameterizedPositions(MAIN_QUERY_TEMPLATE, subQuery.toString(),
@@ -316,8 +277,12 @@ public class RangkumanKepengasuhanFacade extends AbstractSqlFacade<RangkumanKepe
     @Override
     protected String translateOrderField(String fieldName) {
         switch (fieldName) {
+            case "santriId":
+                return "S6.SANTRI_ID";
             case "kelompokPengasuhanId":
-                return "S6.KELOMPOKPENGASUHANID";
+                return "S6.KELOMPOKPENGASUHAN_ID";
+            case "koordinator":
+                return "S6.KELOMPOKPENGASUHAN_KOORDINATOR";
             default:
                 return super.translateOrderField(fieldName);
         }

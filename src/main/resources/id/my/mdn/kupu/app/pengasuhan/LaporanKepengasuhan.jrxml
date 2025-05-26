@@ -45,7 +45,7 @@
 		<groupFooter>
 			<band height="132">
 				<element kind="frame" uuid="533919a1-e007-4e8b-a643-d2cd41f56ff4" x="0" y="102" width="555" height="30">
-					<element kind="textField" uuid="f0c189ec-7f32-4ec2-b9bf-0a3d173fb9a4" x="280" y="0" width="274" height="30" fontName="Roboto Medium" underline="true" hTextAlign="Center" vTextAlign="Middle">
+					<element kind="textField" uuid="f0c189ec-7f32-4ec2-b9bf-0a3d173fb9a4" x="280" y="0" width="274" height="30" fontName="Roboto Medium" blankWhenNull="true" underline="true" hTextAlign="Center" vTextAlign="Middle">
 						<expression><![CDATA[$V{masul}]]></expression>
 					</element>
 					<element kind="textField" uuid="b2fdaaa5-3389-42ba-a03c-91b38c0ec642" x="0" y="0" width="274" height="30" fontName="Roboto Medium" underline="false" hTextAlign="Center" vTextAlign="Middle">
@@ -113,7 +113,7 @@
 					</element>
 					<element kind="frame" uuid="42996d92-31e8-4683-9fd9-a34fdad0c5af" x="0" y="40" width="298" height="20">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<element kind="textField" uuid="42309dbf-83d9-4fe4-a817-b23b17e07238" x="60" y="0" width="220" height="20" fontName="Roboto" vTextAlign="Middle">
+						<element kind="textField" uuid="42309dbf-83d9-4fe4-a817-b23b17e07238" x="60" y="0" width="220" height="20" fontName="Roboto" blankWhenNull="true" vTextAlign="Middle">
 							<expression><![CDATA[$F{santri}.getKelompokPengasuhan().getOrganization().getName()]]></expression>
 						</element>
 						<element kind="staticText" uuid="f4ab3f46-4bf9-4ffd-ac47-041480647b36" x="0" y="0" width="50" height="20" fontName="Roboto" vTextAlign="Middle">

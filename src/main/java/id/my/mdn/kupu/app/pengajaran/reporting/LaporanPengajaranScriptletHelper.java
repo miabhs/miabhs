@@ -4,7 +4,7 @@
  */
 package id.my.mdn.kupu.app.pengajaran.reporting;
 
-import id.my.mdn.kupu.app.pengajaran.dao.LaporanPengajaranFacade;
+import id.my.mdn.kupu.app.pengajaran.dao.PencapaianPembelajaranFacade;
 import id.my.mdn.kupu.app.santri.dao.SantriFacade;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -19,13 +19,13 @@ import jakarta.inject.Singleton;
 public class LaporanPengajaranScriptletHelper {
     
     @Inject
-    private LaporanPengajaranFacade laporanPengajaranFacade;
+    private PencapaianPembelajaranFacade laporanPembelajaranFacade;
     
     @Inject
     private SantriFacade santriFacade;
 
-    public LaporanPengajaranFacade getLaporanPengajaranFacade() {
-        return laporanPengajaranFacade;
+    public PencapaianPembelajaranFacade getLaporanPembelajaranFacade() {
+        return laporanPembelajaranFacade;
     }
 
     public SantriFacade getSantriFacade() {

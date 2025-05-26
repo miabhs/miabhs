@@ -12,9 +12,13 @@ import id.my.mdn.kupu.core.reporting.model.ReportingJob;
 import id.my.mdn.kupu.core.reporting.service.ReportingJobQueue;
 import id.my.mdn.kupu.core.reporting.util.Reporter;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.primefaces.model.DefaultStreamedContent;
@@ -36,19 +40,44 @@ public class ReportStreamer implements Serializable {
 
     private StreamedContent getContent(String format) {
 
-        ReportingJob job = jobQueue.get();
+        switch (format) {
+            case "pdf":
+                return getPdfStream();
+            case "composite-pdf":
+                return getCompositePdfStream();
+            default:
+                return null;
 
-        if (job == null) {
+        }
+    }
+
+    private StreamedContent getCompositePdfStream() {
+
+        PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
+        if (phaseId != null && phaseId.equals(PhaseId.RENDER_RESPONSE)) {
+            return getPdfStream();
+        }
+        
+        List<ReportingJob> jobs = new ArrayList<>();
+
+        ReportingJob reportingJob = jobQueue.get();
+
+        while (reportingJob != null) {
+            jobs.add(reportingJob);
+            reportingJob = jobQueue.get();
+        }
+
+        if (jobs.isEmpty()) {
             jobQueue.setBusy(false);
             return null;
         }
 
         return DefaultStreamedContent.builder()
-                .name(job.getTemplateName() + "." + format)
-                .contentType("application/" + format)
+                .name("composite.pdf")
+                .contentType("application/pdf")
                 .writer((os) -> {
                     try {
-                        reporter.generateReport(job, os, format);
+                        reporter.generateReport(os, jobs);
                     } catch (ReportLoadingException
                             | ReportCompilationException
                             | ReportDeserializationException
@@ -60,8 +89,39 @@ public class ReportStreamer implements Serializable {
                 }).build();
     }
 
-    public StreamedContent getPdf() {   
+    private StreamedContent getPdfStream() {
+
+        ReportingJob job = jobQueue.get();
+
+        if (job == null) {
+            jobQueue.setBusy(false);
+            return null;
+        }
+
+        return DefaultStreamedContent.builder()
+                .name(job.getTemplateName() + ".pdf")
+                .contentType("application/pdf")
+                .writer((os) -> {
+                    try {
+                        reporter.generateReport(job, os, "pdf");
+                    } catch (ReportLoadingException
+                            | ReportCompilationException
+                            | ReportDeserializationException
+                            | ReportFillingException ex) {
+
+                        Logger.getLogger(ReportStreamer.class.getName())
+                                .log(Level.SEVERE, null, ex);
+                    }
+                }).build();
+    }
+
+    public StreamedContent getPdf() {
+        System.err.println("SELEK GETPDF SINI");
         return getContent("pdf");
+    }
+
+    public StreamedContent getCompositePdf() {
+        return getContent("composite-pdf");
     }
 
     public StreamedContent getXls() {

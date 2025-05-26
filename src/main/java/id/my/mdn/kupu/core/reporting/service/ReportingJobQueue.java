@@ -5,11 +5,13 @@
 package id.my.mdn.kupu.core.reporting.service;
 
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.PhaseId;
+import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Named;
 
 /**
  *
@@ -20,7 +22,7 @@ import jakarta.inject.Named;
 public class ReportingJobQueue implements Serializable {
 
     private Queue<ReportingJob> jobs;
-    
+
     private boolean busy = false;
 
     public void put(ReportingJob job) {
@@ -32,7 +34,15 @@ public class ReportingJobQueue implements Serializable {
 
     public ReportingJob get() {
         if (jobs != null && !jobs.isEmpty()) {
-            return jobs.peek();
+            PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
+            if (phaseId != null && phaseId.equals(PhaseId.RENDER_RESPONSE)) {
+                System.err.println("SELEK PEEK JOB SINI");
+                return jobs.peek();
+//                return null;
+            } else {
+                System.err.println("SELEK POLL JOB SINI");
+                return jobs.poll();
+            }
         } else {
             return null;
         }
@@ -43,7 +53,7 @@ public class ReportingJobQueue implements Serializable {
             jobs.clear();
         }
     }
-    
+
     public boolean isEmptyJob() {
         return jobs == null || jobs.isEmpty();
     }

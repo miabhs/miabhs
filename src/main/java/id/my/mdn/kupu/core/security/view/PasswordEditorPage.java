@@ -36,30 +36,6 @@ public class PasswordEditorPage extends FormPage<ApplicationUser> {
     @Inject
     private SecurityContext securityContext;
 
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
     @PostConstruct
     @Override
     protected void init() {
@@ -70,10 +46,6 @@ public class PasswordEditorPage extends FormPage<ApplicationUser> {
         entity = userFacade.findByUsername(username);
         
     }
-
-//    public void save(ActionEvent evt) {
-//        save();
-//    }
 
     @Override
     protected Result<String> save(ApplicationUser entity) {
@@ -102,24 +74,36 @@ public class PasswordEditorPage extends FormPage<ApplicationUser> {
         
         entity.setPassword(PasswordUtil.generate(newPassword));
         
-//        if (confirmedPassword != null && !confirmedPassword.isEmpty()) {
-//            entity.setPassword(PasswordUtil.generate(confirmedPassword));
-//        }
-
         return userFacade.edit(entity);
     }
-
-//    public String getConfirmedPassword() {
-//        return confirmedPassword;
-//    }
-
-//    public void setConfirmedPassword(String confirmedPassword) {
-//        this.confirmedPassword = confirmedPassword;
-//    }
 
     @Override
     protected ApplicationUser newEntity() {
         return null;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
 }

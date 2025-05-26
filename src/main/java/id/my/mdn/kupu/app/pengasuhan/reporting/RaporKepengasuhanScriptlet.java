@@ -33,11 +33,11 @@ public class RaporKepengasuhanScriptlet extends JRDefaultScriptlet {
 
     @Override
     public void beforeGroupInit(String groupName) throws JRScriptletException { 
-        
-        System.out.println("SELEK BIPOR GROUP: RaporKepengasuhan.jrxml");      
 
         Long santriId = (Long) getFieldValue("id");
-        Santri santri = findHelper().getSantriFacade().find(santriId);
+        
+        Santri santri = findHelper().getSantriFacade().findAlt(santriId);
+        
         PeriodePembelajaran periode = (PeriodePembelajaran) getParameterValue("periodePembelajaran");
         
         List<LaporanKepengasuhan> listLaporanKepengasuhan = findHelper().getAktifitasFacade().getAllRangkumanPeriode(santri, periode);

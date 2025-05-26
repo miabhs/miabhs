@@ -87,7 +87,6 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
 //            setNodeSelectionInternal(nodeSelection);
 //        }
 //        latestEvent = NodeEvent.NONE;E selection = null;
-        System.err.printf("SELEKTRI %s", nodeSelection);
         PhaseId phaseId = FacesContext.getCurrentInstance().getCurrentPhaseId();
         if (phaseId.equals(PhaseId.UPDATE_MODEL_VALUES)) {
             this.nodeSelection = nodeSelection;
@@ -241,9 +240,7 @@ public abstract class AbstractValueTree<E extends HierarchicalEntity<E>>
             DefaultChecker defaultChecker);
 
     public TreeNode<E> getRootNode() {
-        System.err.printf("SELEKTRI GETRUT (%s, %s)", isCached(), isValid());
         if (!isCached() || !isValid()) {
-            System.err.println("SELEKTRI LOATRUT");
             rootNode = createNode(getRoot(), null);
             constructRoot();
         }

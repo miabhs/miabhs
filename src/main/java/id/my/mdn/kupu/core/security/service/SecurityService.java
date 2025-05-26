@@ -19,8 +19,9 @@ import id.my.mdn.kupu.core.security.model.ApplicationSecurityMap;
 import id.my.mdn.kupu.core.security.model.ApplicationUser;
 import id.my.mdn.kupu.core.security.model.GroupAccessControl;
 import id.my.mdn.kupu.core.security.util.PasswordUtil;
+import jakarta.annotation.Resource;
 import jakarta.ejb.SessionContext;
-import jakarta.ejb.Stateless;
+import jakarta.ejb.Singleton;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
@@ -38,10 +39,10 @@ import java.util.stream.Collectors;
  *
  * @author Arief Prihasanto <aphasan at medinacom.id>
  */
-@Stateless
+@Singleton
 public class SecurityService {
     
-    @Inject
+    @Resource
     private SessionContext ctx;
     
     @Inject
@@ -54,7 +55,6 @@ public class SecurityService {
     private ApplicationUserFacade userFacade;
     
     @Inject
-//    private UserGroupFacade groupFacade;
     private ApplicationSecurityGroupFacade groupFacade;
     
     public void changePassword(String newPassword) {

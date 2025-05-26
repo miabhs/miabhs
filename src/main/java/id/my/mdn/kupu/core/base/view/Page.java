@@ -200,10 +200,8 @@ public abstract class Page implements IBookmarkable {
     }
 
     public void updateAddressBar() {
-        System.err.println("SELEX APDET ADRES PRE: " + contextSupplier.get().getViewUrl().toString());
         updateUrl();
         PrimeFaces.current().ajax().addCallbackParam("url", contextSupplier.get().getViewUrl().toString());
-        System.err.println("SELEX APDET ADRES POS: " + contextSupplier.get().getViewUrl().toString());
     }
     
     public void updateUrl(Object obj) {

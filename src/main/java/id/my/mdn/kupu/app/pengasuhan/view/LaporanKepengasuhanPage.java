@@ -47,7 +47,7 @@ public class LaporanKepengasuhanPage extends ReportingChildPage implements Seria
 
     @Inject
     private PengasuhanSantriFilter filterContent;
-    
+
     @Inject
     private SantriFacade santriFacade;
 
@@ -58,11 +58,11 @@ public class LaporanKepengasuhanPage extends ReportingChildPage implements Seria
         filter.setContent(filterContent);
         periodePembelajaranTreeInit();
     }
-    
+
     @Override
-    protected boolean isReady() {        
-       PeriodePembelajaran periode = periodePembelajaranTree.getSelection();
-       return periode != null;
+    protected boolean isReady() {
+        PeriodePembelajaran periode = periodePembelajaranTree.getSelection();
+        return periode != null;
     }
 
     private void periodePembelajaranTreeInit() {
@@ -84,8 +84,9 @@ public class LaporanKepengasuhanPage extends ReportingChildPage implements Seria
     public void onChangeSantri(ValueChangeEvent evt) {
 
     }
+
     @Override
-    public ReportingJob prepareReportingJob() {
+    public List<ReportingJob> prepareReportingJob() {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("tahunPembelajaran", periodePembelajaranTree.getFilter()
@@ -99,28 +100,27 @@ public class LaporanKepengasuhanPage extends ReportingChildPage implements Seria
         String hijrahDateString = HijrahChronology.INSTANCE.date(issued)
                 .format(DateTimeFormatter.ofPattern("d/M/yyyy", new Locale("ar")).withDecimalStyle(DecimalStyle.of(new Locale("ar"))));
         parameters.put("issuedHijri", hijrahDateString);
-        
+
         List<FilterData> filters = new ArrayList<>();
         KelompokPengasuhan kelompokPengasuhan = filterContent.getKelompokPengasuhan();
-        if(kelompokPengasuhan != null) {
+        if (kelompokPengasuhan != null) {
             filters.add(FilterData.by("kelompokPengasuhan", kelompokPengasuhan));
         }
-        
+
         Santri santri = filterContent.getSantri();
-        if(santri != null) {
+        if (santri != null) {
             filters.add(FilterData.by("santri", santri));
         }
 
         List<Santri> listSantri = santriFacade.findAll(filters);
-        
-        System.out.println("PRIPER RIPOT: " + parameters.get("periodePembelajaran"));
 
-        return new ReportingJob(listSantri, parameters,
-                "RaporKepengasuhan",
-                "LaporanKepengasuhan",
-                "LaporanKepengasuhanSantri",
-                "LaporanKepengasuhanSantriAktifitas"
-        );
+        return List.of(
+                new ReportingJob(listSantri, parameters,
+                        "RaporKepengasuhan",
+                        "LaporanKepengasuhan",
+                        "LaporanKepengasuhanSantri",
+                        "LaporanKepengasuhanSantriAktifitas"
+                ));
     }
 
     public PeriodePembelajaranTree getPeriodePembelajaranTree() {

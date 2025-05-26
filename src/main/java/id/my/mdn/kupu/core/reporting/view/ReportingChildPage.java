@@ -43,12 +43,12 @@ public abstract class ReportingChildPage extends ChildPage {
     public Filter getFilter() {
         return filter;
     }
-    
+
     protected boolean isReady() {
         return true;
     }
 
-    protected abstract ReportingJob prepareReportingJob();
+    protected abstract List<ReportingJob> prepareReportingJob();
 
     public void prepareReport(ActionEvent event) {
 
@@ -61,9 +61,11 @@ public abstract class ReportingChildPage extends ChildPage {
             return;
         }
 
-        ReportingJob preparedJob = prepareReportingJob();
+        List<ReportingJob> preparedJobs = prepareReportingJob();
 
-        jobQueue.put(preparedJob);
+        for (ReportingJob preparedJob : preparedJobs) {
+            jobQueue.put(preparedJob);
+        }
 
     }
 

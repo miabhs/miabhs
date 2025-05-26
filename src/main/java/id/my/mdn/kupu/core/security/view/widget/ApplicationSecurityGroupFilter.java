@@ -5,6 +5,7 @@
  */
 package id.my.mdn.kupu.core.security.view.widget;
 
+import id.my.mdn.kupu.core.base.view.annotation.Bookmark;
 import id.my.mdn.kupu.core.base.view.annotation.Default;
 import id.my.mdn.kupu.core.base.view.widget.FilterContent;
 import jakarta.enterprise.context.Dependent;
@@ -19,7 +20,7 @@ import java.io.Serializable;
 @Dependent
 public class ApplicationSecurityGroupFilter extends FilterContent implements Serializable {
 
-    @Default("application")
+    @Bookmark(name = "module") @Default("application")
     private String module;
 
     public String getModule() {

@@ -29,7 +29,7 @@ public class Sorter<E> implements IBookmarkable, Serializable {
 
     private String name = "sorter";
 
-    private final List<SorterData> listSorterData = new ArrayList<>();
+    private List<SorterData> listSorterData = new ArrayList<>();
 
     private final SorterListener context;
 
@@ -42,7 +42,12 @@ public class Sorter<E> implements IBookmarkable, Serializable {
     }
 
     private void reload() {
-
+        listSorterData = extractSorterData(entityClass);
+    }
+    
+    public static List<SorterData> extractSorterData(Class<?> entityClass) {
+        List<SorterData> listSorterData = new ArrayList<>();        
+        
         for (SorterFields annotations : entityClass.getAnnotationsByType(SorterFields.class)) {
             for (SorterField annotation : annotations.value()) {
                 String value = annotation.value();
@@ -65,6 +70,8 @@ public class Sorter<E> implements IBookmarkable, Serializable {
                 listSorterData.add(new SorterData(value, annotation.order(), annotation.sort(), label));
             }
         }
+        
+        return listSorterData;
     }
 
     public List<SorterData> getDeclaredSorterData() {

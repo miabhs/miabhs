@@ -35,6 +35,10 @@
     </ui:define>
 
     <ui:define name="top-tools">
+        <p:commandButton icon="pi pi-cog"
+                         actionListener="#{viewPage.generateAktifitas}"
+                         class="ui-button-flat"                             
+                         immediate="true" oncomplete="refreshContent()" /> 
         <p:commandButton icon="pi pi-cog" disabled="#{empty dataView.selections}" 
                          actionListener="#{viewPage.generateNis}"
                          class="ui-button-flat"                             
@@ -45,6 +49,9 @@
         <h:form id="data-frm" class="flex-grow-1 flex align-items-stretch">
             <ui:decorate template="/WEB-INF/components/app/santri/santrilist.xhtml">
                 <ui:define name="context-menu">
+                    <p:menuitem icon="pi pi-user-minus" value="LPPB"                             
+                                disabled="#{dataView.selected eq null}"  
+                                actionListener="#{viewPage.gotoLPPB}" />
                     <p:menuitem icon="pi pi-user-plus" value="Ijinkan Login"                                
                                 rendered="#{rolesChecker.isUserHasRoles(dataView.createPermission)}"
                                 disabled="#{dataView.selected eq null}" 

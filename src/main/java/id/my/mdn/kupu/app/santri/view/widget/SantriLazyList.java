@@ -64,12 +64,12 @@ public class SantriLazyList implements Serializable {
                 List<Santri> data = dao.findAll(first, pageSize,
                         parameters, filter.getValues(), getSorters(),
                         defaultList.get(), defaultChecker);
-                if (first == 0) {
-                    Santri s = new Santri();
-                    s.setId(-1L);
-                    s.setName("Semua");
-                    data.add(0, s);
-                }
+//                if (first == 0) {
+//                    Santri s = new Santri();
+//                    s.setId(-1L);
+//                    s.setName("Semua");
+//                    data.add(0, s);
+//                }
                 return data;
             }
 

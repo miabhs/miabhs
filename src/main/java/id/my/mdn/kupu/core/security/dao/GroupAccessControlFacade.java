@@ -36,6 +36,15 @@ public class GroupAccessControlFacade extends AbstractSqlFacade<AccessControl> {
             ON AC0.ID = GAC1.ACCESSCONTROL_ID
               """;
 
+    private static final String FIND
+            = """
+            SELECT AC0.ID, AC0.MODULE_NAME, AC0.NAME, AC0.DESCRIPTION, (GAC0.ACCESSCONTROL_ID IS NOT NULL) AS ACTIVE
+            FROM SECURITY_ACCESSCONTROL AS AC0
+            LEFT JOIN  SECURITY_GROUPACCESSCONTROL AS GAC0
+            ON AC0.ID = GAC0.ACCESSCONTROL_ID
+            WHERE AC0.ID = ?
+            """;
+
     @Inject
     private EntityManager em;
 
@@ -55,6 +64,11 @@ public class GroupAccessControlFacade extends AbstractSqlFacade<AccessControl> {
     @Override
     protected String getFindAllQuery() {
         return FIND_ALL;
+    }
+
+    @Override
+    protected String getFindQuery() {
+        return FIND;
     }
 
     @Override
@@ -82,7 +96,6 @@ public class GroupAccessControlFacade extends AbstractSqlFacade<AccessControl> {
             acl.getApplyingGroups().add(gac);
 
             getEntityManager().persist(gac);
-//            aclFacade.edit(acl);
 
             getEntityManager().flush();
 //            

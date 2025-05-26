@@ -52,7 +52,7 @@ public class AltAktifitasList extends AbstractMutablePagedValueList<Aktifitas> {
     private void init() {
         filter.setContent(filterContent);
         setParameters(this::parameters);
-        
+
         santriChooser.setListener(this::onSelectSantri);
         santriChooser.getList().getFilter().setStaticFilter(
                 santriChooser.getList()
@@ -72,6 +72,9 @@ public class AltAktifitasList extends AbstractMutablePagedValueList<Aktifitas> {
 
     public void addBlank() {
         dao.createBlank(filterContent.getFromDate());
+        if (cached) {
+            invalidate();
+        }
     }
 
     public void onSelectSantri(Santri santri) {
@@ -102,18 +105,20 @@ public class AltAktifitasList extends AbstractMutablePagedValueList<Aktifitas> {
                 Santri santri = (Santri) newValue;
                 entity.setSantri(santri);
                 if (santri != null) {
-                    entity.setSantriName(santri.getPerson().getName());
-                    entity.setKelompokPengasuhanName(santri.getKelompokPengasuhan().getOrganization().getName());
+                    entity.getSantri().getPerson().setFirstName(santri.getPerson().getName());
+                    if (entity.getKelompokPengasuhan() != null) {
+                        entity.getKelompokPengasuhan().getOrganization().setName(santri.getKelompokPengasuhan().getOrganization().getName());
+                    }
                 }
             }
             case "bentukAktifitas" -> {
                 BentukAktifitas bentukAktifitas = (BentukAktifitas) newValue;
-                entity.setBentukAktifitas(bentukAktifitas);
                 if (bentukAktifitas != null) {
-                    entity.setBentukAktifitasBentuk(bentukAktifitas.getBentuk());
-                    entity.setBentukAktifitasJenis(bentukAktifitas.getJenis());
-                    entity.setBentukAktifitasNilai(bentukAktifitas.getNilai());
+                    bentukAktifitas.setBentuk(bentukAktifitas.getBentuk());
+                    bentukAktifitas.setJenis(bentukAktifitas.getJenis());
+                    bentukAktifitas.setNilai(bentukAktifitas.getNilai());
                 }
+                entity.setBentukAktifitas(bentukAktifitas);
             }
             case "activityDate" -> {
                 entity.setActivityDate((LocalDate) newValue);

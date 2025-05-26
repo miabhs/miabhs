@@ -28,12 +28,12 @@ public class ApplicationSecurityMapFacade extends AbstractSqlFacade<ApplicationS
             = """
             SELECT GRP1.ID AS ID, GRP1.ORG_ID AS ORGID, GRP1.GROUPNAME AS GROUPNAME, (USR1.USER_ID IS NOT NULL) AS ACTIVE
             FROM (
-                 SELECT GRP0.ID, ORG.ID AS ORG_ID, ORG.NAME AS GROUPNAME
+                 SELECT GRP0.ID, ORG.ID AS ORG_ID, ORG.FIRSTNAME AS GROUPNAME
                  FROM (SELECT GRP.ID, PR.PARTY_ID
                          FROM SECURITY_APPLICATIONSECURITYGROUP AS GRP
                          JOIN PARTY_PARTYROLE AS PR ON GRP.ID = PR.ID
                  ) AS GRP0
-                 JOIN PARTY_ORGANIZATION AS ORG ON GRP0.PARTY_ID = ORG.ID
+                 JOIN PARTY_PARTY AS ORG ON GRP0.PARTY_ID = ORG.ID
             ) AS GRP1
             LEFT JOIN (
                 SELECT USER_ID, GROUP_ID
@@ -70,7 +70,8 @@ public class ApplicationSecurityMapFacade extends AbstractSqlFacade<ApplicationS
 
     @Override
     protected void setParameters(Query q, Map<String, Object> parameters) {
-        q.setParameter(1, String.valueOf(parameters.get("user")));
+        ApplicationUser user = (ApplicationUser) parameters.get("user");
+        q.setParameter(1, user.getId());
     }
 
     public void addMembership(ApplicationUser user, ApplicationSecurityGroup group) {

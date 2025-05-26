@@ -9,7 +9,7 @@
 
     <f:metadata>
         <ui:param name="title" value="Editor Laporan Kepengasuhan" />
-        
+
         <ui:param name="viewPage" value="#{laporanKepengasuhanEditorPage}" /> 
         <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>    
 
@@ -69,7 +69,7 @@
     <ui:define name="module-menu">
         <ui:include src="/WEB-INF/components/app/pengasuhan/module-menu.xhtml" />
     </ui:define>
-    
+
     <ui:define name="master-crud-tools" />
 
     <ui:define name="master-pager" />
@@ -100,13 +100,13 @@
             </ui:decorate>
         </h:form>
     </ui:define>
-    
+
     <ui:define name="detail-crud-tools" />
 
     <ui:define name="master-pager"/>
 
     <ui:define name="detail-tools" />
-    
+
     <ui:define name="detail-top-tools">
         <p:commandButton icon="pi pi-print" immediate="true"
                          actionListener="#{viewPage.printPreview}" 
@@ -299,6 +299,7 @@
                                             </f:facet>
                                         </p:textEditor>
                                     </p:panel>
+
                                 </div>         
                             </p:column>
                         </p:dataTable>

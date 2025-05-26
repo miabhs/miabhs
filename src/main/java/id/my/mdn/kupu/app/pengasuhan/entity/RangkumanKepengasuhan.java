@@ -31,24 +31,19 @@ import static java.time.temporal.ChronoUnit.DAYS;
     private final Integer nonBdasKuning;
     private final String nonBdas;
 
-    public RangkumanKepengasuhan(Long partyId, String firstname, String lastname, 
-            Long santriId, String nis, LocalDate tahunMasukFromDate, Long kelompokPengasuhanId, String kelompokPengasuhanPartyName, Boolean koordinator,
+    public RangkumanKepengasuhan(Long personId, String personName, 
+            Long santriId, String nis, LocalDate tahunMasukFromDate, Long kelompokPengasuhanId, String kelompokPengasuhanName, Boolean kelompokPengasuhanKoordinator,
             String label, LocalDate fromDate, LocalDate thruDate, 
             Integer bdasMerah, Integer bdasKuning, String bdas, 
             Integer nonBdasMerah, Integer nonBdasKuning, String nonBdas) {
-        this.partyId = partyId;
-        
-        StringBuilder sb = new StringBuilder(firstname);
-        if(lastname != null && !lastname.isBlank()) {
-            sb.append(" ").append(lastname);
-        }
-        this.name = sb.toString();
+        this.partyId = personId;
+        this.name = personName;
         
         this.santriId = santriId;
         this.nis = nis;
         this.kelompokPengasuhanId = kelompokPengasuhanId;
-        this.kelompokPengasuhanPartyName = kelompokPengasuhanPartyName;
-        this.koordinator = koordinator;       
+        this.kelompokPengasuhanPartyName = kelompokPengasuhanName;
+        this.koordinator = kelompokPengasuhanKoordinator;       
         
         long days = DAYS.between(tahunMasukFromDate, LocalDate.now());
         this.lamaBelajar =  ((int) (days / 365)) + (((int) (days % 365)) > 0 ? 0 : 0);

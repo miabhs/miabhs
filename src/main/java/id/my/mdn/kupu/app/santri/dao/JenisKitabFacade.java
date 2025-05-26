@@ -36,10 +36,10 @@ public class JenisKitabFacade extends AbstractHierarchicalFacade<JenisKitab> {
             """;
 
     private static final String ATRIBUTKITAB_FORMAT_1
-            = "^([0-9]+)(:{1})([0-9]+)$";
+            = "^([0-9]+)(\\-{1})([0-9]+)$";
 
     private static final String ATRIBUTKITAB_FORMAT_2
-            = "(?<A1>\\d+)(:{1})(?<A2>\\w[\\d \\w \\' \\- \\( \\)]+)(;?)";
+            = "(?<A1>\\d+)(:{1})(?<A2>\\w[\\d \\w \\' \\, \\- \\( \\)]+)(;?)";
 
     @Inject
     private EntityManager em;
@@ -91,7 +91,7 @@ public class JenisKitabFacade extends AbstractHierarchicalFacade<JenisKitab> {
         List<AtributPembelajaranValue> values = new ArrayList<>();
 
         if (result.matches(ATRIBUTKITAB_FORMAT_1)) {
-            String[] sval = result.split(":");
+            String[] sval = result.split("-");
             int min = Integer.parseInt(sval[0]);
             int max = Integer.parseInt(sval[1]);
             for (int val = min; val <= max; val++) {

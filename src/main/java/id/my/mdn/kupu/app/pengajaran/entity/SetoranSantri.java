@@ -9,12 +9,16 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ColumnResult;
+import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.SqlResultSetMapping;
+import jakarta.persistence.SqlResultSetMappings;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import java.io.Serializable;
@@ -25,6 +29,24 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "MIABH_SETORANSANTRI")
+@SqlResultSetMappings({
+    @SqlResultSetMapping(
+            name = "PencapaianPembelajaran",
+            classes = {
+                @ConstructorResult(
+                        targetClass = PencapaianPembelajaran.class,
+                        columns = {
+                            @ColumnResult(name = "JENISKITAB_ID", type = Long.class),
+                            @ColumnResult(name = "JENISKITAB_PARENT_ID", type = Long.class),
+                            @ColumnResult(name = "JENISKITAB_JUDUL", type = String.class),
+                            @ColumnResult(name = "JENISPENGAJARAN_ID", type = Long.class),
+                            @ColumnResult(name = "JENISPENGAJARAN_NAMA", type = String.class),
+                            @ColumnResult(name = "PENCAPAIAN", type = String.class)
+                        }
+                )
+            }
+    )
+})
 public class SetoranSantri implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,20 +68,12 @@ public class SetoranSantri implements Serializable {
         @JoinColumn(name = "PENGAJARAN_PARTYRELATIONSHIPTYPE_ID", referencedColumnName = "PARTYRELATIONSHIPTYPE_ID", insertable = false, updatable = false)
     })
     private Pengajaran pengajaran;
-    
-    @Transient
-    private Long kitabId;
 
-    public void setKitabId(Long kitabId) {
-        this.kitabId = kitabId;
-    }
-
-    public Long getKitabId() {
-        return kitabId;
-    }
-    
     @OneToOne(cascade = CascadeType.ALL)
     private PencapaianBelajar pencapaian;
+
+    @Transient
+    private Long kitabId;
 
     @Override
     public String toString() {
@@ -108,6 +122,14 @@ public class SetoranSantri implements Serializable {
 
     public void setPencapaian(PencapaianBelajar pencapaian) {
         this.pencapaian = pencapaian;
+    }
+
+    public void setKitabId(Long kitabId) {
+        this.kitabId = kitabId;
+    }
+
+    public Long getKitabId() {
+        return kitabId;
     }
 
 }

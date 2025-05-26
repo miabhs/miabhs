@@ -7,22 +7,24 @@
 
     <f:metadata>
         <ui:param name="viewPage" value="#{applicationSecurityMapPage}" />
-        <ui:param name="primaryTitle" value="Keanggotaan Grup" />
-        <ui:param name="secondaryTitle" value="#{viewPage.user.party.name}" />
-        <ui:param name="dataView" value="#{viewPage.dataView}" />
-        
-        <ui:param name="filter" value="#{dataView.filter}" />
-        <ui:param name="pager" value="#{dataView.pager}" />
-        <ui:param name="contentId" value=":data-frm:#{dataView.name}" /> 
-
-        <ui:param name="notool" value="true" />
-        <ui:param name="nofilter" value="true" />
-
         <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>
         
+        <ui:param name="primaryTitle" value="Keanggotaan Grup" />
+        <ui:param name="secondaryTitle" value="#{viewPage.user.party.name}" />
+        
+        <ui:param name="dataView" value="#{viewPage.dataView}" />
+        <ui:param name="contentId" value=":data-frm:#{dataView.name}" /> 
+        <ui:param name="notool" value="true" />
+        
+        <ui:param name="filter" value="#{dataView.filter}" />
+        <ui:param name="filterType" value="overlay" />
+        <ui:param name="filterUi" value="/WEB-INF/components/core/security/applicationsecuritygroup-filterui.xhtml" />
+        <ui:include src="/WEB-INF/components/core/security/meta/applicationsecuritygroup-filterui.xhtml" /> 
+
+        <ui:param name="pager" value="#{dataView.pager}" />        
         <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
 
-        <f:viewParam name="s" value="#{dataView.selections}"  converter="ApplicationSecurityGroupListConverter" />
+        <f:viewParam name="s" value="#{dataView.selections}" converter="ApplicationSecurityGroupListConverter" transient="true" />
 
         <f:viewParam name="user" value="#{viewPage.user}" converter="ApplicationUserConverter" transient="true" />
 
@@ -32,13 +34,6 @@
     <ui:define name="crud-create" />
     <ui:define name="crud-update" />
     <ui:define name="crud-delete" />
-
-    <ui:define name="filter">
-        <ui:decorate template="/WEB-INF/components/core/base/filter.xhtml" >
-            <ui:param name="name" value="group" />
-            <ui:param name="filterUi" value="/WEB-INF/components/core/security/applicationsecuritygroup-filterui.xhtml" />
-        </ui:decorate>
-    </ui:define>
 
     <ui:define name="content">
         <h:form id="data-frm">

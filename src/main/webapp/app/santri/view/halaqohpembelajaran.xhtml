@@ -358,21 +358,21 @@
                     <div>
                         <p:dataTable value="#{viewPage.setoranSantri.pencapaian.setoranPembelajaran}" var="ahp"
                                      showGridlines="true" styleClass="noheader" >
-                            <p:column>
+                            <p:column width="30%">
                                 <h:outputText value="#{ahp.name}" />
                             </p:column>
-                            <p:column>
-                                <p:selectOneMenu value="#{ahp.hasil.marker}" >
-                                    <f:selectItem itemValue="" itemLabel="N/A" />
+                            <p:column width="70%">
+                                <p:selectOneMenu value="#{ahp.hasil}" converter="AtributPembelajaranValueConverter" >
+                                    <f:selectItem itemValue="#{null}" itemLabel="N/A" />
                                     <f:selectItems value="#{viewPage.getAtributOptions(ahp.name)}" var="v"
-                                                   itemValue="#{v.marker}" />
+                                                   itemValue="#{v}" />
                                     <p:ajax />
                                 </p:selectOneMenu>
                             </p:column>
                         </p:dataTable>
                     </div>
                     <div class="flex align-items-center border-bottom-1 surface-border gap-2 px-3 pt-1 pb-3 gap-3">
-                        <div>
+                        <div style="width: 30%">
                             <p:outputLabel for="nilai" value="Nilai" />
                         </div>
                         <div class="flex-grow-1">

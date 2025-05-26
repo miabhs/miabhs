@@ -1,4 +1,4 @@
-<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<!-- Created with Jaspersoft Studio version 7.0.2.final using JasperReports Library version 7.0.2-31532122640f516c6d17238ae0e41a08113d5ac0  -->
 <jasperReport name="LaporanKepengasuhanSantri" language="java" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b5115f84-e74d-4fe0-b82b-8c7b4de0a569">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -131,7 +131,7 @@
 		</element>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="20" splitType="Prevent">
 			<element kind="frame" uuid="710ee87c-d2b1-422e-965f-30059bca39b0" x="0" y="0" width="555" height="20">
 				<element kind="frame" uuid="0f6054cd-659c-430b-9bf1-299e15b81169" stretchType="ContainerHeight" x="0" y="0" width="89" height="20">
 					<element kind="textField" uuid="1baed24e-f063-483d-8934-3a45c99fcc7d" x="0" y="0" width="89" height="20" fontName="Roboto" fontSize="9.0" hTextAlign="Center" vTextAlign="Middle">

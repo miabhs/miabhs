@@ -2,12 +2,13 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="jakarta.faces.core">
 
-    <p:panelGrid columns="2">
+    <div class="filter-field">
         <p:outputLabel for="module" value="Module" />
-        <p:selectOneMenu id="module" value="#{dataView.filter.module}" >
-            <f:selectItems value="#{theApp.moduleInfos}" />
+        <p:selectOneMenu id="module" value="#{filter.content.module}" >
+            <f:selectItems value="#{theApp.moduleInfos}"
+                           var="m" itemLabel="#{string[m.label]}" itemValue="#{m.name}" />
         </p:selectOneMenu>
-    </p:panelGrid>
+    </div>
 
 </ui:composition>
 

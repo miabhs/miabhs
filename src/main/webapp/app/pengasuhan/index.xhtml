@@ -28,7 +28,7 @@
 
         <f:viewParam name="s" value="#{dataView.selectionsInternal}" converter="AktifitasListConverter" transient="true" />
         
-        <ui:param name="updateListener" value="#{contentId}" />
+        <ui:param name="updateCallback" value="refreshContent()" />
 
     </f:metadata>
 

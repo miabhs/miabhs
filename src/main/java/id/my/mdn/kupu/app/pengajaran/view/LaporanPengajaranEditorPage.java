@@ -6,16 +6,17 @@ package id.my.mdn.kupu.app.pengajaran.view;
 
 import id.my.mdn.kupu.app.pengajaran.dao.CatatanPengajaranFacade;
 import id.my.mdn.kupu.app.pengajaran.dao.LaporanPengajaranFacade;
+import id.my.mdn.kupu.app.pengajaran.dao.PencapaianPembelajaranFacade;
 import id.my.mdn.kupu.app.pengajaran.entity.CatatanPengajaran;
 import id.my.mdn.kupu.app.pengajaran.entity.CatatanPengajaranId;
 import id.my.mdn.kupu.app.pengajaran.entity.LaporanPengajaran;
 import id.my.mdn.kupu.app.pengajaran.entity.PencapaianBelajar;
+import id.my.mdn.kupu.app.pengajaran.entity.PencapaianPembelajaran;
 import id.my.mdn.kupu.app.pengajaran.view.widget.PengajaranSantriFilter;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.app.santri.entity.StatusKesantrian;
-import id.my.mdn.kupu.app.santri.view.widget.KelompokPengasuhanSelectList;
 import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranTree;
 import id.my.mdn.kupu.app.santri.view.widget.SantriFilter;
 import id.my.mdn.kupu.app.santri.view.widget.SantriList;
@@ -52,15 +53,12 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
         public CacheContent(LaporanPengajaran laporanPengajaran) {
             this.laporanPengajaran = laporanPengajaran;
         }
+        
     }
 
     @Inject
     @Bookmarked
     private PeriodePembelajaranTree periodePembelajaranTree;
-
-    @Inject
-    @Bookmarked
-    private KelompokPengasuhanSelectList kelompokPengasuhanList;
 
     @Inject
     @Bookmarked
@@ -206,6 +204,20 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
         }
         return getPencapaianBelajar(santri, periodePembelajaranTree.getSelection());
     }
+    
+    @Inject
+    private PencapaianPembelajaranFacade pencapaianPembelajaranFacade;
+
+    public List<PencapaianPembelajaran> getPencapaianPembelajaran(Santri santri) {
+        if (santri == null) {
+            return List.of();
+        }
+        return getPencapaianPembelajaran(santri, periodePembelajaranTree.getSelection());
+    }
+    
+    public List<PencapaianPembelajaran> getPencapaianPembelajaran(Santri santri, PeriodePembelajaran periode) {
+        return pencapaianPembelajaranFacade.getPencapaianPembelajaran(santri, periode);
+    }
 
     public List<PencapaianBelajar> getPencapaianBelajar(Santri santri, PeriodePembelajaran periode) {
         LaporanPengajaran laporanPengajaran = laporanPengajaranFacade.getLaporan(santri, periode);
@@ -220,7 +232,7 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
     }
 
     public CatatanPengajaran getCatatan(Santri santri) {
-        return getCatatan(santri, periodePembelajaranTree.getSelection());
+        return pencapaianPembelajaranFacade.getCatatanPembelajaran(santri, periodePembelajaranTree.getSelection());
     }
 
     public CatatanPengajaran getCatatan(Santri santri, PeriodePembelajaran periode) {
@@ -247,14 +259,6 @@ public class LaporanPengajaranEditorPage extends Page implements Serializable {
 
     public SantriList getSantriList() {
         return santriList;
-    }
-
-    public KelompokPengasuhanSelectList getKelompokPengasuhanList() {
-        return kelompokPengasuhanList;
-    }
-
-    public void setKelompokPengasuhanList(KelompokPengasuhanSelectList kelompokPengasuhanList) {
-        this.kelompokPengasuhanList = kelompokPengasuhanList;
     }
 
     public TextEditorBean getEditorCatatan() {

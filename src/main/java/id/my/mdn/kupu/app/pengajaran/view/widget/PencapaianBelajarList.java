@@ -8,6 +8,7 @@ import id.my.mdn.kupu.app.pengajaran.dao.PencapaianBelajarFacade;
 import id.my.mdn.kupu.app.pengajaran.entity.PencapaianBelajar;
 import id.my.mdn.kupu.app.pengasuhan.service.PengasuhanService;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
+import id.my.mdn.kupu.app.santri.entity.Pengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade;
 import id.my.mdn.kupu.core.base.dao.AbstractFacade.DefaultChecker;
@@ -68,7 +69,15 @@ public class PencapaianBelajarList extends AbstractMutablePagedValueList<Pencapa
         Santri santri = (Santri) evt.getNewValue();
         KelompokPengasuhan kelompokPengasuhan = pengasuhanService.getKelompokPengasuhan(santri.getId(), LocalDate.now());
 
-        santri.setKelompokPengasuhan(kelompokPengasuhan);
+        if (!santri.getTargetRelationships().isEmpty() && santri.getTargetRelationships().size() == 1) {
+            ((Pengasuhan) santri.getTargetRelationships().get(0)).setKelompokPengasuhan(kelompokPengasuhan);
+        } else {
+            Pengasuhan pengasuhan = new Pengasuhan();
+            pengasuhan.setSantri(santri);
+            pengasuhan.setKelompokPengasuhan(kelompokPengasuhan);
+            
+            santri.getTargetRelationships().add(pengasuhan);
+        }
     }
 
     @Override

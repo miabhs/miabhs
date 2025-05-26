@@ -4,54 +4,58 @@
  */
 package id.my.mdn.kupu.app.pengajaran.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import java.io.Serializable;
 
 /**
  *
  * @author aphasan
  */
-//@Entity
 public class PencapaianPembelajaran implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-//    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    public Long getId() {
-        return id;
+    private final Long jenisKitabId;
+    private final Long jenisKitabParentId;
+    private final String jenisKitabJudul;
+    private final Long jenisPengajaranId;
+    private final String jenisPengajaranNama;
+    private final String pencapaian;
+    
+    public PencapaianPembelajaran(
+            Long jenisKitabId,Long jenisKitabParentId, String jenisKitabJudul,
+            Long jenisPengajaranId, String jenisPengajaranNama, 
+            String pencapaian
+    ) {
+        this.jenisPengajaranId = jenisPengajaranId;
+        this.jenisPengajaranNama = jenisPengajaranNama;
+        this.jenisKitabParentId = jenisKitabParentId;
+        this.jenisKitabId = jenisKitabId;
+        this.jenisKitabJudul = jenisKitabJudul;
+        this.pencapaian = pencapaian;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getJenisPengajaranId() {
+        return jenisPengajaranId;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public String getJenisPengajaranNama() {
+        return jenisPengajaranNama;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PencapaianPembelajaran)) {
-            return false;
-        }
-        PencapaianPembelajaran other = (PencapaianPembelajaran) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public Long getJenisKitabParentId() {
+        return jenisKitabParentId;
     }
 
-    @Override
-    public String toString() {
-        return "id.my.mdn.kupu.app.pengajaran.entity.PencapaianPembelajaran[ id=" + id + " ]";
+    public Long getJenisKitabId() {
+        return jenisKitabId;
+    }
+
+    public String getJenisKitabJudul() {
+        return jenisKitabJudul;
+    }
+
+    public String getPencapaian() {
+        return pencapaian;
     }
     
 }

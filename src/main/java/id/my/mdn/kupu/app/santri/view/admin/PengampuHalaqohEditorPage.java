@@ -109,12 +109,10 @@ public class PengampuHalaqohEditorPage extends FormPage<PengampuHalaqoh> {
     }
 
     public HalaqohPengajaran getToRole() {
-        System.err.printf("SELEKTRI GET HALAKOH: %s", toRole);
         return toRole;
     }
 
     public void setToRole(HalaqohPengajaran toRole) {
-        System.err.printf("SELEKTRI SET HALAKOH: %s", toRole);
         this.toRole = toRole;
     }
 

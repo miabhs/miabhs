@@ -1,6 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="/WEB-INF/templates/reporting-explorer.xhtml"
+                template="/WEB-INF/templates/reporting-child-explorer.xhtml"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -8,35 +8,36 @@
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <f:metadata>
-        <ui:param name="title" value="Laporan Hasil Pembelajaran" />
-        
-        <ui:param name="viewPage" value="#{laporanPengajaranPage}" /> 
+        <ui:param name="primaryTitle" value="Editor Laporan Kepengasuhan" />    
+        <ui:param name="secondaryTitle" value="Cetak" />    
+        <ui:param name="viewPage" value="#{lppbPage}" /> 
         <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>    
 
         <ui:param name="masterTitle" value="Periode" />
         <ui:param name="masterDataView" value="#{viewPage.periodePembelajaranTree}" />
         <ui:param name="masterContentId" value=":master-frm:#{masterDataView.name}" /> 
         <ui:param name="master_notool" value="true" />
-        
+
         <ui:param name="masterFilter" value="#{masterDataView.filter}" />
         <ui:param name="masterFilterType" value="overlay" />
         <ui:param name="masterFilterUi" value="/WEB-INF/components/app/santri/periodepembelajaran-filterui.xhtml" />
         <ui:include src="/WEB-INF/components/app/santri/meta/periodepembelajaran-filterui.xhtml" >
             <ui:param name="filter" value="#{masterFilter}" />
         </ui:include>
-        
-        <f:viewParam name="ps" value="#{masterDataView.selectionInternal}" converter="PeriodePembelajaranConverter" transient="true" />
-        
-        <ui:param name="detailTitle" value="Hasil Pembelajaran (Pratinjau)" />
+
+        <f:viewParam name="ps" value="#{masterDataView.selectionInternal}" converter="PeriodePembelajaranConverter"  />
+
+        <ui:param name="detailTitle" value="Pratinjau" />
         <ui:param name="detailContentId" value=":detail-frm" />
         <ui:param name="detail_notool" value="true" />
-        
+
         <ui:param name="detailFilter" value="#{viewPage.filter}" />
         <ui:param name="detailFilterType" value="overlay" />
-        <ui:param name="detailFilterUi" value="/WEB-INF/components/app/pengajaran/pengajaransantri-filterui.xhtml" />
-        <ui:include src="/WEB-INF/components/app/pengajaran/meta/pengajaransantri-filterui.xhtml" >
+        <ui:param name="detailFilterUi" value="/WEB-INF/components/app/pengasuhan/pengasuhansantri-filterui.xhtml" />
+        <ui:include src="/WEB-INF/components/app/pengasuhan/meta/pengasuhansantri-filterui.xhtml" >
             <ui:param name="filter" value="#{detailFilter}" />
         </ui:include>
+
     </f:metadata>
 
     <ui:define name="styles">
@@ -61,10 +62,8 @@
     </ui:define> 
 
     <ui:define name="module-menu">
-        <ui:include src="/WEB-INF/components/app/pengajaran/module-menu.xhtml" />
+        <ui:include src="/WEB-INF/components/app/pengasuhan/module-menu.xhtml" />
     </ui:define>
-    
-    <ui:define name="master-crud-tools" />
 
     <ui:define name="master">
         <h:form id="master-frm">
@@ -75,6 +74,11 @@
         </h:form>
     </ui:define>
 
-    <ui:define name="master-pager" />
-    
+    <ui:define name="master-pager"/>
+    <ui:define name="viewer">
+        <pe:documentViewer value="#{reportStreamer.compositePdf}" 
+                           rendered="#{not reportingJobQueue.emptyJob}"
+                           style="border: none!important" />
+    </ui:define>
+
 </ui:composition>

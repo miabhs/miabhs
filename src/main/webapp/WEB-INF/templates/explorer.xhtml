@@ -18,9 +18,7 @@
             .ui-datatable-scrollable-body {
                 overflow-x: hidden;
             }
-            .noheader th {
-                display: none;
-            }
+            
             .overlay-filter .filter-field {
                 display: flex;
                 flex-direction: column;
@@ -197,7 +195,7 @@
                             <ui:insert name="master-pager">
                                 <ui:include src="/WEB-INF/components/core/base/pager.xhtml" >
                                     <ui:param name="pager" value="#{masterDataView.pager}" />
-                                    <ui:param name="pagerListener" value="#{masterContentId}" />
+                                    <ui:param name="pagerCallback" value="refreshMasterContent()" />
                                 </ui:include>
                             </ui:insert>
                         </h:form>
@@ -273,8 +271,8 @@
                         <h:form id="detail-pager-frm" class="flex">
                             <ui:insert name="detail-pager">
                                 <ui:include src="/WEB-INF/components/core/base/pager.xhtml" >
-                                    <ui:param name="pager" value="#{detailPager}" />
-                                    <ui:param name="pagerListener" value="#{detailContentId}" />
+                                    <ui:param name="pager" value="#{detailDataView.pager}" />
+                                    <ui:param name="pagerCallback" value="refreshDetailContent()" />
                                 </ui:include>
                             </ui:insert>
                         </h:form>

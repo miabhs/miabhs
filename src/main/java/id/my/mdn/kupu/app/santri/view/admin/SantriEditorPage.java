@@ -45,10 +45,6 @@ public class SantriEditorPage extends FormPage<Santri> {
     @Override
     protected Santri newEntity() {
         Person person = Person.builder()
-                //                .identity(new PersonIdentity())
-                //                .postalAddress(new PostalAddress())
-                //                .telecommunicationNumber(new TelecommunicationNumber())
-                //                .electronicAddress(new ElectronicAddress())
                 .get();
 
         return Santri.builder()

@@ -5,12 +5,11 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:h="jakarta.faces.html">
 
-    <f:metadata>
-        <ui:param name="viewPage" value="#{applicationUserEditorPage}" />        
-        <ui:param name="primaryTitle" value="Editor Akun Masuk" /> 
-
-        <ui:param name="notool" value="true" />
-        <ui:param name="nofilter" value="true"/> 
+    <f:metadata>     
+        <ui:param name="primaryTitle" value="Editor User" /> 
+        
+        <ui:param name="viewPage" value="#{applicationUserEditorPage}" /> 
+        <ui:include src="/WEB-INF/components/core/base/meta/page.xhtml"/>   
 
         <f:viewParam name="party" value="#{viewPage.party}" converter="PartyConverter" transient="true" />
         <f:viewParam name="groups" value="#{viewPage.groups}" transient="true" converter="ApplicationSecurityGroupListConverter" />
@@ -34,7 +33,7 @@
             
             <div class="col-12 md:col-6 lg:col-4 gap-3">
                 <ui:decorate template="/WEB-INF/components/core/base/form.xhtml">
-                    <ui:param name="title" value="Nama Pengguna &amp; Password" />
+                    <ui:param name="title" value="Nama User &amp; Password" />
 
                     <ui:define name="fields">
                         <div class="field ui-fluid">

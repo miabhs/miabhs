@@ -87,25 +87,6 @@ public class LaporanKepengasuhanEditorPage extends Page implements Serializable 
         filter = new Filter(this::onFilter);
     }
 
-    public void onFilter(Object obj) {
-        santriList.getFilter().<SantriFilter>getContent()
-                .setKelompokPengasuhan(
-                        filterContent.getKelompokPengasuhan()
-                );
-        santriList.reset();
-    }
-
-    @Override
-    public Map<String, List<String>> getStates() {
-        Map<String, List<String>> states = super.getStates();
-        states.putAll(filter.getStates());
-        return states;
-    }
-
-    public Filter getFilter() {
-        return filter;
-    }
-
     @PostConstruct
     @Override
     public void init() {
@@ -158,6 +139,25 @@ public class LaporanKepengasuhanEditorPage extends Page implements Serializable 
 
         periodePembelajaranTree.setDefaultChecker(
                 () -> periodePembelajaranTree.getFilter().<PeriodePembelajaranFilter>getContent().getTahunPembelajaran() == null);
+    }
+
+    public void onFilter(Object obj) {
+        santriList.getFilter().<SantriFilter>getContent()
+                .setKelompokPengasuhan(
+                        filterContent.getKelompokPengasuhan()
+                );
+        santriList.reset();
+    }
+
+    @Override
+    public Map<String, List<String>> getStates() {
+        Map<String, List<String>> states = super.getStates();
+        states.putAll(filter.getStates());
+        return states;
+    }
+
+    public Filter getFilter() {
+        return filter;
     }
 
     public void doFilter(AjaxBehaviorEvent evt) {

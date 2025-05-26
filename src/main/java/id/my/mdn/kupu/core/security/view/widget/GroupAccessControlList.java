@@ -52,6 +52,16 @@ public class GroupAccessControlList extends AbstractPagedValueList<AccessControl
         invalidate();
     }
 
-    
+    public String[] getCreatePermission() {
+        return new String[]{};
+    }
+
+    public String[] getUpdatePermission() {
+        return new String[]{};
+    }
+
+    public String[] getDeletePermission() {
+        return new String[]{};
+    }    
     
 }

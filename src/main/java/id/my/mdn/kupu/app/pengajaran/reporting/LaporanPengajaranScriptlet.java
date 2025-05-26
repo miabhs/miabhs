@@ -36,7 +36,7 @@ public class LaporanPengajaranScriptlet extends JRDefaultScriptlet {
         LaporanPengajaranScriptletHelper helper = findHelper();
 
         Long santriId = (Long) getFieldValue("id");
-        Santri santri = helper.getSantriFacade().find(santriId);
+        Santri santri = helper.getSantriFacade().findAlt(santriId);
 
         TahunPembelajaran tahunPembelajaran = (TahunPembelajaran) getParameterValue("tahunPembelajaran");
 
@@ -45,10 +45,10 @@ public class LaporanPengajaranScriptlet extends JRDefaultScriptlet {
         PeriodePembelajaran periodePembelajaran = (PeriodePembelajaran) getParameterValue("periodePembelajaran");
 
         setVariableValue("listPencapaianBelajar",
-                helper.getLaporanPengajaranFacade().getPencapaianBelajar(santri, periodePembelajaran)
+                helper.getLaporanPembelajaranFacade().getPencapaianPembelajaran(santri, periodePembelajaran)
         );
 
-        CatatanPengajaran catatanLaporan = findHelper().getLaporanPengajaranFacade().getCatatanPengajaran(santri, periodePembelajaran);
+        CatatanPengajaran catatanLaporan = helper.getLaporanPembelajaranFacade().getCatatanPembelajaran(santri, periodePembelajaran);
         
         if (catatanLaporan != null) {
             setVariableValue("catatanLaporan", catatanLaporan);

@@ -61,6 +61,8 @@ public class JenisKitab implements Serializable, HierarchicalEntity<JenisKitab> 
     private KategoriKitab kategoriKitab;
 
     private boolean berjilid;
+    
+    private boolean dirincikan;
 
     @ManyToOne
     private JenisKitab parent;
@@ -181,6 +183,14 @@ public class JenisKitab implements Serializable, HierarchicalEntity<JenisKitab> 
     @Override
     public void setChildren(List<JenisKitab> children) {
         this.children = children;
+    }
+
+    public boolean isDirincikan() {
+        return dirincikan;
+    }
+
+    public void setDirincikan(boolean dirincikan) {
+        this.dirincikan = dirincikan;
     }
 
     @Override

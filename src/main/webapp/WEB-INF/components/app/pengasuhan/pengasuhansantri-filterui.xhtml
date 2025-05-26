@@ -3,19 +3,30 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="jakarta.faces.core"
                 xmlns:h="jakarta.faces.html">
-    
+
+    <div class="filter-field">
+        <p:outputLabel for="kelamin" value="Jenis Kelamin" />
+        <p:selectOneMenu id="kelamin" value="#{filter.content.gender}"
+                         converter="GenderTypeConverter" >                        
+            <f:selectItem itemLabel="Semua" itemValue="#{null}" />
+            <f:selectItems value="#{genderTypeList.fetchedItems}" var="item"
+                           itemLabel="#{item.label}" itemValue="#{item}" />
+            <p:ajax listener="#{filter.content.updateGenderFilter}" update="@form:santri-filter-selector @form:santri @form:kelompok" />
+        </p:selectOneMenu>                  
+    </div>
+
     <div class="filter-field">
         <p:outputLabel value="Kelompok" />
-        <p:selectOneMenu value="#{filter.content.kelompokPengasuhan}" 
+        <p:selectOneMenu id="kelompok" value="#{filter.content.kelompokPengasuhan}" 
                          converter="KelompokPengasuhanConverter"
                          filter="true" filterMatchMode="contains"
                          filterPlaceholder="Cari..."
                          autoWidth="false"  >                        
             <f:selectItem itemLabel="Semua" itemValue="#{null}" />
-            <f:selectItems value="#{kelompokPengasuhanSelectList.fetchedItems}" 
+            <f:selectItems value="#{filter.content.kelompokPengasuhanChooser.fetchedItems}" 
                            var="item" itemValue="#{item}" 
                            itemLabel="#{item.organization.name}" />
-            <p:ajax listener="#{filter.content.updateSantriFilter}" update="@form:santri-filter-selector @form:santri" />
+            <p:ajax listener="#{filter.content.updateKelompokFilter}" update="@form:santri-filter-selector @form:santri" />
         </p:selectOneMenu>
     </div>
 

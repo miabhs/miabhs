@@ -10,10 +10,10 @@
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<scriptlet name="AktifitasScriptlet" class="id.my.mdn.kupu.app.pengasuhan.reporting.AktifitasScriptlet"/>
-	<field name="santriName" class="java.lang.String"/>
+	<field name="santri.person.name" class="java.lang.String"/>
 	<field name="activityDate" class="java.time.LocalDate"/>
-	<field name="bentukAktifitasBentuk" class="java.lang.String"/>
-	<field name="bentukAktifitasJenis.label" class="java.lang.String"/>
+	<field name="bentukAktifitas.bentuk" class="java.lang.String"/>
+	<field name="bentukAktifitas.jenis.label" class="java.lang.String"/>
 	<variable name="activityDate" resetType="None" calculation="System" class="java.lang.String">
 		<expression><![CDATA[$V{activityDate}]]></expression>
 	</variable>
@@ -73,51 +73,64 @@
 		</element>
 	</columnHeader>
 	<detail>
-		<band height="30">
+		<band height="30" splitType="Prevent">
 			<element kind="frame" uuid="ae5eea5a-6f06-4f3e-a2ea-fcc6defa417b" x="0" y="0" width="525" height="30">
-				<element kind="frame" uuid="be48d845-2315-4729-b6c7-099eb36b2bd2" stretchType="ElementGroupHeight" x="0" y="0" width="180" height="30">
+				<element kind="frame" uuid="be48d845-2315-4729-b6c7-099eb36b2bd2" stretchType="ContainerHeight" x="0" y="0" width="180" height="30">
 					<element kind="textField" uuid="ca248391-e9b5-4003-8f5b-1851bab8d726" mode="Opaque" x="0" y="0" width="180" height="30" fontName="Roboto" fontSize="11.0" textAdjust="StretchHeight" printRepeatedValues="false" removeLineWhenBlank="true" hTextAlign="Left" vTextAlign="Middle">
-						<expression><![CDATA[$F{santriName}]]></expression>
+						<expression><![CDATA[$F{santri.person.name}]]></expression>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="8"/>
+						<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="8">
+							<topPen lineWidth="0.75"/>
+						</box>
 					</element>
 					<box>
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="1e413353-c8fb-45a0-8e65-3111aa0854c9" stretchType="ElementGroupHeight" x="180" y="0" width="79" height="30">
-					<element kind="textField" uuid="2a4cdc0a-154b-4067-8a4c-9a21c2fdcb22" x="0" y="0" width="79" height="30" fontName="Roboto" fontSize="11.0" textAdjust="StretchHeight" removeLineWhenBlank="true" hTextAlign="Center" vTextAlign="Middle">
-						<expression><![CDATA[$F{activityDate}]]></expression>
+				<element kind="frame" uuid="1e413353-c8fb-45a0-8e65-3111aa0854c9" stretchType="ContainerHeight" x="180" y="0" width="79" height="30">
+					<element kind="textField" uuid="2a4cdc0a-154b-4067-8a4c-9a21c2fdcb22" x="0" y="0" width="79" height="30" fontName="Roboto" fontSize="11.0" textAdjust="StretchHeight" pattern="dd/MM/yyyy" printRepeatedValues="false" removeLineWhenBlank="true" hTextAlign="Center" vTextAlign="Middle">
+						<expression><![CDATA[new java.util.Date($F{activityDate}.atStartOfDay().toInstant(java.time.ZoneOffset.of("+7")).toEpochMilli())]]></expression>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="8"/>
+						<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="8">
+							<topPen lineWidth="0.75"/>
+						</box>
 					</element>
 					<box>
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="7963d8ba-f21c-429e-a9ed-ef00c1fbee30" stretchType="ElementGroupHeight" x="259" y="0" width="191" height="30">
+				<element kind="frame" uuid="7963d8ba-f21c-429e-a9ed-ef00c1fbee30" stretchType="ContainerHeight" x="259" y="0" width="191" height="30">
 					<element kind="textField" uuid="ab0d1b36-4555-4cc2-bbc6-38cb45df2c94" x="0" y="0" width="191" height="30" fontName="Roboto" fontSize="11.0" textAdjust="StretchHeight" removeLineWhenBlank="true" hTextAlign="Left" vTextAlign="Middle">
-						<expression><![CDATA[$F{bentukAktifitasBentuk}]]></expression>
+						<expression><![CDATA[$F{bentukAktifitas.bentuk}]]></expression>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="8"/>
 					</element>
 					<box>
+						<bottomPen lineWidth="0.75"/>
 						<rightPen lineWidth="0.75"/>
 					</box>
 				</element>
-				<element kind="frame" uuid="557b9c3c-54e9-4faa-a670-6ba9b822ec5f" x="451" y="0" width="74" height="30">
+				<element kind="frame" uuid="557b9c3c-54e9-4faa-a670-6ba9b822ec5f" stretchType="ContainerHeight" x="451" y="0" width="74" height="30">
 					<element kind="textField" uuid="41336a0e-cf68-4e81-9238-a559657e3839" x="0" y="0" width="74" height="30" fontName="Roboto" fontSize="11.0" textAdjust="StretchHeight" removeLineWhenBlank="true" hTextAlign="Center" vTextAlign="Middle">
-						<expression><![CDATA[$F{bentukAktifitasJenis.label}]]></expression>
+						<expression><![CDATA[$F{bentukAktifitas.jenis.label}]]></expression>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<box topPadding="4" leftPadding="4" bottomPadding="4" rightPadding="8"/>
 					</element>
+					<box>
+						<bottomPen lineWidth="0.75"/>
+					</box>
 				</element>
 				<box>
 					<leftPen lineWidth="0.75"/>
-					<bottomPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.75"/>
 				</box>
 			</element>
 		</band>
 	</detail>
+	<columnFooter height="1">
+		<element kind="line" uuid="70065c06-58ac-4bb4-953b-93cb89a130ca" x="0" y="0" width="525" height="1">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+	</columnFooter>
 </jasperReport>

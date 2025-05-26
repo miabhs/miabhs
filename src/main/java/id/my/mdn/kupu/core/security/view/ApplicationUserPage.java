@@ -33,11 +33,11 @@ import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
 import id.my.mdn.kupu.core.security.view.widget.ApplicationSecurityUserList;
-import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
-import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -64,7 +64,7 @@ public class ApplicationUserPage extends ChildPage implements Serializable {
     public void openGroupChooser() {
         gotoChild(ApplicationSecurityMapPage.class)
                 .addParam("user")
-                .withValues(dataView.getSelector().getSelection())
+                .withValues(dataView.getSelected())
                 .open();
     }
 
@@ -78,13 +78,13 @@ public class ApplicationUserPage extends ChildPage implements Serializable {
     public void edit() {
         gotoChild(PasswordEditorPage.class)
                 .addParam("entity")
-                .withValues(dataView.getSelector().getSelection())
+                .withValues(dataView.getSelected())
                 .open();
     }
 
     @Deleter(of = "dataView")
     public void delete() {
-        dataView.delete(dataView.getSelections());
+        dataView.deleteSelected();
     }
 
     public ApplicationSecurityUserList getDataView() {

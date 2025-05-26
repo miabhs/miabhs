@@ -11,6 +11,7 @@ import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranFilter;
 import id.my.mdn.kupu.app.santri.view.widget.PeriodePembelajaranTree;
 import id.my.mdn.kupu.core.base.view.annotation.Bookmarked;
+import id.my.mdn.kupu.core.base.view.annotation.SorterField.Order;
 import static id.my.mdn.kupu.core.base.view.widget.Selector.CHECKBOX;
 import id.my.mdn.kupu.core.base.view.widget.SorterData;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
@@ -51,7 +52,7 @@ public class LaporanKelompokPekananPage extends ReportingChildPage implements Se
     public void init() {
         super.init();
         filter.setContent(filterContent);
-        periodePembelajaranTreeInit(); 
+        periodePembelajaranTreeInit();
     }
 
     private void periodePembelajaranTreeInit() {
@@ -86,10 +87,12 @@ public class LaporanKelompokPekananPage extends ReportingChildPage implements Se
     private String generateFindAllQuery() {
         List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
         Collections.sort(listPeriode);
-        return rangkumanFacade.generateQueryForPeriods(
-                listPeriode,
-                filterContent.getKelompokPengasuhan()
-        );
+        String q
+                = rangkumanFacade.generateQueryForPeriods(
+                        listPeriode,
+                        filterContent.getKelompokPengasuhan()
+                );
+        return q;
     }
 
     @Override
@@ -99,7 +102,7 @@ public class LaporanKelompokPekananPage extends ReportingChildPage implements Se
     }
 
     @Override
-    protected ReportingJob prepareReportingJob() {
+    protected List<ReportingJob> prepareReportingJob() {
 
         List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
 
@@ -107,7 +110,13 @@ public class LaporanKelompokPekananPage extends ReportingChildPage implements Se
                 = (listPeriode != null && !listPeriode.isEmpty())
                 ? rangkumanFacade.findAll(
                         this::generateFindAllQuery,
-                        0, 0, null, null, List.of(SorterData.by("kelompokPengasuhanId")), null, null
+                        0, 0, null, null,
+                        List.of(
+                                SorterData.by("kelompokPengasuhanId"),
+                                SorterData.by("koordinator", Order.DESC),
+                                SorterData.by("santriId")
+                        ),
+                        null, null
                 ) : new ArrayList<>();
 
         Map<String, Object> parameters = new HashMap<>();
@@ -120,15 +129,15 @@ public class LaporanKelompokPekananPage extends ReportingChildPage implements Se
             parameters.put("thruDate", filterContent.getThruDate());
         }
 
-        return new ReportingJob(
-                listRangkumanKepengasuhan, parameters,
-                "RangkumanAktifitas",
-                "PembinaKepengasuhan",
-                "PembantuPelaksanaKepengasuhan",
-                "KakakKepengasuhan",
-                "AktifitasSantri",
-                "Aktifitas"
-        );
+        return List.of(
+                new ReportingJob(
+                        listRangkumanKepengasuhan, parameters,
+                        "RangkumanAktifitas",
+                        "PembinaKepengasuhan",
+                        "PembantuPelaksanaKepengasuhan",
+                        "KakakKepengasuhan",
+                        "Aktifitas"
+                ));
     }
 
     public PeriodePembelajaranTree getPeriodePembelajaranTree() {

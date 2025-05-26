@@ -66,27 +66,30 @@ public class ApplicationUser extends PersonRole {
 
             return this;
         }
-        
+
         public Builder withUsername(String username) {
             entity.setUsername(username);
             return this;
         }
-        
+
         public Builder withPassword(String password) {
-            entity.setPassword(password);            
+            entity.setPassword(password);
             return this;
         }
-        
+
         public Builder addToGroup(ApplicationSecurityGroup group) {
-            if(entity.getGroups() == null) {
+            if (entity.getGroups() == null) {
                 entity.setGroups(new ArrayList<>());
             }
-            ApplicationSecurityMap securityMap = new ApplicationSecurityMap();
-            securityMap.setUser(entity);
-            securityMap.setGroup(group);
-            
-            entity.getGroups().add(securityMap);
-            
+
+            if (group != null) {
+                ApplicationSecurityMap securityMap = new ApplicationSecurityMap();
+                securityMap.setUser(entity);
+                securityMap.setGroup(group);
+
+                entity.getGroups().add(securityMap);
+            }
+
             return this;
         }
 

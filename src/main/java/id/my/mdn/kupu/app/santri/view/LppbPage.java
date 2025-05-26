@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
  */
-package id.my.mdn.kupu.app.pengajaran.view;
+package id.my.mdn.kupu.app.santri.view;
 
-import id.my.mdn.kupu.app.pengajaran.view.widget.PengajaranSantriFilter;
+import id.my.mdn.kupu.app.pengasuhan.view.widget.PengasuhanSantriFilter;
 import id.my.mdn.kupu.app.santri.dao.SantriFacade;
 import id.my.mdn.kupu.app.santri.entity.PeriodePembelajaran;
 import id.my.mdn.kupu.app.santri.entity.Santri;
@@ -17,7 +17,7 @@ import id.my.mdn.kupu.core.base.view.widget.Sorter;
 import id.my.mdn.kupu.core.reporting.model.ReportingJob;
 import id.my.mdn.kupu.core.reporting.view.ReportingChildPage;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.event.ValueChangeEvent;
+import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -35,16 +35,16 @@ import org.omnifaces.cdi.ViewScoped;
  *
  * @author Arief Prihasanto <aphasan57 at gmail.com>
  */
-@Named(value = "laporanPengajaranPage")
+@Named(value = "lppbPage")
 @ViewScoped
-public class LaporanPengajaranPage extends ReportingChildPage implements Serializable {
+public class LppbPage extends ReportingChildPage implements Serializable {
 
     @Inject
     @Bookmarked
     private PeriodePembelajaranTree periodePembelajaranTree;
 
     @Inject
-    private PengajaranSantriFilter filterContent;
+    private PengasuhanSantriFilter filterContent;
 
     @Inject
     private SantriFacade santriFacade;
@@ -54,21 +54,7 @@ public class LaporanPengajaranPage extends ReportingChildPage implements Seriali
     public void init() {
         super.init();
         filter.setContent(filterContent);
-
         periodePembelajaranTreeInit();
-    }
-
-    private void periodePembelajaranTreeInit() {
-        periodePembelajaranTree.setSelectionMode(() -> Selector.SINGLE);
-        periodePembelajaranTree.setName("periodePembelajaranTbl");
-        periodePembelajaranTree.setSelectionsLabel("ps");
-    }
-
-    public void onChangePeriodePembelajaran(ValueChangeEvent evt) {
-        PeriodePembelajaran periodePembelajaran = (PeriodePembelajaran) evt.getNewValue();
-        periodePembelajaranTree.setSelection(periodePembelajaran);
-
-        periodePembelajaranTree.getSelector().addListener(s -> filter.doFilter());
     }
 
     @Override
@@ -77,8 +63,24 @@ public class LaporanPengajaranPage extends ReportingChildPage implements Seriali
         return periode != null;
     }
 
+    private void periodePembelajaranTreeInit() {
+        periodePembelajaranTree.setSelectionMode(() -> Selector.SINGLE);
+        periodePembelajaranTree.setName("periodePembelajaranTbl");
+        periodePembelajaranTree.setSelectionsLabel("ps");
+        periodePembelajaranTree.getFilter().setName("periodeFilter");
+
+        periodePembelajaranTree.setDefaultChecker(
+                () -> periodePembelajaranTree.getFilter().<PeriodePembelajaranFilter>getContent().getTahunPembelajaran() == null);
+    }
+
+    public void doFilter(AjaxBehaviorEvent evt) {
+        periodePembelajaranTree.doFilter();
+        periodePembelajaranTree.setSelections(null);
+        updateUrl();
+    }
+
     @Override
-    protected List<ReportingJob> prepareReportingJob() {
+    public List<ReportingJob> prepareReportingJob() {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("tahunPembelajaran", periodePembelajaranTree.getFilter()
@@ -90,20 +92,25 @@ public class LaporanPengajaranPage extends ReportingChildPage implements Seriali
         parameters.put("issued", issued.format(DateTimeFormatter.ofPattern("d/M/yyyy")));
 
         String hijrahDateString = HijrahChronology.INSTANCE.date(issued)
-                .format(DateTimeFormatter.ofPattern(
-                        "d/M/yyyy", new Locale("ar")).withDecimalStyle(DecimalStyle.of(new Locale("ar"))));
+                .format(DateTimeFormatter.ofPattern("d/M/yyyy", new Locale("ar")).withDecimalStyle(DecimalStyle.of(new Locale("ar"))));
         parameters.put("issuedHijri", hijrahDateString);
-
+        
         List<FilterData> santriFilter = filter.getValues();
         List<Santri> santriList = santriFacade.findAll(santriFilter, Sorter.extractSorterData(Santri.class));
 
-        return List.of(
+        return List.of(new ReportingJob(santriList, parameters,
+                        "RaporKepengasuhan",
+                        "LaporanKepengasuhan",
+                        "LaporanKepengasuhanSantri",
+                        "LaporanKepengasuhanSantriAktifitas"
+                ),
                 new ReportingJob(
                         santriList,
                         parameters,
                         "LaporanPengajaran",
                         "LaporanPencapaianBelajar"
-                ));
+                )
+        );
     }
 
     public PeriodePembelajaranTree getPeriodePembelajaranTree() {

@@ -33,6 +33,11 @@ public class AtributPembelajaranValue implements Serializable {
         this.bobot = bobot;
     }
 
+    public AtributPembelajaranValue(String... values) {
+        this.marker = values[0].trim();
+        if(values.length > 1) this.deskripsi = values[1].trim();
+    }
+
     public String getMarker() {
         return marker;
     }
@@ -59,10 +64,8 @@ public class AtributPembelajaranValue implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 17 * hash + Objects.hashCode(this.marker);
-        hash = 17 * hash + Objects.hashCode(this.deskripsi);
-        hash = 17 * hash + Objects.hashCode(this.bobot);
+        int hash = 3;
+        hash = 23 * hash + Objects.hashCode(this.marker);
         return hash;
     }
 
@@ -78,19 +81,14 @@ public class AtributPembelajaranValue implements Serializable {
             return false;
         }
         final AtributPembelajaranValue other = (AtributPembelajaranValue) obj;
-        if (!Objects.equals(this.marker, other.marker)) {
-            return false;
-        }
-        if (!Objects.equals(this.deskripsi, other.deskripsi)) {
-            return false;
-        }
-        return Objects.equals(this.bobot, other.bobot);
+        return Objects.equals(this.marker, other.marker);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if(marker != null) sb.append(marker);
+        if(deskripsi != null) sb.append(":").append(deskripsi);
         return sb.toString() ;
     }
     

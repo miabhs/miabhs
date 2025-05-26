@@ -76,7 +76,7 @@ public class LaporanSantriPage extends ReportingChildPage implements Serializabl
 
             Optional<LocalDate> max = selections.stream().map(o -> o.getThruDate())
                     .sorted((a, b) -> (a.compareTo(b) * (-1))).findFirst();
-            
+
             if (min.isPresent() && max.isPresent()) {
                 filterContent.setFromDate(min.get());
                 filterContent.setThruDate(max.get());
@@ -103,7 +103,7 @@ public class LaporanSantriPage extends ReportingChildPage implements Serializabl
     }
 
     @Override
-    protected ReportingJob prepareReportingJob() {
+    protected List<ReportingJob> prepareReportingJob() {
 
         List<PeriodePembelajaran> listPeriode = periodePembelajaranTree.getSelections();
 
@@ -118,12 +118,13 @@ public class LaporanSantriPage extends ReportingChildPage implements Serializabl
         parameters.put("JenisBDAS", "BDAS");
         parameters.put("JenisNonBDAS", "NON_BDAS");
 
-        return new ReportingJob(
-                listRangkumanKepengasuhan, parameters,
-                "LaporanSantri",
-                "CatatanKepengasuhan",
-                "HikmahKauniyah"
-        );
+        return List.of(
+                new ReportingJob(
+                        listRangkumanKepengasuhan, parameters,
+                        "LaporanSantri",
+                        "CatatanKepengasuhan",
+                        "HikmahKauniyah"
+                ));
 
     }
 

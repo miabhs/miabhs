@@ -56,9 +56,9 @@ public abstract class AbstractMutablePagedValueList<E>
     protected void updateInternal(E entity, String field, Object newValue) {
 
     }
-    
+
     protected void postUpdate(E entity) {
-        
+
     }
 
     protected E findEntity(String id) {
@@ -96,7 +96,9 @@ public abstract class AbstractMutablePagedValueList<E>
         } else {
             selector.setSelections(List.of(entity));
         }
-        invalidate();
+        if (cached) {
+            invalidate();
+        }
     }
 
     protected abstract void createInternal(E entity);
@@ -128,7 +130,9 @@ public abstract class AbstractMutablePagedValueList<E>
     @Override
     public void delete(E entity) {
         deleteInternal(entity);
-        invalidate();
+        if (cached) {
+            invalidate();
+        }
     }
 
     public void deleteSelected() {

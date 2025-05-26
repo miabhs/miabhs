@@ -5,6 +5,9 @@
  */
 package id.my.mdn.kupu.app.santri.dao;
 
+import id.my.mdn.kupu.app.pengasuhan.dao.AktifitasFacade;
+import id.my.mdn.kupu.app.pengasuhan.dao.BentukAktifitasFacade;
+import id.my.mdn.kupu.app.pengasuhan.entity.Aktifitas;
 import id.my.mdn.kupu.app.santri.entity.JenisSantri;
 import id.my.mdn.kupu.app.santri.entity.KelompokPengasuhan;
 import id.my.mdn.kupu.app.santri.entity.Santri;
@@ -26,10 +29,12 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 
 /**
@@ -41,158 +46,103 @@ public class SantriFacade extends AbstractSqlFacade<Santri> {
 
     private static final String FIND_ALL
             = """
-              SELECT ID, PARTYID, PARTYROLETYPEID, NAME, NAMABAPAK, GENDER, DATEOFBIRTH, NIS,
-                     JENISSANTRI, STATUS, TAHUNMASUKID, TAHUNMASUKNAME, TAHUNMASUKFROMDATE, ANGKATAN, 
-                     KELOMPOKPENGASUHANID, KELOMPOKPENGASUHANPARTYID, KELOMPOKPENGASUHANPARTYNAME, KOORDINATOR
+              SELECT ID,
+                     PERSON_ID, PERSON_NAME, PERSON_GENDER, PERSON_DOB,
+                     NAMABAPAK, NIS, JENISSANTRI, ANGKATAN, TAHUNMASUK_ID, TAHUNMASUK_NAME, TAHUNMASUK_FROMDATE,
+                     KELOMPOKPENGASUHAN_ID, KELOMPOKPENGASUHAN_ORG_ID, KELOMPOKPENGASUHAN_NAME, KELOMPOKPENGASUHAN_KOORDINATOR, KELOMPOKPENGASUHAN_PENGASUHAN_FROMDATE,
+                     STATUS, STATUS_FROMDATE
               FROM (
-                      SELECT SANTRI4.ID, SANTRI4.PARTY_ID AS PARTYID, SANTRI4.PARTYROLETYPE_ID AS PARTYROLETYPEID, 
-                             SANTRI4.NAME, SANTRI4.NAMABAPAK, SANTRI4.GENDER, SANTRI4.DATEOFBIRTH AS DATEOFBIRTH, SANTRI4.KOORDINATOR,
-                             KELOMPOKPENGASUHAN2.ID AS KELOMPOKPENGASUHANID, KELOMPOKPENGASUHAN2.PARTY_ID AS KELOMPOKPENGASUHANPARTYID,
-                             KELOMPOKPENGASUHAN2.NAME AS KELOMPOKPENGASUHANPARTYNAME, SANTRI4.STATUS AS STATUS, SANTRI4.NIS, SANTRI4.JENISSANTRI,
-                             SANTRI4.TAHUNMASUK_ID AS TAHUNMASUKID, SANTRI4.TAHUNMASUKNAME, SANTRI4.TAHUNMASUKFROMDATE, SANTRI4.ANGKATAN
-                      FROM (
-                          SELECT SANTRI3.ID, SANTRI3.PARTY_ID, SANTRI3.PARTYROLETYPE_ID, SANTRI3.NAME, SANTRI3.NAMABAPAK, SANTRI3.GENDER, SANTRI3.DATEOFBIRTH,
-                                 PENGASUHAN2.KOORDINATOR, PENGASUHAN2.FROMROLE_ID, SANTRI3.STATUS,
-                                 SANTRI3.NIS, SANTRI3.JENISSANTRI, SANTRI3.TAHUNMASUK_ID, SANTRI3.TAHUNMASUKNAME, SANTRI3.TAHUNMASUKFROMDATE, SANTRI3.ANGKATAN
-                          FROM (
-                                  SELECT SANTRI2.ID, SANTRI2.PARTY_ID, SANTRI2.PARTYROLETYPE_ID, SANTRI2.NAME, SANTRI2.NAMABAPAK, SANTRI2.GENDER, SANTRI2.DATEOFBIRTH,
-                                         STATUSSANTRI0.STATUS, SANTRI2.NIS, SANTRI2.JENISSANTRI, SANTRI2.TAHUNMASUK_ID, SANTRI2.TAHUNMASUKNAME, SANTRI2.TAHUNMASUKFROMDATE, SANTRI2.ANGKATAN
-                                  FROM (
-                                          SELECT SANTRI1.ID, SANTRI1.PARTY_ID, SANTRI1.PARTYROLETYPE_ID, PERSON1.NAME, SANTRI1.NAMABAPAK, PERSON1.GENDER, PERSON1.DATEOFBIRTH,
-                                                 SANTRI1.NIS, SANTRI1.JENISSANTRI, SANTRI1.TAHUNMASUK_ID, SANTRI1.TAHUNMASUKNAME, SANTRI1.TAHUNMASUKFROMDATE, SANTRI1.ANGKATAN
-                                          FROM (
-                                                  SELECT SANTRI0.ID, PARTYROLE0.PARTY_ID, PARTYROLE0.PARTYROLETYPE_ID, SANTRI0.NAMABAPAK, SANTRI0.NIS, SANTRI0.TAHUNMASUK_ID, SANTRI0.JENISSANTRI, SANTRI0.TAHUNMASUKNAME, SANTRI0.TAHUNMASUKFROMDATE, SANTRI0.ANGKATAN
-                                                  FROM (
-                                                      SELECT S.ID, S.NAMABAPAK, S.NIS, S.TAHUNMASUK_ID, S.JENISSANTRI, TP.NAME AS TAHUNMASUKNAME, TP.FROMDATE AS TAHUNMASUKFROMDATE, S.ANGKATAN
-                                                      FROM MIABH_SANTRI S
-                                                      JOIN MIABH_TAHUNPEMBELAJARAN TP ON S.TAHUNMASUK_ID = TP.ID
-                                                  ) AS SANTRI0
-                                                  JOIN PARTY_PARTYROLE AS PARTYROLE0
-                                                  ON SANTRI0.ID = PARTYROLE0.ID
-                                                  WHERE PARTYROLE0.FROMDATE <=  CURRENT_DATE AND (PARTYROLE0.THRUDATE IS NULL OR PARTYROLE0.THRUDATE >= CURRENT_DATE)
-                                          ) AS SANTRI1
-                                          JOIN ( 
-                                                  SELECT PERSON0.ID, CONCAT_WS(' ', PARTY0.FIRSTNAME, PARTY0.LASTNAME) AS NAME, PERSON0.GENDER, PERSON0.DATEOFBIRTH
-                                                  FROM PARTY_PERSON AS PERSON0
-                                                  JOIN PARTY_PARTY AS PARTY0
-                                                  ON PERSON0.ID = PARTY0.ID
-                                          ) AS PERSON1
-                                          ON SANTRI1.PARTY_ID = PERSON1.ID
-                                  ) AS SANTRI2
-                                  JOIN MIABH_STATUSSANTRI AS STATUSSANTRI0
-                                  ON SANTRI2.ID = STATUSSANTRI0.SANTRI_ID
-                                  WHERE STATUSSANTRI0.FROMDATE <=  CURRENT_DATE AND (STATUSSANTRI0.THRUDATE IS NULL OR STATUSSANTRI0.THRUDATE >= CURRENT_DATE)
-                          ) AS SANTRI3
-                          LEFT JOIN (
-                              SELECT PENGASUHAN1.FROMROLE_ID, PENGASUHAN1.TOROLE_ID, PENGASUHAN1.FROMDATE, PARTYRELATIONSHIP1.THRUDATE, PENGASUHAN1.KOORDINATOR
-                              FROM MIABH_PENGASUHAN AS PENGASUHAN1
-                              JOIN PARTY_PARTYRELATIONSHIP AS PARTYRELATIONSHIP1
-                              ON PENGASUHAN1.PARTYRELATIONSHIPTYPE_ID = PARTYRELATIONSHIP1.PARTYRELATIONSHIPTYPE_ID
-                              AND PENGASUHAN1.FROMROLE_ID = PARTYRELATIONSHIP1.FROMROLE_ID
-                              AND PENGASUHAN1.TOROLE_ID = PARTYRELATIONSHIP1.TOROLE_ID
-                              AND PENGASUHAN1.FROMDATE = PARTYRELATIONSHIP1.FROMDATE
-                              WHERE PARTYRELATIONSHIP1.FROMDATE <=  CURRENT_DATE AND (PARTYRELATIONSHIP1.THRUDATE IS NULL OR PARTYRELATIONSHIP1.THRUDATE >= CURRENT_DATE)
-                          ) AS PENGASUHAN2
-                          ON SANTRI3.ID = PENGASUHAN2.TOROLE_ID
-                  ) AS SANTRI4
+                  SELECT SN.ID,
+                         PR.PARTY_ID AS PERSON_ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS PERSON_NAME, PN.GENDER AS PERSON_GENDER, PN.DATEOFBIRTH AS PERSON_DOB,
+                         SN.NAMABAPAK, SN.NIS, SN.JENISSANTRI, SN.TAHUNMASUK_ID, TP.NAME AS TAHUNMASUK_NAME, TP.FROMDATE AS TAHUNMASUK_FROMDATE, SN.ANGKATAN,
+                         PS.FROMROLE_ID AS KELOMPOKPENGASUHAN_ID, PYX.ID AS KELOMPOKPENGASUHAN_ORG_ID, PYX.FIRSTNAME AS KELOMPOKPENGASUHAN_NAME, PS.KOORDINATOR AS KELOMPOKPENGASUHAN_KOORDINATOR, PS.FROMDATE AS KELOMPOKPENGASUHAN_PENGASUHAN_FROMDATE,
+                         SS.STATUS, SS.STATUS_FROMDATE
+                  FROM MIABH_SANTRI AS SN
+                  JOIN PARTY_PARTYROLE AS PR ON SN.ID = PR.ID
+                  JOIN PARTY_PARTY AS PY ON PR.PARTY_ID = PY.ID
+                  JOIN PARTY_PERSON AS PN ON PY.ID = PN.ID
+                  JOIN MIABH_TAHUNPEMBELAJARAN AS TP ON SN.TAHUNMASUK_ID = TP.ID
                   LEFT JOIN (
-                              SELECT KELOMPOKPENGASUHAN1.ID, KELOMPOKPENGASUHAN1.PARTY_ID, ORGANIZATION0.NAME
-                              FROM (
-                                  SELECT KELOMPOKPENGASUHAN0.ID, PARTYROLE0.PARTY_ID
-                                  FROM MIABH_KELOMPOKPENGASUHAN AS KELOMPOKPENGASUHAN0
-                                  JOIN PARTY_PARTYROLE AS PARTYROLE0
-                                  ON KELOMPOKPENGASUHAN0.ID = PARTYROLE0.ID
-                              ) AS KELOMPOKPENGASUHAN1
-                              JOIN ( 
-                                      SELECT ORG.ID, PARTY0.FIRSTNAME AS NAME
-                                      FROM PARTY_ORGANIZATION AS ORG
-                                      JOIN PARTY_PARTY AS PARTY0
-                                      ON ORG.ID = PARTY0.ID
-                              ) AS ORGANIZATION0
-                              ON KELOMPOKPENGASUHAN1.PARTY_ID = ORGANIZATION0.ID
-                  ) AS KELOMPOKPENGASUHAN2
-                  ON SANTRI4.FROMROLE_ID = KELOMPOKPENGASUHAN2.ID
-              )
+                      SELECT PSZ.FROMROLE_ID, PSZ.TOROLE_ID, PSZ.FROMDATE, PSZ.KOORDINATOR
+                      FROM (
+                          SELECT PSX.FROMROLE_ID, PSX.TOROLE_ID, PSX.FROMDATE, PSX.KOORDINATOR
+                          FROM MIABH_PENGASUHAN AS PSX
+                          JOIN (    
+                              SELECT PS.TOROLE_ID, MAX(PS.FROMDATE) AS FROMDATE
+                              FROM MIABH_PENGASUHAN AS PS
+                              WHERE PS.FROMDATE <= CURRENT_DATE
+                              GROUP BY PS.TOROLE_ID
+                          ) AS PSY
+                          ON PSX.TOROLE_ID = PSY.TOROLE_ID AND PSX.FROMDATE = PSY.FROMDATE
+                      ) AS PSZ
+                      JOIN PARTY_PARTYRELATIONSHIP AS PREL
+                      ON PSZ.FROMROLE_ID = PREL.FROMROLE_ID AND PSZ.TOROLE_ID = PREL.TOROLE_ID AND PSZ.FROMDATE = PREL.FROMDATE AND PREL.PARTYRELATIONSHIPTYPE_ID = 'Pengasuhan'
+                  ) AS PS ON PS.TOROLE_ID = SN.ID        
+                  LEFT JOIN PARTY_PARTYROLE AS PRX ON PS.FROMROLE_ID = PRX.ID
+                  LEFT JOIN PARTY_PARTY AS PYX ON PRX.PARTY_ID = PYX.ID
+                  LEFT JOIN (
+                      SELECT SSY.SANTRI_ID, SSY.FROMDATE AS STATUS_FROMDATE, SSX.STATUS
+                      FROM (
+                              SELECT SANTRI_ID, MAX(FROMDATE) AS FROMDATE
+                              FROM MIABH_STATUSSANTRI
+                              WHERE FROMDATE <= CURRENT_DATE
+                              GROUP BY SANTRI_ID
+                      ) AS SSY
+                      JOIN MIABH_STATUSSANTRI AS SSX
+                      ON SSY.SANTRI_ID = SSX.SANTRI_ID AND SSY.FROMDATE = SSX.FROMDATE
+                  ) AS SS ON SN.ID = SS.SANTRI_ID
+              ) 
               """;
-    
+
     private static final String FIND
             = """
-              SELECT ID, PARTYID, PARTYROLETYPEID, NAME, NAMABAPAK, GENDER, DATEOFBIRTH, NIS,
-                     JENISSANTRI, STATUS, TAHUNMASUKID, TAHUNMASUKNAME, TAHUNMASUKFROMDATE, ANGKATAN, 
-                     KELOMPOKPENGASUHANID, KELOMPOKPENGASUHANPARTYID, KELOMPOKPENGASUHANPARTYNAME, KOORDINATOR
+              SELECT ID, PERSON_ID, PERSON_NAME, PERSON_GENDER, PERSON_DOB
               FROM (
-                      SELECT SANTRI4.ID, SANTRI4.PARTY_ID AS PARTYID, SANTRI4.PARTYROLETYPE_ID AS PARTYROLETYPEID, 
-                             SANTRI4.NAME, SANTRI4.NAMABAPAK, SANTRI4.GENDER, SANTRI4.DATEOFBIRTH AS DATEOFBIRTH, SANTRI4.KOORDINATOR,
-                             KELOMPOKPENGASUHAN2.ID AS KELOMPOKPENGASUHANID, KELOMPOKPENGASUHAN2.PARTY_ID AS KELOMPOKPENGASUHANPARTYID,
-                             KELOMPOKPENGASUHAN2.NAME AS KELOMPOKPENGASUHANPARTYNAME, SANTRI4.STATUS AS STATUS, SANTRI4.NIS, SANTRI4.JENISSANTRI,
-                             SANTRI4.TAHUNMASUK_ID AS TAHUNMASUKID, SANTRI4.TAHUNMASUKNAME, SANTRI4.TAHUNMASUKFROMDATE, SANTRI4.ANGKATAN
-                      FROM (
-                          SELECT SANTRI3.ID, SANTRI3.PARTY_ID, SANTRI3.PARTYROLETYPE_ID, SANTRI3.NAME, SANTRI3.NAMABAPAK, SANTRI3.GENDER, SANTRI3.DATEOFBIRTH,
-                                 PENGASUHAN2.KOORDINATOR, PENGASUHAN2.FROMROLE_ID, SANTRI3.STATUS,
-                                 SANTRI3.NIS, SANTRI3.JENISSANTRI, SANTRI3.TAHUNMASUK_ID, SANTRI3.TAHUNMASUKNAME, SANTRI3.TAHUNMASUKFROMDATE, SANTRI3.ANGKATAN
-                          FROM (
-                                  SELECT SANTRI2.ID, SANTRI2.PARTY_ID, SANTRI2.PARTYROLETYPE_ID, SANTRI2.NAME, SANTRI2.NAMABAPAK, SANTRI2.GENDER, SANTRI2.DATEOFBIRTH,
-                                         STATUSSANTRI0.STATUS, SANTRI2.NIS, SANTRI2.JENISSANTRI, SANTRI2.TAHUNMASUK_ID, SANTRI2.TAHUNMASUKNAME, SANTRI2.TAHUNMASUKFROMDATE, SANTRI2.ANGKATAN
-                                  FROM (
-                                          SELECT SANTRI1.ID, SANTRI1.PARTY_ID, SANTRI1.PARTYROLETYPE_ID, PERSON1.NAME, SANTRI1.NAMABAPAK, PERSON1.GENDER, PERSON1.DATEOFBIRTH,
-                                                 SANTRI1.NIS, SANTRI1.JENISSANTRI, SANTRI1.TAHUNMASUK_ID, SANTRI1.TAHUNMASUKNAME, SANTRI1.TAHUNMASUKFROMDATE, SANTRI1.ANGKATAN
-                                          FROM (
-                                                  SELECT SANTRI0.ID, PARTYROLE0.PARTY_ID, PARTYROLE0.PARTYROLETYPE_ID, SANTRI0.NAMABAPAK, SANTRI0.NIS, SANTRI0.TAHUNMASUK_ID, SANTRI0.JENISSANTRI, SANTRI0.TAHUNMASUKNAME, SANTRI0.TAHUNMASUKFROMDATE, SANTRI0.ANGKATAN
-                                                  FROM (
-                                                      SELECT S.ID, S.NAMABAPAK, S.NIS, S.TAHUNMASUK_ID, S.JENISSANTRI, TP.NAME AS TAHUNMASUKNAME, TP.FROMDATE AS TAHUNMASUKFROMDATE, S.ANGKATAN
-                                                      FROM (
-                                                        SELECT S0.ID, S0.NAMABAPAK, S0.NIS, S0.TAHUNMASUK_ID, S0.JENISSANTRI, S0.ANGKATAN
-                                                        FROM MIABH_SANTRI AS S0
-                                                        WHERE S0.ID = ?
-                                                      ) AS S
-                                                      JOIN MIABH_TAHUNPEMBELAJARAN TP ON S.TAHUNMASUK_ID = TP.ID
-                                                  ) AS SANTRI0
-                                                  JOIN PARTY_PARTYROLE AS PARTYROLE0
-                                                  ON SANTRI0.ID = PARTYROLE0.ID
-                                                  WHERE PARTYROLE0.FROMDATE <=  CURRENT_DATE AND (PARTYROLE0.THRUDATE IS NULL OR PARTYROLE0.THRUDATE >= CURRENT_DATE)
-                                          ) AS SANTRI1
-                                          JOIN ( 
-                                                  SELECT PERSON0.ID, CONCAT_WS(' ', PARTY0.FIRSTNAME, PARTY0.LASTNAME) AS NAME, PERSON0.GENDER, PERSON0.DATEOFBIRTH
-                                                  FROM PARTY_PERSON AS PERSON0
-                                                  JOIN PARTY_PARTY AS PARTY0
-                                                  ON PERSON0.ID = PARTY0.ID
-                                          ) AS PERSON1
-                                          ON SANTRI1.PARTY_ID = PERSON1.ID
-                                  ) AS SANTRI2
-                                  JOIN MIABH_STATUSSANTRI AS STATUSSANTRI0
-                                  ON SANTRI2.ID = STATUSSANTRI0.SANTRI_ID
-                                  WHERE STATUSSANTRI0.FROMDATE <=  CURRENT_DATE AND (STATUSSANTRI0.THRUDATE IS NULL OR STATUSSANTRI0.THRUDATE >= CURRENT_DATE)
-                          ) AS SANTRI3
-                          LEFT JOIN (
-                              SELECT PENGASUHAN1.FROMROLE_ID, PENGASUHAN1.TOROLE_ID, PENGASUHAN1.FROMDATE, PARTYRELATIONSHIP1.THRUDATE, PENGASUHAN1.KOORDINATOR
-                              FROM MIABH_PENGASUHAN AS PENGASUHAN1
-                              JOIN PARTY_PARTYRELATIONSHIP AS PARTYRELATIONSHIP1
-                              ON PENGASUHAN1.PARTYRELATIONSHIPTYPE_ID = PARTYRELATIONSHIP1.PARTYRELATIONSHIPTYPE_ID
-                              AND PENGASUHAN1.FROMROLE_ID = PARTYRELATIONSHIP1.FROMROLE_ID
-                              AND PENGASUHAN1.TOROLE_ID = PARTYRELATIONSHIP1.TOROLE_ID
-                              AND PENGASUHAN1.FROMDATE = PARTYRELATIONSHIP1.FROMDATE
-                              WHERE PARTYRELATIONSHIP1.FROMDATE <=  CURRENT_DATE AND (PARTYRELATIONSHIP1.THRUDATE IS NULL OR PARTYRELATIONSHIP1.THRUDATE >= CURRENT_DATE)
-                          ) AS PENGASUHAN2
-                          ON SANTRI3.ID = PENGASUHAN2.TOROLE_ID
-                  ) AS SANTRI4
-                  LEFT JOIN (
-                              SELECT KELOMPOKPENGASUHAN1.ID, KELOMPOKPENGASUHAN1.PARTY_ID, ORGANIZATION0.NAME
-                              FROM (
-                                  SELECT KELOMPOKPENGASUHAN0.ID, PARTYROLE0.PARTY_ID
-                                  FROM MIABH_KELOMPOKPENGASUHAN AS KELOMPOKPENGASUHAN0
-                                  JOIN PARTY_PARTYROLE AS PARTYROLE0
-                                  ON KELOMPOKPENGASUHAN0.ID = PARTYROLE0.ID
-                              ) AS KELOMPOKPENGASUHAN1
-                              JOIN ( 
-                                      SELECT ORG.ID, PARTY0.FIRSTNAME AS NAME
-                                      FROM PARTY_ORGANIZATION AS ORG
-                                      JOIN PARTY_PARTY AS PARTY0
-                                      ON ORG.ID = PARTY0.ID
-                              ) AS ORGANIZATION0
-                              ON KELOMPOKPENGASUHAN1.PARTY_ID = ORGANIZATION0.ID
-                  ) AS KELOMPOKPENGASUHAN2
-                  ON SANTRI4.FROMROLE_ID = KELOMPOKPENGASUHAN2.ID
+                  SELECT SN.ID,
+                         PR.PARTY_ID AS PERSON_ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS PERSON_NAME, PN.GENDER AS PERSON_GENDER, PN.DATEOFBIRTH AS PERSON_DOB
+                  FROM MIABH_SANTRI AS SN
+                  JOIN PARTY_PARTYROLE AS PR ON SN.ID = PR.ID
+                  JOIN PARTY_PARTY AS PY ON PR.PARTY_ID = PY.ID
+                  JOIN PARTY_PERSON AS PN ON PY.ID = PN.ID
               )
+              WHERE ID = ?
+              """;
+
+    private static final String FIND_ALT
+            = """
+              SELECT ID, PERSON_ID, PERSON_NAME, PERSON_GENDER, PERSON_DOB,
+                     NAMABAPAK, NIS, JENISSANTRI, ANGKATAN, TAHUNMASUK_ID, TAHUNMASUK_NAME, TAHUNMASUK_FROMDATE,
+                     KELOMPOKPENGASUHAN_ID, KELOMPOKPENGASUHAN_ORG_ID, KELOMPOKPENGASUHAN_NAME, KELOMPOKPENGASUHAN_KOORDINATOR, KELOMPOKPENGASUHAN_PENGASUHAN_FROMDATE
+              FROM (
+                  SELECT SN.ID,
+                         PR.PARTY_ID AS PERSON_ID, CONCAT_WS(' ', PY.FIRSTNAME, PY.LASTNAME) AS PERSON_NAME, PN.GENDER AS PERSON_GENDER, PN.DATEOFBIRTH AS PERSON_DOB,
+                         SN.NAMABAPAK, SN.NIS, SN.JENISSANTRI, SN.ANGKATAN, SN.TAHUNMASUK_ID, TP.NAME AS TAHUNMASUK_NAME, TP.FROMDATE AS TAHUNMASUK_FROMDATE,
+                         PS.FROMROLE_ID AS KELOMPOKPENGASUHAN_ID, PYX.ID AS KELOMPOKPENGASUHAN_ORG_ID, PYX.FIRSTNAME AS KELOMPOKPENGASUHAN_NAME, PS.KOORDINATOR AS KELOMPOKPENGASUHAN_KOORDINATOR, PS.FROMDATE AS KELOMPOKPENGASUHAN_PENGASUHAN_FROMDATE
+                  FROM MIABH_SANTRI AS SN
+                  JOIN PARTY_PARTYROLE AS PR ON SN.ID = PR.ID
+                  JOIN PARTY_PARTY AS PY ON PR.PARTY_ID = PY.ID
+                  JOIN PARTY_PERSON AS PN ON PY.ID = PN.ID
+                  JOIN MIABH_TAHUNPEMBELAJARAN AS TP ON SN.TAHUNMASUK_ID = TP.ID
+                  LEFT JOIN (
+                      SELECT PSZ.FROMROLE_ID, PSZ.TOROLE_ID, PSZ.FROMDATE, PSZ.KOORDINATOR
+                      FROM (
+                          SELECT PSX.FROMROLE_ID, PSX.TOROLE_ID, PSX.FROMDATE, PSX.KOORDINATOR
+                          FROM MIABH_PENGASUHAN AS PSX
+                          JOIN (    
+                              SELECT PS.TOROLE_ID, MAX(PS.FROMDATE) AS FROMDATE
+                              FROM MIABH_PENGASUHAN AS PS
+                              WHERE PS.FROMDATE <= CURRENT_DATE
+                              GROUP BY PS.TOROLE_ID
+                          ) AS PSY
+                          ON PSX.TOROLE_ID = PSY.TOROLE_ID AND PSX.FROMDATE = PSY.FROMDATE
+                      ) AS PSZ
+                      JOIN PARTY_PARTYRELATIONSHIP AS PREL
+                      ON PSZ.FROMROLE_ID = PREL.FROMROLE_ID AND PSZ.TOROLE_ID = PREL.TOROLE_ID AND PSZ.FROMDATE = PREL.FROMDATE AND PREL.PARTYRELATIONSHIPTYPE_ID = 'Pengasuhan'
+                  ) AS PS ON PS.TOROLE_ID = SN.ID        
+                  LEFT JOIN PARTY_PARTYROLE AS PRX ON PS.FROMROLE_ID = PRX.ID
+                  LEFT JOIN PARTY_PARTY AS PYX ON PRX.PARTY_ID = PYX.ID
+              )
+              WHERE ID = ?
               """;
 
     @Inject
@@ -206,7 +156,7 @@ public class SantriFacade extends AbstractSqlFacade<Santri> {
 
     @Inject
     private ApplicationUserFacade appUserFacade;
-    
+
     @Inject
     private NikSeedFacade nisFacade;
 
@@ -227,7 +177,7 @@ public class SantriFacade extends AbstractSqlFacade<Santri> {
                 if (nameQuery.equals("")) {
                     return null;
                 }
-                return "(UPPER(NAME) LIKE '%" + nameQuery.toUpperCase() + "%')";
+                return "(UPPER(PERSON_NAME) LIKE '%" + nameQuery.toUpperCase() + "%')";
             case "santri":
                 Santri santri = (Santri) filterData.value;
                 return "ID = " + santri.getId();
@@ -235,10 +185,10 @@ public class SantriFacade extends AbstractSqlFacade<Santri> {
                 Long id = (Long) filterData.value;
                 return "ID = " + id;
             case "tahunMasuk":
-                return "TAHUNMASUKID = " + filterData.value;
+                return "TAHUNMASUK_ID = " + filterData.value;
             case "gender":
                 GenderType gender = (GenderType) filterData.value;
-                return "GENDER = '" + gender.name() + "'";
+                return "PERSON_GENDER = '" + gender.name() + "'";
             case "jenisSantri":
                 JenisSantri jenisSantri = (JenisSantri) filterData.value;
                 return "JENISSANTRI = '" + jenisSantri.name() + "'";
@@ -247,10 +197,10 @@ public class SantriFacade extends AbstractSqlFacade<Santri> {
                 return "STATUS = '" + status.name() + "'";
             case "kelompokPengasuhan":
                 KelompokPengasuhan kelompokPengasuhan = (KelompokPengasuhan) filterData.value;
-                return "KELOMPOKPENGASUHANID = " + kelompokPengasuhan.getId();
+                return "KELOMPOKPENGASUHAN_ID = " + kelompokPengasuhan.getId();
             case "party":
                 Party party = (Party) filterData.value;
-                return "PARTYID = " + party.getId();
+                return "PERSON_ID = " + party.getId();
             default:
                 return null;
         }
@@ -262,9 +212,9 @@ public class SantriFacade extends AbstractSqlFacade<Santri> {
             case "nis":
                 return "NIS";
             case "name":
-                return "NAME";
+                return "PERSON_NAME";
             case "dateOfBirth":
-                return "DATEOFBIRTH";
+                return "PERSON_DOB";
             default:
                 return null;
         }
@@ -310,7 +260,7 @@ public class SantriFacade extends AbstractSqlFacade<Santri> {
 
         return result;
     }
-    
+
     public Result<String> createAndGenerateNis(Santri entity) {
         Result<String> result = create(entity);
         nisFacade.generateNis(entity);
@@ -360,10 +310,53 @@ public class SantriFacade extends AbstractSqlFacade<Santri> {
 
         return getEntityManager().createQuery(cq).getResultList();
     }
-    
+
     public void generateNis(List<Santri> listSantri) {
-        
+
         nisFacade.generateNis(listSantri.stream().filter(s -> s.getNis().isEmpty()).collect(Collectors.toList()));
+    }
+
+    public Santri findAlt(Long id) {
+        try {
+            return (Santri) em.createNativeQuery(FIND_ALT, "Santri")
+                    .setParameter(1, id)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    @Inject
+    private AktifitasFacade aktifitasFacade;
+
+    @Inject
+    private BentukAktifitasFacade bentukAktifitasFacade;
+
+    public void generateAktifitas(int n) {
+        RandomGenerator rnd = RandomGenerator.getDefault();
+
+        LocalDate now = LocalDate.now();
+        List<String> idBentukList = bentukAktifitasFacade.findAll().stream().map(b -> b.getId()).collect(Collectors.toList());
+
+        for (int i = 0; i < n; i++) {
+            Aktifitas a = new Aktifitas();
+            int nextDateInc = rnd.nextInt(0, 150);
+            a.setActivityDate(now.plusDays(nextDateInc));
+
+            Santri santri = null;
+            while (santri == null) {
+                long santriId = rnd.nextLong(12, 611);
+                santri = em.find(Santri.class, santriId);
+            }
+            a.setSantri(santri);
+
+            int nextBentuk = rnd.nextInt(0, idBentukList.size());
+            a.setBentukAktifitas(bentukAktifitasFacade.find(idBentukList.get(nextBentuk)));
+
+            a.setConfirmed(true);
+
+            aktifitasFacade.create(a);
+        }
     }
 
 }

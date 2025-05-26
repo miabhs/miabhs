@@ -8,28 +8,24 @@
 
     <f:metadata>
         <ui:param name="viewPage" value="#{groupAccessControlPage}" />
+        
+        <f:viewParam name="sg" value="#{viewPage.securityGroup}" converter="ApplicationSecurityGroupConverter" transient="true" />
+        
         <ui:param name="primaryTitle" value="Kontrol Akses" />
         <ui:param name="secondaryTitle" value="#{viewPage.securityGroup.organization.name}" />
-        <ui:param name="dataView" value="#{viewPage.dataView}" />
         
-        <ui:param name="pager" value="#{dataView.pager}" />
-        <ui:param name="filter" value="#{dataView.filter}" />
-        <ui:param name="contentId" value=":data-frm:#{dataView.name}" /> 
-
+        <ui:param name="dataView" value="#{viewPage.dataView}" />
+        <ui:param name="contentId" value=":data-frm:#{dataView.name}" />
         <ui:param name="notool" value="true" />
-        <ui:param name="nofilter" value="true" />
 
+        <ui:param name="pager" value="#{dataView.pager}" />
         <ui:include src="/WEB-INF/components/core/base/meta/pager.xhtml" />
-        <f:viewParam name="s" value="#{dataView.selections}" converter="AccessControlListConverter" />
+        
+        <f:viewParam name="s" value="#{dataView.selectionsInternal}" converter="AccessControlListConverter" transient="true" />
 
-        <f:viewParam name="securityGroup" value="#{viewPage.securityGroup}" converter="ApplicationSecurityGroupConverter" transient="true" />
-
-        <f:viewAction action="#{viewPage.load}" />
     </f:metadata>
     
-    <ui:define name="crud-create" />
-    <ui:define name="crud-update" />
-    <ui:define name="crud-delete" />
+    <ui:define name="crud-tools" />
 
     <ui:define name="content">
         <h:form id="data-frm">

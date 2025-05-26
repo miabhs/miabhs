@@ -10,7 +10,7 @@ import id.my.mdn.kupu.core.base.view.annotation.SorterField.Sort;
 import id.my.mdn.kupu.core.base.view.annotation.SorterFields;
 import id.my.mdn.kupu.core.party.entity.GenderType;
 import id.my.mdn.kupu.core.party.entity.Organization;
-import id.my.mdn.kupu.core.party.entity.PartyRoleType;
+import id.my.mdn.kupu.core.party.entity.PartyRelationshipId;
 import id.my.mdn.kupu.core.party.entity.Person;
 import id.my.mdn.kupu.core.party.entity.PersonRole;
 import jakarta.persistence.CascadeType;
@@ -24,7 +24,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SqlResultSetMapping;
 import jakarta.persistence.SqlResultSetMappings;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -47,24 +46,28 @@ import java.util.List;
                         targetClass = Santri.class,
                         columns = {
                             @ColumnResult(name = "ID", type = Long.class),
-                            @ColumnResult(name = "PARTYID", type = Long.class),
-                            @ColumnResult(name = "PARTYROLETYPEID", type = String.class),
-                            @ColumnResult(name = "NAME", type = String.class),
+
+                            @ColumnResult(name = "PERSON_ID", type = Long.class),
+                            @ColumnResult(name = "PERSON_NAME", type = String.class),
+                            @ColumnResult(name = "PERSON_GENDER", type = String.class),
+                            @ColumnResult(name = "PERSON_DOB", type = LocalDate.class),
+
                             @ColumnResult(name = "NAMABAPAK", type = String.class),
-                            @ColumnResult(name = "GENDER", type = String.class),
-                            @ColumnResult(name = "DATEOFBIRTH", type = LocalDate.class),
                             @ColumnResult(name = "NIS", type = String.class),
                             @ColumnResult(name = "JENISSANTRI", type = String.class),
-                            @ColumnResult(name = "STATUS", type = String.class),
-                            @ColumnResult(name = "TAHUNMASUKID", type = Long.class),
-                            @ColumnResult(name = "TAHUNMASUKNAME", type = String.class),
-                            @ColumnResult(name = "TAHUNMASUKFROMDATE", type = LocalDate.class),
                             @ColumnResult(name = "ANGKATAN", type = Integer.class),
-                            @ColumnResult(name = "KELOMPOKPENGASUHANID", type = Long.class),
-                            @ColumnResult(name = "KELOMPOKPENGASUHANPARTYID", type = Long.class),
-                            @ColumnResult(name = "KELOMPOKPENGASUHANPARTYNAME", type = String.class),
-                            @ColumnResult(name = "KOORDINATOR", type = Boolean.class)
-                        }
+                            @ColumnResult(name = "TAHUNMASUK_ID", type = Long.class),
+                            @ColumnResult(name = "TAHUNMASUK_NAME", type = String.class),
+                            @ColumnResult(name = "TAHUNMASUK_FROMDATE", type = LocalDate.class),
+
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_ID", type = Long.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_ORG_ID", type = Long.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_NAME", type = String.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_KOORDINATOR", type = Boolean.class),
+                            @ColumnResult(name = "KELOMPOKPENGASUHAN_PENGASUHAN_FROMDATE", type = LocalDate.class),
+
+                            @ColumnResult(name = "STATUS", type = String.class),
+                            @ColumnResult(name = "STATUS_FROMDATE", type = LocalDate.class)}
                 )
             }
     )
@@ -115,49 +118,71 @@ public class Santri extends PersonRole {
     @Enumerated(EnumType.STRING)
     private JenisSantri jenisSantri;
 
-    @Transient
-    private String name;
-
-    @Transient
-    private StatusKesantrian status;
-
-    @Transient
-    private KelompokPengasuhan kelompokPengasuhan;
-
-    @Transient
-    private Boolean koordinator;
-
     public Santri() {
     }
-
+    
     public Santri(Long id) {
         setId(id);
     }
 
-    public Santri(Long id, Long partyId, String partyRoleTypeId, String name, String namaBapak, String gender, LocalDate dateOfBirth, String nis, String jenisSantri, String status,
-            Long tahunMasukId, String tahunMasukName, LocalDate tahunMasukFromDate, Integer angkatan, Long kelompokPengasuhanId, Long kelompokPengasuhanPartyId, String kelompokPengasuhanPartyName, Boolean koordinator) {
+    public Santri(
+            Long id,
+            Long personId, String personName, String personGender, LocalDate personDob,
+            String namaBapak, String nis, String jenisSantri, Integer angkatan, Long tahunMasukId, String tahunMasukName, LocalDate tahunMasukFromDate,
+            Long kelompokPengasuhanId, Long kelompokPengasuhanOrgId, String kelompokPengasuhanName, Boolean kelompokPengasuhanKoordinator, LocalDate kelompokPengasuhanPengasuhanFromDate,
+            String status, LocalDate statusFromDate) {
+
         setId(id);
-        setPartyRoleType(new PartyRoleType(partyRoleTypeId, "Santri"));
-        Person person = new Person(partyId, name, "", GenderType.valueOf(gender), dateOfBirth);
-        person.setType("Person");
-        this.setPerson(person);
-        this.namaBapak = namaBapak;
-        this.nis = nis;
+
+        if (personId != null) {
+            Person person = Person.builder()
+                    .firstName(personName)
+                    .gender(personGender != null ? GenderType.valueOf(personGender) : null)
+                    .dateOfBirth(personDob)
+                    .get();
+            person.setId(personId);
+            setPerson(person);
+        }
+
+        if (tahunMasukId != null) {
+            setFromDate(LocalDateTime.of(tahunMasukFromDate, LocalTime.of(0, 0, 0)));
+            this.tahunMasuk = new TahunPembelajaran(tahunMasukId, tahunMasukName);
+            this.tahunMasuk.setFromDate(tahunMasukFromDate);
+        }
+
         if (jenisSantri != null) {
             this.jenisSantri = JenisSantri.valueOf(jenisSantri);
         }
-        this.tahunMasuk = new TahunPembelajaran(tahunMasukId, tahunMasukName);
-        this.tahunMasuk.setFromDate(tahunMasukFromDate);
-        this.angkatan = angkatan;
-        this.setFromDate(LocalDateTime.of(tahunMasukFromDate, LocalTime.of(0, 0, 0)));
-        this.status = StatusKesantrian.valueOf(status);
+
+        setTargetRelationships(new ArrayList<>());
+
         if (kelompokPengasuhanId != null) {
-            this.kelompokPengasuhan = new KelompokPengasuhan(kelompokPengasuhanId, new Organization(kelompokPengasuhanPartyId, kelompokPengasuhanPartyName));
-            this.koordinator = koordinator;
-        } else {
-            this.kelompokPengasuhan = null;
-            this.koordinator = null;
+            KelompokPengasuhan kelompokPengasuhan = new KelompokPengasuhan(kelompokPengasuhanId, new Organization(kelompokPengasuhanOrgId, kelompokPengasuhanName));
+            Pengasuhan pengasuhan = new Pengasuhan();
+            pengasuhan.setId(new PartyRelationshipId(kelompokPengasuhanId, id, kelompokPengasuhanPengasuhanFromDate, "Pengasuhan"));
+            pengasuhan.setSantri(this);
+            pengasuhan.setKelompokPengasuhan(kelompokPengasuhan);
+            pengasuhan.setKoordinator(kelompokPengasuhanKoordinator != null ? kelompokPengasuhanKoordinator : false);
+
+            getTargetRelationships().add(pengasuhan);
         }
+
+        this.listStatus = new ArrayList<>();
+
+        if (status != null) {
+            StatusSantri statusSantri = new StatusSantri();
+            statusSantri.setId(new StatusSantriId(id, statusFromDate));
+            statusSantri.setStatus(StatusKesantrian.valueOf(status));
+
+            this.listStatus.add(statusSantri);
+        }
+
+        this.namaBapak = namaBapak;
+
+        this.nis = nis;
+
+        this.angkatan = angkatan;
+
     }
 
     public Integer getLamaBelajar() {
@@ -167,8 +192,8 @@ public class Santri extends PersonRole {
 
     public int calculateTahunBelajar(TahunPembelajaran tahunPembelajaran) {
 
-        LocalDateTime fromDate = this.getFromDate();
-        LocalDateTime thruDate = LocalDateTime.of(tahunPembelajaran.getFromDate(), LocalTime.of(0, 0, 0));
+        LocalDate fromDate = this.tahunMasuk.getFromDate();
+        LocalDate thruDate = tahunPembelajaran.getFromDate();
         Long days = YEARS.between(fromDate, thruDate);
         return days.intValue() + 1;
 
@@ -206,14 +231,6 @@ public class Santri extends PersonRole {
         this.listStatus = listStatus;
     }
 
-    public StatusKesantrian getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusKesantrian status) {
-        this.status = status;
-    }
-
     public JenisSantri getJenisSantri() {
         return jenisSantri;
     }
@@ -223,19 +240,27 @@ public class Santri extends PersonRole {
     }
 
     public KelompokPengasuhan getKelompokPengasuhan() {
-        return kelompokPengasuhan;
-    }
-
-    public void setKelompokPengasuhan(KelompokPengasuhan kelompokPengasuhan) {
-        this.kelompokPengasuhan = kelompokPengasuhan;
+        if (!getTargetRelationships().isEmpty() && getTargetRelationships().size() == 1) {
+            return ((Pengasuhan) getTargetRelationships().get(0)).getKelompokPengasuhan();
+        } else {
+            return null;
+        }
     }
 
     public Boolean getKoordinator() {
-        return koordinator;
+        if (!getTargetRelationships().isEmpty() && getTargetRelationships().size() == 1) {
+            return ((Pengasuhan) getTargetRelationships().get(0)).isKoordinator();
+        } else {
+            return false;
+        }
     }
 
-    public void setKoordinator(Boolean koordinator) {
-        this.koordinator = koordinator;
+    public StatusKesantrian getStatus() {
+        if (!listStatus.isEmpty() && listStatus.size() == 1) {
+            return listStatus.get(0).getStatus();
+        } else {
+            return null;
+        }
     }
 
     public String getNamaBapak() {
@@ -255,10 +280,6 @@ public class Santri extends PersonRole {
     }
 
     public String getName() {
-        return getPerson() != null ? getPerson().getName() : name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return getPerson().getName();
     }
 }

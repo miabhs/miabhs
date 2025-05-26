@@ -33,11 +33,11 @@ import id.my.mdn.kupu.core.base.view.annotation.Creator;
 import id.my.mdn.kupu.core.base.view.annotation.Deleter;
 import id.my.mdn.kupu.core.base.view.annotation.Editor;
 import id.my.mdn.kupu.core.security.view.widget.ApplicationSecurityGroupList;
-import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
-import org.omnifaces.cdi.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.io.Serializable;
+import org.omnifaces.cdi.ViewScoped;
 
 /**
  *
@@ -66,14 +66,14 @@ public class ApplicationSecurityGroupPage extends ChildPage implements Serializa
     @Editor(of = "dataView")
     public void openDataEditor() {
         gotoChild(GroupAccessControlPage.class)
-                .addParam("securityGroup")
-                .withValues(dataView.getSelector().getSelection())
+                .addParam("sg")
+                .withValues(dataView.getSelected())
                 .open();
     }
 
     @Deleter(of = "dataView")
     public void delete() {
-        dataView.delete(dataView.getSelections());
+        dataView.deleteSelected();
     }
 
     public ApplicationSecurityGroupList getDataView() {

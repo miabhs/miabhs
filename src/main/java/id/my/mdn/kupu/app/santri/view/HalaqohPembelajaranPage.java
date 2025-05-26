@@ -121,7 +121,7 @@ public class HalaqohPembelajaranPage extends Page implements Serializable {
                 pengajaranFilter.setPeriodePembelajaran(periodePembelajaranFacade.getPeriodePembelajaranMin(LocalDate.now(), JenisPeriodePembelajaran.PEKANAN));
             }
             listPelaksanaanHalaqoh = null;
-
+            detailDataView.invalidate();
         });
 
         detailDataView.setSelectionMode(() -> Selector.SINGLE);
